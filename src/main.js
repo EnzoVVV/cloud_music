@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+// 用于兼容ES6
 import 'babel-polyfill'
 
 /* eslint-disable no-new */
