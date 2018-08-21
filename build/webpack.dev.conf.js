@@ -64,7 +64,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         to: config.dev.assetsSubDirectory,
         ignore: ['.*']
       }
-    ])
+    ]),
+    new OpenBrowserPlugin({
+      url: 'http://localhost:8080',
+      browser: 'chrome'
+     })
   ]
 })
 
