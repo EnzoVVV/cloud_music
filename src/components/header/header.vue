@@ -1,6 +1,9 @@
 <template>
-    <Tabs :content='content'>
-    </Tabs>
+    <div class='header'>
+        <IconSvg icon-class='sortlight'></IconSvg>
+        <Tabs :content='content' class='header-tabs'></Tabs>
+        <IconSvg icon-class='search'></IconSvg>
+    </div>
 </template>
 <script>
 
@@ -17,15 +20,15 @@
             return {
                 content: [
                     {
-                        text: '推荐',
+                        icon: 'yinfu',
                         to: 'recommend'
                     },
                     {
-                        text: '朋友',
+                        icon: 'music',
                         to: 'friend'
                     },
                     {
-                        text: '电台',
+                        icon: 'bofang',
                         to: 'radio'
                     }
                 ]
@@ -49,3 +52,22 @@
         }
     }
 </script>
+<style lang='stylus' scoped>
+.header
+    display: flex
+    padding-top: 10px
+    &-left
+        width: 25px !important
+        height: 25px !important
+        float: left
+        line-height: 44px
+        margin-left: 30px
+    &-tabs
+        flex: 1
+        float: left
+    &-right
+        width: 25px !important
+        height: 25px !important 
+        line-height: 44px
+        margin-right: 30px 
+</style>

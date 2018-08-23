@@ -40,7 +40,7 @@ module.exports = {
       'components': resolve('src/components'),
       'api': resolve('src/api'),
       'common': resolve('src/common'),
-      
+      'iconfont': resolve('src/common/fonts/iconfont')
     }
   },
   module: {
