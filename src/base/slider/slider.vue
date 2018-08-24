@@ -47,7 +47,7 @@
       initSlotContentStyle() {
         this.content = this.$refs.sliderGroup.children
         let sliderWidth = this.$refs.slider.clientWidth
-        let width = sliderWidth * this.content.width
+        let width = sliderWidth * this.content.length
         for (let i = 0; i < this.content.length; i++) {
           let item = this.content[i]
           addClass(item, 'slider-item')
