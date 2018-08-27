@@ -1,7 +1,8 @@
 import jsonp from 'common/js/jsonp'
-import {commonParams, options} from './config'
+import {commonParams, options, HOST} from './config'
+import axios from 'axios'
 
-export function getRecommend() {
+export function getBanner() {
   const url = 'https://c.y.qq.com/musichall/fcgi-bin/fcg_yqqhomepagerecommend.fcg'
 
   const data = Object.assign({}, commonParams, {
@@ -13,24 +14,21 @@ export function getRecommend() {
   return jsonp(url, data, options)
 }
 
-export function getDiscList() {
-  const url = '/api/getDiscList'
-
-  const data = Object.assign({}, commonParams, {
-    platform: 'yqq',
-    hostUin: 0,
-    sin: 0,
-    ein: 29,
-    sortId: 5,
-    needNewCode: 0,
-    categoryId: 10000000,
-    rnd: Math.random(),
-    format: 'json'
-  })
-
-  return axios.get(url, {
-    params: data
-  }).then((res) => {
-    return Promise.resolve(res.data)
+export function getRecommendList() {
+  return new Promise((resolve,reject) => {
+    let array = []
+    let result = {
+      code: 0,
+      data: array
+    }
+    for(let i=0;i<6;i++) {
+      array.push({
+        imgUrl: '',
+        discription: '日系 | 一调静谧的温暖，一曲细腻的厚重',
+        playCount: '15万',
+        id: i
+      })
+    }
+    resolve(result)
   })
 }
