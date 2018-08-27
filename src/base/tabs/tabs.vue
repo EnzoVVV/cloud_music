@@ -28,7 +28,7 @@
         flex-direction: row
         height: 44px
         line-height: 44px
-        margin: 0 20px
+        padding: 0 20px
         font-size: $font-size-medium
         .tab-item
             flex: 1
@@ -40,5 +40,5 @@
                     height: 25px !important 
             &.router-link-active
                 .tab-text
-                    border-bottom: 2px solid $color-theme
+                    border-bottom: 2px solid $color-text-l
 </style>

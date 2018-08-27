@@ -28,6 +28,14 @@
       interval: {
         type: Number,
         default: 4000
+      },
+      threshold: {
+        type: Number,
+        default: 0.3
+      },
+      speed: {
+        type: Number,
+        default: 300
       }
     },
     data() {
@@ -36,15 +44,32 @@
         dots: [],
         currentPageIndex: 0,
         // slot里的项
-        content: null
+        content: null,
+        timer: null
       }
     },
     mounted() {
-        this.initSlotContentStyle()
-        this.initDots()
+      setTimeout(() => {
+        this.init()
+      },20)
+      window.addEventListener('resize',() => {
+        if(!this.slider) {
+          return
+        }
+        this.initSlotContentStyle(true)
+        this.slider.refresh()
+      })
     },
     methods: {
-      initSlotContentStyle() {
+      init() {
+        this.initSlotContentStyle()
+        this.initDots()
+        this.initSlider()
+        if(this.autoPlay) {
+          this.play()
+        }
+      },
+      initSlotContentStyle(isResize) {
         this.content = this.$refs.sliderGroup.children
         let sliderWidth = this.$refs.slider.clientWidth
         let width = sliderWidth * this.content.length
@@ -53,11 +78,51 @@
           addClass(item, 'slider-item')
           item.style.width = sliderWidth + 'px'
         }
+        // why为啥resize时不需要加宽度了?
+        if(this.loop && !isResize) {
+          width += sliderWidth * 2
+        }
         this.$refs.sliderGroup.style.width = width + 'px'
       },
       initDots() {
         this.dots = new Array(this.content.length)
+      },
+      initSlider() {
+        this.slider = new BScroll(this.$refs.slider, {
+          scrollX: true,
+          scrollY: false,
+          momentum: false,
+          snap: {
+            loop: this.loop,
+            threshold: this.threshold,
+            speed: this.speed
+          }
+          // bounce: false,
+          // stopPropagation: true,
+          // click: this.click
+        })
+        this.slider.on('scrollEnd', () => {
+          let pageIndex = this.slider.getCurrentPage().pageX
+          this.currentPageIndex = pageIndex
+          if(this.autoPlay) {
+            this.play()
+          }
+        })
+      },
+      play() {
+        this.clearTimer()
+        // 这里要用setTimeout，因为自动滑动一次后，也会触发scrollEnd,又调用了play函数
+        this.timer = setTimeout(() => {
+          this.slider.next()
+        },this.interval)
+      },
+      clearTimer() {
+        clearTimeout(this.timer)
+        this.timer = null
       }
+    },
+    beforeDestroy() {
+      this.clearTimer()
     }
   }
 </script>
@@ -66,6 +131,8 @@
   @import "~common/stylus/variable"
 
   .slider
+    min-height: 1px
+    position: relative
     .slider-group
       position: relative
       overflow: hidden
@@ -98,7 +165,6 @@
         border-radius: 50%
         background: $color-text-l
         &.active
-          width: 20px
           border-radius: 5px
-          background: $color-text-ll
+          background: $color-highlight-background
 </style>

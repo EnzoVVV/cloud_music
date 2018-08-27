@@ -7,7 +7,7 @@
 </template>
 <script>
 
-    import Tabs from 'components/tabs/tabs'
+    import Tabs from 'base/tabs/tabs'
     export default {
         name: 'Header',
         components: {
@@ -20,16 +20,16 @@
             return {
                 content: [
                     {
-                        icon: 'yinfu',
-                        to: 'recommend'
+                        icon: 'yinle1',
+                        to: '/mine'
                     },
                     {
-                        icon: 'music',
-                        to: 'friend'
+                        icon: 'kefu',
+                        to: '/music'
                     },
                     {
-                        icon: 'bofang',
-                        to: 'radio'
+                        icon: 'yinlemoshi',
+                        to: '/video'
                     }
                 ]
 
@@ -53,9 +53,11 @@
     }
 </script>
 <style lang='stylus' scoped>
+@import '~common/stylus/variable'
 .header
     display: flex
-    padding-top: 10px
+    padding: 10px 5px 0 5px
+    background: $color-theme
     &-left
         width: 25px !important
         height: 25px !important
