@@ -14,12 +14,14 @@
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
     "better-scroll": "^1.12.6",
+    "fastclick": "^1.0.6",
     "jsonp": "^0.2.1",
     "open-browser-webpack-plugin": "^0.0.5",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "vue": "^2.5.2",
     "vue-icon-font": "^1.0.3",
+    "vue-lazyload": "^1.2.6",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {

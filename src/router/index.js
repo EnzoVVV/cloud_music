@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import recommend from 'components/recommend/recommend'
 import music from 'components/music/music'
-import friends from 'components/friends/friends'
+import singer from 'components/singer/singer'
 import radio from 'components/radio/radio'
 import mine from 'components/mine/mine'
 import video from 'components/video/video'
@@ -24,8 +24,8 @@ export default new Router({
           component: recommend
         },
         {
-          path: '/music/friends',
-          component: friends
+          path: '/music/singer',
+          component: singer
         },
         {
           path: '/music/radio',
