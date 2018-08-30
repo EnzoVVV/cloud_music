@@ -21,7 +21,7 @@ export function getRecommendList() {
       code: 0,
       data: array
     }
-    for(let i=0;i<6;i++) {
+    for(let i=0;i<24;i++) {
       array.push({
         imgUrl: '',
         discription: '日系 | 一调静谧的温暖，一曲细腻的厚重',

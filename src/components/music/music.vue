@@ -8,10 +8,12 @@
 </template>
 <script>
     import tabs from 'base/tabs/tabs'
+    import recommend from 'components/recommend/recommend'
     export default {
         name: 'music',
         components: {
-            tabs
+            tabs,
+            recommend
         },
         props: {
 
@@ -24,8 +26,8 @@
                         to: '/music/recommend'
                     },
                     {
-                        text: '朋友',
-                        to: '/music/friends'
+                        text: '歌手',
+                        to: '/music/singer'
                     },
                     {
                         text: '电台',
