@@ -1,7 +1,7 @@
 <template>
     <div class='musiclist'>
         <div class='header' ref='header'>
-            <div class='header-back' @click='goback'>back</div>
+            <IconSvg class='header-back' :icon-class='fanhui' @click='goback'></IconSvg>
             <div class='header-title'>{{singer.name}}</div>
         </div>
         <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list' @scroll='handleScroll'>
