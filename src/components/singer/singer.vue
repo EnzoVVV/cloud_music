@@ -1,6 +1,7 @@
 <template>
   <div class="singer">
-    <listview :content="singerList" v-if='singerList.length'></listview>
+    <listview :content="singerList" @click='handleClick'></listview>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -10,6 +11,7 @@
     import Singer from "common/js/singer"
     import { isCharacter } from 'common/js/tools'
     import listview from "base/listview/listview"
+    import { mapMutations } from 'vuex'
 
     const HOT_SINGER_LEN = 10
     const HOT_NAME = "热门"
@@ -41,7 +43,8 @@
                 }
                 list.forEach((item, index) => {
                     const singerInfo = new Singer({
-                        id: item.Fsinger_mid,
+                        id: item.Fsinger_id,
+                        mid: item.Fsinger_mid,
                         name: item.Fsinger_name
                     })
                     if (index < HOT_SINGER_LEN) {
@@ -68,7 +71,16 @@
                 }
                 normal.sort((a, b) => a.title.charCodeAt(0) - b.title.charCodeAt(0))
                 return hot.concat(normal).concat(special)
-            }
+            },
+            handleClick(singer) {
+                this.$router.push({
+                    path: `/music/singer/${singer.name}`
+                })
+                this.setSinger(singer)
+            },
+            ...mapMutations({
+                setSinger: 'SET_SINGER'
+            })
         },
         created() {
             this.getSingerLists()

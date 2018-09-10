@@ -6,7 +6,7 @@ import singer from 'components/singer/singer'
 import radio from 'components/radio/radio'
 import mine from 'components/mine/mine'
 import video from 'components/video/video'
-
+import singerdetail from 'components/singer-detail/singer-detail'
 Vue.use(Router)
 export default new Router({
   routes: [
@@ -25,7 +25,13 @@ export default new Router({
         },
         {
           path: '/music/singer',
-          component: singer
+          component: singer,
+          children: [
+            {
+              path: ':name',
+              component: singerdetail
+            }
+          ]
         },
         {
           path: '/music/radio',

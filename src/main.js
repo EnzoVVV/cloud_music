@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 // 用于兼容ES6
 import 'babel-polyfill'
 import 'common/stylus/index.styl'
@@ -25,5 +26,6 @@ Vue.component('IconSvg',IconSvg)
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App)
 })
