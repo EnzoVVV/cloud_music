@@ -1,27 +1,28 @@
 <template>
-    <scroll class='listview' :data='content' ref='listview' :listen-scroll='listenScroll' :probe-type='probeType'>
-        <div>
-            <ul>
-                <li v-for='group in content' :key='group.title' class='group' ref='group'>
-                    <h2 class='group-title'>{{group.title}}</h2>
-                    <ul>
-                        <li v-for='item in group.items' :key='item.id' class='group-item'>
-                            <img v-lazy='item.imgUrl' class='group-item-img needsclick'></img>
-                            <span class='group-item-name'>{{item.name}}</span>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- 加了stop后才有滑动过程的动画 -->
-            <!-- stop阻止冒泡，prevent阻止原生事件 -->
-            <div class='shortcutList' @touchstart.stop.prevent='handleTouchStart' @touchmove.stop.prevent='handleTouchMove' @touchend.stop>
+    <scroll class='listview' :data='content' ref='listview' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll'>
+        <ul>
+            <li v-for='group in content' :key='group.title' class='group' ref='group'>
+                <h2 class='group-title'>{{group.title}}</h2>
                 <ul>
-                    <!-- element上自定义属性data-index，记录index -->
-                    <li v-for='(item, index) in shortcutList' :key='item' :data-index='index' class='shortcutList-item'>
-                        {{item}}
+                    <li v-for='item in group.items' :key='item.id' class='group-item' @click='handleClick(item)'>
+                        <img v-lazy='item.imgUrl' class='group-item-img needsclick'></img>
+                        <span class='group-item-name'>{{item.name}}</span>
                     </li>
                 </ul>
-            </div>
+            </li>
+        </ul>
+        <!-- 加了stop后才有滑动过程的动画 -->
+        <!-- stop阻止冒泡，prevent阻止原生事件 -->
+        <div class='shortcutList' @touchstart.stop.prevent='handleTouchStart' @touchmove.stop.prevent='handleTouchMove' @touchend.stop>
+            <ul>
+                <!-- element上自定义属性data-index，记录index -->
+                <li v-for='(item, index) in shortcutList' :key='item' :data-index='index' class='shortcutList-item' :class="{'current': currentIndex == index}">
+                    {{item}}
+                </li>
+            </ul>
+        </div>
+        <div class='fixTitle' v-show='fixTitle' ref='fixTitle'>
+            <h2 class='title'>{{fixTitle}}</h2>
         </div>
     </scroll>
 </template>
@@ -29,6 +30,9 @@
 <script>
     // devTools看li元素的盒子模型，高度是12 + 3 + 3 = 18
     const ANCHOR_HEIGHT = 18
+    // 标题高度
+    const TITLE_HEIGHT = 30
+    // TODO, bug, 最后一个shortcutList点击后不变红，而是倒数第二个变红了
     import scroll from 'base/scroll/scroll'
     export default {
         name: 'listview',
@@ -42,7 +46,13 @@
         },
         data() {
             return {
-                touchInfo: {}
+                probeType: 3,
+                listenScroll: true,
+                touchInfo: {},
+                groupHeight: [],
+                scrollY: 0,
+                currentIndex: 0,
+                deviation: 0
             }
         },
         computed: {
@@ -52,23 +62,85 @@
         },
         methods: {
             handleTouchStart(e) {
-                this.touchInfo.startIndex = e.target.getAttribute('data-index')
+                // 添加dom的attribute时是number，但是getAttribute取下来就变成string了
+                this.touchInfo.startIndex = parseInt(e.target.getAttribute('data-index'))
                 this.scrollTo(this.touchInfo.startIndex)
                 this.touchInfo.startPageY = e.touches[0].pageY
             },
             handleTouchMove(e) {
                 this.touchInfo.curPageY = e.touches[0].pageY
-                this.touchInfo.curIndex = this.touchInfo.startIndex + ((this.touchInfo.curPageY = this.touchInfo.startPageY)/ANCHOR_HEIGHT | 0)
+                this.touchInfo.curIndex = this.touchInfo.startIndex + ((this.touchInfo.curPageY - this.touchInfo.startPageY)/ANCHOR_HEIGHT | 0)
                 this.scrollTo(this.touchInfo.curIndex)
             },
             scrollTo(index) {
+                // 点击上下部空白区域时
+                if(!index && index !== 0) {
+                    return
+                }
+                if(index < 0) {
+                    // 向上滑动时超出了上部
+                    index = 0
+                } else if(index > this.groupHeight.length -2) {
+                    // 向下滑动超出了下部
+                }
                 // this.$refs.group是一个数组（li是v-for循环的），因此可以用this.$refs.group[index]来选中第index个元素
                 this.$refs.listview.scrollToElement(this.$refs.group[index], 200)
+                this.scrollY = this.$refs.listview.scroll.y
+                this.currentIndex = index
+            },
+            handleScroll(pos) {
+                // 触发了scrollY的watch
+                this.scrollY = pos.y
+                if(this.scrollY > 0) {
+                    this.currentIndex = 0
+                    return
+                }
+                const scrolly = -this.scrollY
+                for(let i=0;i<this.groupHeight.length-1;i++) {
+                    if(scrolly >= this.groupHeight[i] && scrolly<this.groupHeight[i+1]) {
+                        this.currentIndex = i
+                        const diff = this.groupHeight[i+1] - scrolly
+                        this.handleDiff(diff)
+                        return
+                    }
+                }
+                this.currentIndex = this.groupHeight.length - 2
+            },
+            handleDiff(diff) {
+                const deviation = (diff > 0 && diff < TITLE_HEIGHT) ? diff - TITLE_HEIGHT : 0
+                // 偏差没变化时（为0时），无需移动
+                if(this.deviation === deviation) {
+                    return
+                }
+                this.deviation = deviation
+                // translate3d可以开启gpu加速
+                // 此时val-TITLE_HEIGHT是负值，就向上偏移了
+                this.$refs.fixTitle.style.transform = `translate3d(0,${deviation}px,0)`
+            },
+            calculateHeight() {
+                let groups = this.$refs.group
+                let height = 0
+                this.groupHeight = []
+                this.groupHeight.push(height)
+                groups.forEach(group => {
+                    height += group.clientHeight
+                    this.groupHeight.push(height)
+                })
+            },
+            handleClick(item) {
+                this.$emit('click',item)
+            }
+        },
+        watch: {
+            // 需要父组件去掉v-if='content.length'才能watch到content变化
+            content() {
+                let self = this
+                // nextTick
+                // TODO，watch到props变化时，dom还没更新？
+                setTimeout(self.calculateHeight,20)
             }
         },
         created() {
-            this.probeType = 3
-            this.listenScroll = true
         }
     }
 
@@ -122,4 +194,18 @@
                 line-height: 1
                 color: $color-text-l
                 font-size: $font-size-small
+                &.current
+                    color: $color-theme
+        .fixTitle
+            position: absolute
+            top: 0
+            left: 0
+            width: 100%
+            .title
+                height: 30px
+                line-height: 30px
+                padding-left: 20px
+                font-size: $font-size-small
+                color: $color-text
+                background: $color-dialog-background
 </style>
