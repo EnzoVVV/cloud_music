@@ -22,21 +22,16 @@ export function getSingerDetail(singerId) {
   const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg'
 
   const data = Object.assign({}, commonParams, {
-    // hostUin: 0,
     utin: 0,
-    // needNewCode: 0,
     needNewCode: 1,
-    // platform: 'yqq',
     platform: 'h5page',
     order: 'listen',
     begin: 0,
     num: 80,
     songstatus: 1,
-    // singermid: singerId,
     singerid: singerId,
     from: 'h5',
     notice: 0
   })
-
   return jsonp(url, data, options)
 }

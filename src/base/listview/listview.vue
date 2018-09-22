@@ -34,6 +34,7 @@
     const TITLE_HEIGHT = 30
     // TODO, bug, 最后一个shortcutList点击后不变红，而是倒数第二个变红了
     import scroll from 'base/scroll/scroll'
+    import { transform } from 'common/js/dom'
     export default {
         name: 'listview',
         components: {
@@ -58,6 +59,12 @@
         computed: {
             shortcutList() {
                 return this.content.map(group => group.title.substr(0, 1))
+            },
+            fixTitle() {
+                if(this.scrollY > 0) {
+                    return ''
+                }
+                return this.content[this.currentIndex] ? this.content[this.currentIndex].title : ''
             }
         },
         methods: {
@@ -82,6 +89,7 @@
                     index = 0
                 } else if(index > this.groupHeight.length -2) {
                     // 向下滑动超出了下部
+                    index = this.groupHeight.length -2
                 }
                 // this.$refs.group是一个数组（li是v-for循环的），因此可以用this.$refs.group[index]来选中第index个元素
                 this.$refs.listview.scrollToElement(this.$refs.group[index], 200)
@@ -115,7 +123,7 @@
                 this.deviation = deviation
                 // translate3d可以开启gpu加速
                 // 此时val-TITLE_HEIGHT是负值，就向上偏移了
-                this.$refs.fixTitle.style.transform = `translate3d(0,${deviation}px,0)`
+                this.$refs.fixTitle.style[transform] = `translate3d(0,${deviation}px,0)`
             },
             calculateHeight() {
                 let groups = this.$refs.group

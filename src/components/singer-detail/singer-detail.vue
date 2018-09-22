@@ -8,7 +8,7 @@
 	import { mapGetters } from "vuex";
 	import { getSingerDetail } from "api/singer";
 	import { ERR_OK } from "api/config";
-	import { createSong, createAlbum } from "common/js/song";
+	import { createSong, createAlbum, processSongsUrl } from "common/js/song";
 	import musiclist from "components/music-list/music-list";
 
 	export default {
@@ -37,10 +37,14 @@
 				let self = this
 				getSingerDetail(this.singer.id).then(res => {
 					if (res.code === ERR_OK) {
-						self.songs = self.getSongs(res.data.list)
+						processSongsUrl(self.getSongs(res.data.list)).then((songs) => {
+							self.songs = songs
+						})
+						// TODO
 						self.albums = self.getAlbums(res.data.albumlist)
 					}
 				})
+
 			},
 			getSongs(list) {
 				if(!list) {
