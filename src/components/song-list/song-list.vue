@@ -1,7 +1,7 @@
 <template>
     <div class='song-list'>
         <ul>
-            <li v-for='(song,index) in songs' :key='song.id' class='item'>
+            <li v-for='(song,index) in songs' :key='song.id' class='item' @click='handleClick(song,index)'>
                 <p class='count'>{{index + 1}}</p>
                 <div class='content'>
                     <h2 class='name'>{{song.name}}</h2>
@@ -36,6 +36,9 @@
         methods: {
             getDesc(song) {
                 return `${song.singer}-${song.album}`
+            },
+            handleClick(song,index) {
+                this.$emit('click',song,index)
             }
         },
         created() {

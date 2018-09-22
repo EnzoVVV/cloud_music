@@ -18,7 +18,7 @@
 
         },
         props: {
-            album: {
+            albums: {
                 type: Array
             }
         },

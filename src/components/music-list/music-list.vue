@@ -1,37 +1,40 @@
 <template>
-    <div class='musiclist'>
+    <div class='musiclist' ref='musiclist'>
         <div class='header' ref='header'>
-            <IconSvg class='header-back' :icon-class='fanhui' @click='goback'></IconSvg>
+            <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
             <div class='header-title'>{{singer.name}}</div>
         </div>
-        <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list' @scroll='handleScroll'>
+        <div class='bg-img' :style='bgStyle' ref='img'>
+        <div class='fixed-tab' v-show='showFixedTab'>
+            <div v-for='(tab,index) in tabs' :key='tab' class='fixed-tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
+                <p class='fixed-tab-text'>{{tab}}</p>
+            </div>
+        </div>
+        <div class='bg-layer' ref='layer'>
+        </div>
+        <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list' @scroll='handleScroll' ref='list'>
             <div class='wrapper'>
-                <div class='bg-img' :style='bgStyle' ref='img'>
-                </div>
-                <div class='tab'>
+                <div class='tab' ref='tab'>
                     <div v-for='(tab,index) in tabs' :key='tab' class='tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
                         <p class='tab-text'>{{tab}}</p>
                     </div>
                 </div>
-                <songlist :songs='songs' v-show='activeTab == 0'></songlist>
-                <albumlist :albums='albums' v-show='activeTab == 1'></albumlist>
+                <songlist :songs='songs' ref='songlist' v-show='activeTab == 0' @click='selectSong'></songlist>
+                <albumlist :albums='albums' ref='albumlist' v-show='activeTab == 1'></albumlist>
                 <div v-show='activeTab == 2'>
                 </div>
                 <div v-show='activeTab == 3'>
                 </div>
             </div>
         </scroll>
-        <div class='fixed-tab' v-show='showFixedTab'>
-            <div v-for='(tab,index) in tabs' :key='tab' class='fixed-tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
-                <p class='fixed-tab-text'>{{tab}}</p>
-            </div>
-        </div>
     </div>
 </template>
 <script>
     import scroll from 'base/scroll/scroll'
     import songlist from 'components/song-list/song-list'
     import albumlist from 'components/album-list/album-list'
+    import { tranform } from 'common/js/dom'
+    import { mapActions } from 'vuex'
     export default {
         name: 'musiclist',
         components: {
@@ -52,14 +55,26 @@
         },
         data() {
             return {
-                probType: 3,
+                probeType: 3,
                 listenScroll: true,
                 tabs: ['热门演唱','专辑','视频','艺人信息'],
                 activeTab: 0,
                 showFixedTab: false,
                 headerHeight: 44,
                 imgHeight: 0,
-                bgStyle: null
+                bgStyle: null,
+                headerHeight: 0,
+                minHeight: 0,
+                heightCheck: [
+                    {
+                        ref: 'songlist',
+                        checked: false
+                    },
+                    {
+                        ref: 'albumlist',
+                        checked: false
+                    }
+                ]
             }
         },
         computed: {
@@ -70,21 +85,44 @@
         },
         methods: {
             goBack() {
-                this.$router.push('/music/singer')
+                this.$router.back()
             },
             selectTab(tab) {
                 this.activeTab = this.tabs.indexOf(tab)
+                // 组件v-show为false时，display:none， clientHeight高度为0
+                // 组件v-show为true时，nextTick才能获取到真实clientHeight
+                this.$nextTick(() => this.checkHeight(this.activeTab))
             },
             handleScroll(pos) {
                 let scrollY = pos.y
+                let scale = 1
                 if(scrollY > 0) {
-                    //TODO，放大图片
-                    return
-                }
-                if(-scrollY >= this.imgHeight - this.headerHeight) {
-                    this.showFixedTab = true
+                    // 下滑
+                    scale = 1 + scrollY/this.imgHeight
+                    this.$refs.img.style.zIndex = (this.$refs.list.$el.style.zIndex || 0) + 10
+                    this.$refs.img.style[tranform] = `scale${scale}`
                 } else {
-                    this.showFixedTab = false
+                    //上滑
+                    if(-scrollY <= this.imgHeight - this.headerHeight) {
+                        this.$refs.layer.style[tranform] = `translate3d(0,${scrollY}px,0)`
+                        Object.assign(this.$refs.img.style, {
+                            zIndex: 0,
+                            paddingTop: '75%',
+                            height: 0
+                        })
+                        let distance = scrollY * 0.3
+                        this.$refs.img.style[tranform] = `translate3d(0,${distance}px,0)`
+                        this.showFixedTab = false
+                    } else {
+                        // 触顶
+                        this.$refs.img.style[tranform] = `translate3d(0,0,0)`
+                        Object.assign(this.$refs.img.style, {
+                            zIndex: 10,
+                            paddingTop: 0,
+                            height: this.headerHeight + 'px'
+                        })
+                        this.showFixedTab = true
+                    }
                 }
             },
             loadImg() {
@@ -94,15 +132,44 @@
                     this.bgStyle = `background-image: url(${this.singer.imgUrl})`
                     this.$nextTick(() => {
                         this.imgHeight = this.$refs.img.clientHeight
-                    }) 
+                        // $refs.name如果取的是组件，那么是获取到了vue实例，取得dom还要$refs.name.$el
+                        // 如果取的是element，那么直接$refs.name.style就行
+                        this.$refs.list.$el.style.top = `${this.imgHeight}px`
+                    })
                 }
-            }
+            },
+            checkHeight(tabIndex) {
+                if(this.heightCheck[tabIndex].checked) {
+                    return
+                }
+                // albumlist高度小于minHeight，则无法上移到顶部，改变最小高度，使之可以上移到顶部
+                let el = this.$refs[this.heightCheck[tabIndex].ref].$el
+                if(el.clientHeight < this.minHeight) {
+                    el.style.height = this.minHeight + 'px'
+                }
+                this.heightCheck[tabIndex].checked = true
+            },
+            getHeight() {
+                this.headerHeight = this.$refs.header.clientHeight
+                let viewerHeight = this.$refs.musiclist.clientHeight
+                let tabHeight = this.$refs.tab.clientHeight
+                this.minHeight = viewerHeight - this.headerHeight - tabHeight + 1
+            },
+            selectSong(song,index) {
+                this.selectPlay({
+                    list: this.songs,
+                    index
+                })
+            },
+            ...mapActions([
+                'selectPlay'
+            ])
         },
         created() {
             this.loadImg()
         },
         mounted() {
-
+            this.getHeight()
         }
     }
 </script>
@@ -122,11 +189,25 @@
             left: 0
             width: 100%
             height: 44px
+            display: flex
+            align-items: center
             z-index: 150
             &-back
                 float: left 
             &-title
-                padding-left: 50px
+                padding-left: 10px
+        .bg-img
+            position: relative
+            width: 100%
+            height: 0
+            padding-top: 75%
+            transform-origin: top
+            background-size: cover
+            background-position: 0 30%
+        .bg-layer
+            position: relative
+            height: 100%
+            background: $color-background
         .list
             position: fixed
             top: 0
@@ -135,15 +216,6 @@
             background: $color-background
             .wrapper
                 position: relative
-                .bg-img
-                    position: relative
-                    width: 100%
-                    height: 0
-                    padding-top: 75%
-                    transform-origin: top
-                    background-size: cover
-                    background-position: 0 30%
-                    z-index: 120
                 .tab
                     display: flex
                     flex-direction: row
