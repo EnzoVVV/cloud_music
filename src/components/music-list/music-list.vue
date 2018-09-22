@@ -4,7 +4,7 @@
             <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
             <div class='header-title'>{{singer.name}}</div>
         </div>
-        <div class='bg-img' :style='bgStyle' ref='img'>
+        <div class='bg-img' :style='bgStyle' ref='img'></div>
         <div class='fixed-tab' v-show='showFixedTab'>
             <div v-for='(tab,index) in tabs' :key='tab' class='fixed-tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
                 <p class='fixed-tab-text'>{{tab}}</p>
@@ -33,7 +33,7 @@
     import scroll from 'base/scroll/scroll'
     import songlist from 'components/song-list/song-list'
     import albumlist from 'components/album-list/album-list'
-    import { tranform } from 'common/js/dom'
+    import { transform } from 'common/js/dom'
     import { mapActions } from 'vuex'
     export default {
         name: 'musiclist',
@@ -100,22 +100,20 @@
                     // 下滑
                     scale = 1 + scrollY/this.imgHeight
                     this.$refs.img.style.zIndex = (this.$refs.list.$el.style.zIndex || 0) + 10
-                    this.$refs.img.style[tranform] = `scale${scale}`
+                    this.$refs.img.style[transform] = `scale${scale}`
                 } else {
                     //上滑
                     if(-scrollY <= this.imgHeight - this.headerHeight) {
-                        this.$refs.layer.style[tranform] = `translate3d(0,${scrollY}px,0)`
-                        Object.assign(this.$refs.img.style, {
-                            zIndex: 0,
-                            paddingTop: '75%',
-                            height: 0
-                        })
+                        this.$refs.layer.style[transform] = `translate3d(0,${scrollY}px,0)`
+                        this.$refs.img.style.zIndex = 0
+                        this.$refs.img.style.paddingTop = '75%'
+                        this.$refs.img.style.height = 0
                         let distance = scrollY * 0.3
-                        this.$refs.img.style[tranform] = `translate3d(0,${distance}px,0)`
+                        this.$refs.img.style[transform] = `translate3d(0,${distance}px,0)`
                         this.showFixedTab = false
                     } else {
                         // 触顶
-                        this.$refs.img.style[tranform] = `translate3d(0,0,0)`
+                        this.$refs.img.style[transform] = `translate3d(0,0,0)`
                         Object.assign(this.$refs.img.style, {
                             zIndex: 10,
                             paddingTop: 0,
@@ -228,13 +226,13 @@
                         text-align: center
                         .tab-text
                             color: $color-text
-                            margin: 0 20px
+                            margin: 0 15px
                         &.active
                             .tab-text
                                 color: $color-theme
                                 border-bottom: 1px solid $color-theme
         .fixed-tab
-            position: relative
+            position: absolute
             top: 44px
             left: 0
             width: 90%
@@ -251,7 +249,7 @@
                 text-align: center
                 .fixed-tab-text
                     color: $color-text
-                    margin: 0 20px
+                    margin: 0 15px
                 &.active
                     .fixed-tab-text
                         color: $color-theme
