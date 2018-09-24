@@ -27,7 +27,7 @@ export function getSingerDetail(singerId) {
     platform: 'h5page',
     order: 'listen',
     begin: 0,
-    num: 80,
+    num: 50,
     songstatus: 1,
     singerid: singerId,
     from: 'h5',
