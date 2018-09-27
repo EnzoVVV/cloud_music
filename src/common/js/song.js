@@ -18,14 +18,15 @@ export class Song {
         if(this.lyric) {
             return Promise.resolve(this.lyric)
         }
-
-        getLyric(this.mid).then(res => {
-            if(res.retcode === ERR_OK) {
-                this.lyric = Base64.decode(res.lyric)
-                return Promise.resolve(this.lyric)
-            } else {
-                return Promise.reject('no lyric')
-            }
+        return new Promise((resolve, reject) => {
+            getLyric(this.mid).then((res) => {
+                if (res.retcode === ERR_OK) {
+                    this.lyric = Base64.decode(res.lyric)
+                    resolve(this.lyric)
+                } else {
+                    reject('no lyric')
+                }
+            })
         })
     }
 }

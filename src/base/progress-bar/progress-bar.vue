@@ -138,7 +138,7 @@
           box-sizing: border-box
           width: 16px
           height: 16px
-          border: 3px solid $color-background
+          border: 6px solid $color-background
           border-radius: 50%
-          background: $color-text
+          background: $color-theme
 </style>

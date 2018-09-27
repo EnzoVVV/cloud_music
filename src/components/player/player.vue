@@ -3,24 +3,47 @@
         <transition name='normal'>
             <div class='normal-player' v-show='fullScreen'>
                 <div class='background'>
-                    <img width='100%' height='100%' :src='currentSong.img'></img>
+                    <img :src='currentSong.img' class='background-img'></img>
                 </div>
                 <div class='header' ref='header'>
                     <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
                     <div class='header-info'>
-                        <div class='header-info-title'>{{currentSong.name}}</div>
+                        <div class='header-info-title'>{{switchedSong && switchedSong.name || ''}}</div>
                         <div class='header-info-singer'>
-                            <div class='header-info-singer-name'>{{currentSong.singer}}</div>
+                            <div class='header-info-singer-name'>{{switchedSong && switchedSong.singer || ''}}</div>
                             <IconSvg class='header-info-singer-back' icon-class='arrow-right'></IconSvg>
                         </div>
                     </div>
                 </div>
-                <div class='middle'>
-                    <div class='cd-wrapper'>
+                <div class='middle' ref='middle'>
+                    <div class='cd-wrapper' ref='cdWrapper' @click='toggleLyric(true)' @touchstart.prevent='touchstart' @touchmove.prevent='touchmove' @touchend.prevent='touchend'>
                         <div class='cd' :class='cdStatus'>
                             <img :src='currentSong.img' class='cd-img'></img>
                         </div>
                     </div>
+                    <div class='next-cd-wrapper' ref='nextCdWrapper' v-if='nextSong'>
+                        <div class='next-cd'>
+                            <img :src='nextSong.img' class='next-cd-img'></img>
+                        </div>
+                    </div>
+                    <div class='pre-cd-wrapper' ref='preCdWrapper' v-if='preSong'>
+                        <div class='pre-cd'>
+                            <img :src='preSong.img' class='pre-cd-img'></img>
+                        </div>
+                    </div>
+                    <scroll class='lyric-wrapper' ref='lyricWrapper'>
+                        <div class="lyric" @click='toggleLyric(false)'>
+                            <div v-if="currentLyric">
+                                <p v-for="(line,index) in currentLyric.lines" :key='line.txt' ref="lyricLine" class="text" :class="{'current': currentLineNum ===index}" >{{line.txt}}</p>
+                            </div>
+                            <div class="pure-music" v-if="isPureMusic">
+                                <p>{{pureMusicLyric}}</p>
+                            </div>
+                            <div v-if='!currentLyric' class='no-lyric' ref='noLyric'>
+                                <p class='text'>暂无歌词</p>
+                            </div>
+                        </div>
+                    </scroll>
                 </div>
                 <div class='bottom'>
                     <div class='progress'>
@@ -55,10 +78,12 @@
         <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen'>
             <img  :src='currentSong.img' class='img'></img>
             <div class='name'>{{currentSong.name}}</div>
-            <div class='operator-icon play' @click.stop='togglePlay'>
-                <IconSvg icon-class='play' v-show='!playing'></IconSvg>
-                <IconSvg icon-class='pause' v-show='playing'></IconSvg>
-            </div>
+            <progresscircle :radius="radius" :percent="percent" class='play'>
+                <div @click.stop='togglePlay'>
+                    <IconSvg icon-class='play' v-show='!playing'></IconSvg>
+                    <IconSvg icon-class='pause' v-show='playing'></IconSvg>
+                </div>
+            </progresscircle>
             <div class='list' @click.stop='showMiniList'>
                 <IconSvg icon-class='play-history'></IconSvg>
             </div>
@@ -74,11 +99,19 @@
     import { generateRandomList } from 'common/js/tools'
     import minilist from 'components/mini-list/mini-list'
     import progressbar from 'base/progress-bar/progress-bar'
+    import Lyric from 'lyric-parser'
+    import scroll from 'base/scroll/scroll'
+    import slider from 'base/slider/slider'
+    import progresscircle from 'base/progress-circle/progress-circle'
+    import { transform, transitionDuration } from 'common/js/dom'
     export default {
         name: 'player',
         components: {
             minilist,
-            progressbar
+            progressbar,
+            scroll,
+            slider,
+            progresscircle
         },
         props: {
 
@@ -89,7 +122,17 @@
                 songReady: false,
                 currentTime: 0,
                 timer: null,
-                progressBarMoving: false
+                progressBarMoving: false,
+                currentLyric: null,
+                showLyric: false,
+                isPureMusic: false,
+                pureMusicLyric: '纯音乐，请欣赏',
+                currentLineNum: 0,
+                touch: {},
+                nextSong: null,
+                preSong: null,
+                switchedSong: null,
+                radius: 32
             }
         },
         computed: {
@@ -120,7 +163,17 @@
                 return icon
             },
             cdStatus() {
-                return this.playing ? 'play' : 'play pause'
+                // 切歌时，旋转复位
+                if(!this.songReady) {
+                    return ''
+                } else {
+                    // 出现歌词时，旋转暂停
+                    if(!this.showLyric) {
+                        return this.playing ? 'play' : 'play pause'
+                    } else {
+                        return 'play pause'
+                    }
+                }
             },
             percent() {
                 return this.currentTime / this.currentSong.duration
@@ -132,6 +185,10 @@
                     return
                 }
                 this.songReady = false
+                // 停止歌词
+                if(this.currentLyric) {
+                    this.currentLyric.stop()
+                }
                 this.$refs.audio.src = newSong.url
                 this.$refs.audio.play()
 
@@ -140,6 +197,12 @@
                 this.timer = setTimeout(() => {
                     this.songReady = true
                 }, 5000)
+                this.getLyric()
+                this.getSideSong()
+                this.switchedSong = newSong
+                // 如果是滑动cd图片来切歌，那将cdWrapper复位
+                this.$refs.cdWrapper.style[transitionDuration] = '0s'
+                this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
             },
             playing(val) {
                 if(!this.songReady) {
@@ -167,6 +230,10 @@
                     return
                 }
                 this.setPlayingState(!this.playing)
+                // 暂停/播放歌词
+                if(this.currentLyric) {
+                    this.currentLyric.togglePlay()
+                }
             },
             toggleMode() {
                 const modesCount = Object.keys(playMode).length
@@ -253,6 +320,9 @@
                 const currentTime = this.currentSong.duration * percent
                 this.currentTime = this.$refs.audio.currentTime = currentTime
                 this.progressBarMoving = false
+                if(this.currentLyric) {
+                    this.currentLyric.seek(currentTime * 1000) // 毫秒
+                }
             },
             formatTime(interval) {
                 interval = Math.floor(interval)
@@ -263,6 +333,152 @@
             clearTimer() {
                 clearTimeout(this.timer)
                 this.timer = null
+            },
+            touchstart(e) {
+                this.touch.initiated = true
+                const touch = e.touches[0]
+                this.touch.startX = touch.pageX
+                this.touch.startY = touch.pageY
+            },
+            touchmove(e) {
+                if(!this.touch.initiated) {
+                    return
+                }
+                const touch = e.touches[0]
+                const deltaX = touch.pageX - this.touch.startX
+                const deltaY = touch.pageY - this.touch.startY
+                if(Math.abs(deltaY) > Math.abs(deltaX)) {
+                    // 判断为非横滑
+                    // return
+                }
+                const clientWidth = this.$refs.middle.clientWidth
+                let offsetWidth = 0
+                this.touch.precent = deltaX / clientWidth
+                if(deltaX < 0) {
+                    // 左滑，下一首
+                    offsetWidth = Math.max(0, clientWidth + deltaX)
+                    this.$refs.nextCdWrapper.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+                    this.$refs.cdWrapper.style[transform] = `translate3d(${deltaX}px,0,0)`
+                    // 滑动超过一半时，切换header处显示的歌曲信息
+                    if(-this.touch.percent >= 0.5) {
+                        this.switchedSong = this.nextSong
+                    } else {
+                        this.switchedSong = this.currentSong
+                    }
+                } else {
+                    // 右滑，上一首
+                    offsetWidth = Math.min(clientWidth, -clientWidth + deltaX)
+                    this.$refs.preCdWrapper.style[transform] = `translate3d(${offsetWidth}px,0,0)`
+                    this.$refs.cdWrapper.style[transform] = `translate3d(${deltaX}px,0,0)`
+                    // 滑动超过一半时，切换header处显示的歌曲信息
+                    if(this.touch.percent >= 0.5) {
+                        this.switchedSong = this.preSong
+                    } else {
+                        this.switchedSong = this.currentSong
+                    }
+                }
+            },
+            touchend(e) {
+                if(!this.touch.initiated) {
+                    return
+                }
+                this.touch.initiated = false
+                const clientWidth = this.$refs.middle.clientWidth
+                const duration = 300
+                if(this.touch.percent < 0) {
+                    // 左滑
+                    this.$refs.nextCdWrapper.style[transitionDuration] = duration + 'ms'
+                    this.$refs.cdWrapper.style[transitionDuration] = duration + 'ms'
+                    if(-this.touch.precent >= 0.5) {
+                        // 切下一首
+                        this.$refs.nextCdWrapper.style[transform] = 'translate3d(0,0,0)'
+                        this.$refs.cdWrapper.style[transform] = `translate3d(${-clientWidth}px,0,0)`
+                        setTimeout(() => {
+                            this.playNext()
+                        },duration)
+                    } else {
+                        // 切回本首
+                        this.$refs.nextCdWrapper.style[transform] = `translate3d(${clientWidth}px,0,0)`
+                        this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
+                    }
+                } else {
+                    // 右滑
+                    this.$refs.preCdWrapper.style[transitionDuration] = duration + 'ms'
+                    this.$refs.cdWrapper.style[transitionDuration] = duration + 'ms'
+                    if(this.touch.precent >= 0.5) {
+                        // 切前一首
+                        this.$refs.preCdWrapper.style[transform] = 'translate3d(0,0,0)'
+                        this.$refs.cdWrapper.style[transform] = `translate3d(${clientWidth}px,0,0)`
+                        setTimeout(() => {
+                            this.playPre()
+                        },duration)
+                    } else {
+                        // 切回本首
+                        this.$refs.preCdWrapper.style[transform] = `translate3d(${-clientWidth}px,0,0)`
+                        this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
+                    }
+                }
+            },
+            // 加载前后歌曲信息，并设置位置
+            getSideSong() {
+                this.nextSong = this.playlist[(this.currentIndex + 1) % this.playlist.length]
+                this.preSong = this.playlist[(this.playlist.length + this.currentIndex -1) % this.playlist.length]
+                this.$nextTick(() => {
+                    let clientWidth = this.$refs.middle.clientWidth
+                    // transitionDuration必须带单位，如果为0s为是默认值，如果为0则是无效值
+                    this.$refs.nextCdWrapper.style[transitionDuration] = '0s'
+                    this.$refs.preCdWrapper.style[transitionDuration] = '0s'
+                    this.$refs.nextCdWrapper.style[transform] = `translate3d(${clientWidth}px,0,0)`
+                    this.$refs.preCdWrapper.style[transform] = `translate3d(${-clientWidth}px,0,0)`
+                })
+            },
+            getLyric() {
+                this.currentSong.getLyric().then(lyric => {
+                    this.currentLyric = new Lyric(lyric,this.handleLyric)
+                }).catch(() => {
+                    debugger
+                    this.currentLyric = null
+                    this.currentLineNum = 0
+                    this.$nextTick(() => {
+                        let wrapperHeight = this.$refs.lyricWrapper.$el.clientHeight
+                        debugger
+                        // 没有歌词时，将noLyric对应的div设置高度，不然区域太小点击不到，不容易切换回cd
+                        if(this.$refs.noLyric) {
+                            debugger
+                            this.$refs.noLyric.style.height = wrapperHeight + 'px'
+                        }
+                    })
+                })
+                this.$nextTick(() => {
+                    this.toggleLyric(this.showLyric)
+                })
+            },
+            handleLyric({lineNum, txt}) {
+                if(!this.$refs.lyricLine) {
+                    return
+                }
+                this.currentLineNum = lineNum
+                if(lineNum > 5) {
+                    let lineEl = this.$refs.lyricLine[lineNum - 5]
+                    this.$refs.lyricList.scrollToElement(lineEl,1000)
+                } else {
+                    this.$refs.lyricList.scrollTo(0,0,1000)
+                }
+            },
+            toggleLyric(flag) {
+                // 从歌词页面切回cd时，cd需要继续从之前的位置开始旋转，在cdStatus的代码控制暂停
+                // cdWrapper不能用v-show='!showLyric'控制，因为v-show为false时，display：none，就不能切回时继续上次的位置了
+                if(flag) {
+                    // 显示歌词
+                    this.$refs.cdWrapper.style.visibility = 'hidden'
+                    this.$refs.lyricWrapper.$el.style.visibility = 'visible'
+                    this.showLyric = true
+                } else {
+                    // 显示cd
+                    this.$refs.cdWrapper.style.visibility = 'visible'
+                    this.$refs.lyricWrapper.$el.style.visibility = 'hidden'
+                    this.showLyric = false
+                }
             }
         }
     }
@@ -287,7 +503,10 @@
                 height: 100%
                 z-index: -1
                 opacity: 0.6
-                filter: blur(20px)
+                filter: blur(80px) brightness(50%)
+                &-img
+                    width: 100%
+                    height: 100%
             .header
                 position: fixed
                 top: 0
@@ -335,6 +554,62 @@
                             height: 100%
                             width: 100%
                             border-radius: 50%
+                .next-cd-wrapper
+                    position: absolute
+                    left: 15%
+                    width: 70%
+                    text-align: center
+                    transform: translate(500px,0)
+                    .next-cd
+                        border: 45px solid $color-background-d
+                        border-radius: 50%
+                        .next-cd-img
+                            height: 100%
+                            width: 100%
+                            border-radius: 50%
+                .pre-cd-wrapper
+                    position: absolute
+                    left: 15%
+                    width: 70%
+                    text-align: center
+                    transform: translate(-500px,0)
+                    .pre-cd
+                        border: 45px solid $color-background-d
+                        border-radius: 50%
+                        .pre-cd-img
+                            height: 100%
+                            width: 100%
+                            border-radius: 50%
+                .lyric-wrapper
+                    display: inline-block
+                    vertical-align: top
+                    width: 100%
+                    height: 100%
+                    overflow: hidden
+                    .lyric
+                        width: 80%
+                        margin: 0 auto
+                        overflow: hidden
+                        text-align: center
+                        .text
+                            line-height: 32px
+                            // 没有这个height，无法scroll
+                            height: 32px
+                            color: $color-text-d
+                            font-size: $font-size-medium
+                        &.current
+                            color: $color-text-l
+                        .pure-music
+                            padding-top: 50%
+                            line-height: 32px
+                            color: $color-text-l
+                            font-size: $font-size-medium
+                    .no-lyric
+                        height: 100%
+                        width: 100%
+                        display: flex
+                        justify-content: center
+                        align-items: center
             .bottom
                 position: fixed
                 bottom: 10px

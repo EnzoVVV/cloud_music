@@ -7,11 +7,12 @@ import { ERR_OK } from 'api/config'
 export function getLyric(mid) {
   const url = '/api/lyric'
   const data = Object.assign({}, commonParams, {
-    pcachetime: new Date(),
     songmid: mid,
-    hostUin: 0,
     platform: 'yqq',
+    hostUin: 0,
     needNewCode: 0,
+    categoryId: 10000000,
+    pcachetime: +new Date(),
     format: 'json'
   })
 
