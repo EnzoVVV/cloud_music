@@ -1,8 +1,6 @@
 <template>
   <div class="singer">
     <listview :content="singerList" @click='handleClick'></listview>
-    <!-- <singerdetail v-if='showSingerDetail' :showSingerDetail.sync='showSingerDetail'></singerdetail> -->
-    <!-- <router-view></router-view> -->
   </div>
 </template>
 
@@ -13,7 +11,6 @@
     import { isCharacter } from 'common/js/tools'
     import listview from "base/listview/listview"
     import { mapMutations } from 'vuex'
-    import singerdetail from 'components/singer-detail/singer-detail'
 
     const HOT_SINGER_LEN = 10
     const HOT_NAME = "热门"
@@ -22,7 +19,6 @@
         name: 'singer',
         components: {
             listview,
-            singerdetail
         },
         data() {
             return {
@@ -77,12 +73,8 @@
                 return hot.concat(normal).concat(special)
             },
             handleClick(singer) {
-                this.$router.push({
-                    path: `/singer/${singer.name}`
-                })
-                // this.showSingerDetail = true
+                this.$bus.emit('showSingerDetail',true)
                 this.setSinger(singer)
-                console.log('click singer')
             },
             ...mapMutations({
                 setSinger: 'SET_SINGER'
