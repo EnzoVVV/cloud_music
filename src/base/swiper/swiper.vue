@@ -8,6 +8,7 @@
 <script>
 	import { translate, transform, transitionDuration } from 'common/js/dom.js'
 	import { findComponentDownward, findComponentUpward } from 'common/js/tools.js'
+	import { cloneDeep } from 'lodash'
     export default {
         name: 'swiper',
         components: {
@@ -32,7 +33,8 @@
                 curIndex: this.defaultIndex,
                 loadedCompIndex: (new Set()).add(this.defaultIndex),
 				touch: {},
-				compList: this.componentList
+				compList: cloneDeep(this.componentList),
+				maxMoveDistance: 0
             }
         },
         computed: {
@@ -47,6 +49,8 @@
             },
             direction() {
 				const component = this.compList[this.curIndex]
+				// key step如果当前组件内部也包含了swiper时，边界处理
+				// 如果内部swiper在最左内部组件时，只允许右滑；如果内部swiper在最右内部组件时，只允许左滑
 				if(component.innerSwiper) {
 					const innerSwiper = component.innerSwiper
 					if(innerSwiper.curIndex == 0) {
@@ -64,12 +68,9 @@
 				} else if (this.curIndex === this.componentList.length -1) {
 					// 只能右滑
 					return 'right'
-				} else {
-					return 'both'
 				}
+				return 'both'
 			}
-        },
-        watch: {
         },
         methods: {
             touchstart(e) {
@@ -77,6 +78,7 @@
 				const touch = e.touches[0]
 				this.touch.startX = touch.pageX
 				this.touch.startY = touch.pageY
+				// 外层组件可能需要toush事件信息
 				this.$emit('updatetouchstart',e)
 			},
 			touchmove(e) {
@@ -98,6 +100,7 @@
 				this.touch.totalDiff = this.touch.totalDiff < 0 && this.direction === 'right' ? 0 : this.touch.totalDiff
 				translate(curEl, this.touch.totalDiff)
 				translate(moveEl, this.touch.totalDiff)
+				// 外层组件可能需要toush事件信息
 				this.$emit('updatetouchmove', this.touch.totalDiff)
 			},
 			touchend(e) {
@@ -127,8 +130,11 @@
 					transitionDuration: duration + 'ms'
 				})
 				this.touch = {}
+				// 外层组件可能需要toush事件信息
 				this.$emit('updatetouchend',moveDistance)
-            },
+			},
+			// 恢复container位置
+			// container在不滑动时的位置，靠left值来设定，transform值只控制滑动过程，滑动结束后清除transform信息
             reposition(direction) {
 				const moveEl = direction > 0 ? this.leftEl : this.rightEl
 				this.curEl.style[transform] = ''
@@ -137,10 +143,12 @@
 				moveEl.style[transform] = ''
 				moveEl.style[transitionDuration] = '0s'
 				moveEl.style.left = 0
-            },
+			},
+			// 滑动后处理
             swipe(to,from) {
 				this.curIndex = to
 				if(!this.hasLoaded(this.curIndex)) {
+					this.loadedCompIndex.add(this.curIndex)
 					this.$nextTick(() => {
 						this.enableEventLisenter(this.curIndex)
 					})
@@ -148,16 +156,14 @@
 				const outerSwiper = this.findOuterSwiper(this)
 				if(outerSwiper) {
 					// 如果有外层swiper,发送事件，来调用enableEventLisenter函数动态添加或移除touch事件监听
+					// 比如：
+					// 初始化时，music组件curIndex是1，是中间的组件，enableEventLisenter函数没有给music组件外层的container添加touch事件监听
+					// 当music组件滑动到最左侧时，需要重新调用这个enable函数，给music组件外层的container添加touch事件监听
+					// 所以，touchend() -> swipe()函数中，获取外层swiper，触发swipe事件，swiper组件moutned下监听swipe事件，再次调用enableEventLisenter函数
 					outerSwiper.$emit('swipe')
 				}
-                this.loadedCompIndex.add(this.curIndex)
-				// if (this.isDragedSlide || from === -1) {
-				// 	this.transitionName = ''
-				// 	this.isDragedSlide = false
-				// } else {
-				// 	this.transitionName = (from - to > 0) ? 'swipe-right' : 'swipe-left'
-				// }
 			},
+			// 滑动到指定index, 被外部调用
 			swipeTo(index) {
 				if(index == this.curIndex) {
 					return
@@ -182,11 +188,9 @@
 					this.swipe(index,this.curIndex)
 				}, duration)
 			},
-			// 这两个find函数有些地方写死了，需要再优化一下
 			findOuterSwiper(component) {
 				return findComponentUpward(component,'swiper')
 			},
-			
 			findInnerSwiper(swipecontainer) {
 				if(swipecontainer.firstChild) {
 					let innerComponent = swipecontainer.firstChild.__vue__
@@ -194,6 +198,7 @@
 				}
 				return null
 			},
+			// 内部swiper组件滑动了，外层动态监听事件，为了处理内部swiper处在边界时的情况
 			handleInnerSwipe() {
 				this.enableEventLisenter(this.curIndex)
 			},
@@ -206,10 +211,6 @@
 					// 比如music组件的外层swiper，会走到这里
 					// 得到组件里面的swiper组件，如果内部swiper在最左，则当前swipercontainer监听滑动事件，否则不监听滑动事件
 					const innerSwiper = component.innerSwiper
-					// 比如：
-					// 初始化时，music组件curIndex是1，没有给music组件外层的container添加touch事件监听
-					// 当music组件滑动到最左侧时，需要重新调用这个enable函数，给music组件外层的container添加touch事件监听
-					// 所以，touchend() -> swipe()函数中，获取外层swiper，触发swipe事件，swiper组件moutned下监听swipe事件，再次调用enableEventLisenter函数
 					if(innerSwiper.curIndex == 0 || innerSwiper.curIndex == innerSwiper.componentList.length -1) {
 						this.addTouchEventListener(swipecontainer)
 					} else {
@@ -230,6 +231,7 @@
 				component.removeEventListener('touchmove',this.touchmove)
 				component.removeEventListener('touchend',this.touchend)
 			},
+			// 检测component内部是否包含了swiper，如果包含，引用内部swiper免得重复计算
 			getCompList() {
 				for(let i=0;i<this.compList.length;i++) {
 					const swipecontainer = this.$refs[i][0]
@@ -244,10 +246,12 @@
             },
             isNear(index) {
                 return Math.abs(index - this.curIndex) <= 1
-            },
+			},
+			// 允许加载已经加载过的组件，或者临近组件
             ifload(index) {
                 return this.hasLoaded(index) || this.isNear(index)
-            },
+			},
+			// container初始位置
             containerStyle(index) {
                 const direction = Math.sign(index - this.curIndex)
                 return {
