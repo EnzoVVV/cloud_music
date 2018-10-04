@@ -1,7 +1,7 @@
 <template>
     <div class='header'>
         <IconSvg icon-class='sortlight'></IconSvg>
-        <tabs :content='content' class='header-tabs' @click='clickTab'></tabs>
+        <tabs :content='content' class='header-tabs' refs='tabs' :defaultIndex='defaultIndex' @click='clickTab'></tabs>
         <IconSvg icon-class='search'></IconSvg>
     </div>
 </template>
@@ -13,7 +13,9 @@
             tabs
         },
         props: {
-
+            defaultIndex: {
+                type: Number
+            }
         },
         data() {
             return {
@@ -68,6 +70,7 @@
     &-tabs
         flex: 1
         float: left
+        color: $color-text-i
     &-right
         width: 25px !important
         height: 25px !important 

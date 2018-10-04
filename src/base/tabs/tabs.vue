@@ -10,7 +10,7 @@
 </template>
 <script>
     export default {
-        name: 'Tabs',
+        name: 'tabs',
         props: {
             content: {
                 type: Array,
@@ -21,8 +21,7 @@
                 default: true
             },
             defaultIndex: {
-                type: Number,
-                default: 0
+                type: Number
             }
         },
         methods: {
@@ -44,7 +43,9 @@
             }
         },
         mounted() {
-            this.setActiveStyle(this.defaultIndex)
+            if(this.defaultIndex != undefined || this.defaultIndex != null) {
+                this.setActiveStyle(this.defaultIndex)
+            }
         }
     }
 </script>
