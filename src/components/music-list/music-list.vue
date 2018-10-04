@@ -85,7 +85,8 @@
         },
         methods: {
             goBack() {
-                this.$router.back()
+                this.$emit('goback')
+                // this.$router.back()
             },
             selectTab(tab) {
                 this.activeTab = this.tabs.indexOf(tab)

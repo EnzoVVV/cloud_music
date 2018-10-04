@@ -16,7 +16,8 @@
                     </div>
                 </div>
                 <div class='middle' ref='middle'>
-                    <div class='cd-wrapper' ref='cdWrapper' @click='toggleLyric(true)' @touchstart.prevent='touchstart' @touchmove.prevent='touchmove' @touchend.prevent='touchend'>
+                    <!-- 移动端，touch事件之后是click事件，为了click所以此处不能touchstart.prevent，如必须，则可以在touch处理函数中e.preventDefault -->
+                    <div class='cd-wrapper' ref='cdWrapper' @click='toggleLyric(true)' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
                         <div class='cd' :class='cdStatus'>
                             <img :src='currentSong.img' class='cd-img'></img>
                         </div>
@@ -34,7 +35,7 @@
                     <scroll class='lyric-wrapper' ref='lyricWrapper'>
                         <div class="lyric" @click='toggleLyric(false)'>
                             <div v-if="currentLyric">
-                                <p v-for="(line,index) in currentLyric.lines" :key='line.txt' ref="lyricLine" class="text" :class="{'current': currentLineNum ===index}" >{{line.txt}}</p>
+                                <p v-for="(line,index) in currentLyric.lines" :key='index' ref="lyricLine" class="text" :class="{'current': currentLineNum ===index}" >{{line.txt}}</p>
                             </div>
                             <div class="pure-music" v-if="isPureMusic">
                                 <p>{{pureMusicLyric}}</p>
@@ -353,7 +354,7 @@
                 }
                 const clientWidth = this.$refs.middle.clientWidth
                 let offsetWidth = 0
-                this.touch.precent = deltaX / clientWidth
+                this.touch.percent = deltaX / clientWidth
                 if(deltaX < 0) {
                     // 左滑，下一首
                     offsetWidth = Math.max(0, clientWidth + deltaX)
@@ -389,7 +390,7 @@
                     // 左滑
                     this.$refs.nextCdWrapper.style[transitionDuration] = duration + 'ms'
                     this.$refs.cdWrapper.style[transitionDuration] = duration + 'ms'
-                    if(-this.touch.precent >= 0.5) {
+                    if(-this.touch.percent >= 0.5) {
                         // 切下一首
                         this.$refs.nextCdWrapper.style[transform] = 'translate3d(0,0,0)'
                         this.$refs.cdWrapper.style[transform] = `translate3d(${-clientWidth}px,0,0)`
@@ -405,7 +406,7 @@
                     // 右滑
                     this.$refs.preCdWrapper.style[transitionDuration] = duration + 'ms'
                     this.$refs.cdWrapper.style[transitionDuration] = duration + 'ms'
-                    if(this.touch.precent >= 0.5) {
+                    if(this.touch.percent >= 0.5) {
                         // 切前一首
                         this.$refs.preCdWrapper.style[transform] = 'translate3d(0,0,0)'
                         this.$refs.cdWrapper.style[transform] = `translate3d(${clientWidth}px,0,0)`
@@ -435,16 +436,14 @@
             getLyric() {
                 this.currentSong.getLyric().then(lyric => {
                     this.currentLyric = new Lyric(lyric,this.handleLyric)
+                    console.log('currentLyric is ',this.currentLyric)
                 }).catch(() => {
-                    debugger
                     this.currentLyric = null
                     this.currentLineNum = 0
                     this.$nextTick(() => {
                         let wrapperHeight = this.$refs.lyricWrapper.$el.clientHeight
-                        debugger
                         // 没有歌词时，将noLyric对应的div设置高度，不然区域太小点击不到，不容易切换回cd
                         if(this.$refs.noLyric) {
-                            debugger
                             this.$refs.noLyric.style.height = wrapperHeight + 'px'
                         }
                     })
@@ -454,18 +453,20 @@
                 })
             },
             handleLyric({lineNum, txt}) {
+                console.log('handleLyric, lineNum is ',lineNum)
                 if(!this.$refs.lyricLine) {
                     return
                 }
                 this.currentLineNum = lineNum
                 if(lineNum > 5) {
                     let lineEl = this.$refs.lyricLine[lineNum - 5]
-                    this.$refs.lyricList.scrollToElement(lineEl,1000)
+                    this.$refs.lyricWrapper.scrollToElement(lineEl,1000)
                 } else {
-                    this.$refs.lyricList.scrollTo(0,0,1000)
+                    this.$refs.lyricWrapper.scrollTo(0,0,1000)
                 }
             },
             toggleLyric(flag) {
+                console.log('toggleLyric')
                 // 从歌词页面切回cd时，cd需要继续从之前的位置开始旋转，在cdStatus的代码控制暂停
                 // cdWrapper不能用v-show='!showLyric'控制，因为v-show为false时，display：none，就不能切回时继续上次的位置了
                 if(flag) {

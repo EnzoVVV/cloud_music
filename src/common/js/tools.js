@@ -42,3 +42,36 @@ export function generateRandomList(list) {
     }
     return randomList
 }
+
+export function findComponentUpward(component,targetName) {
+    const parent = component.$parent
+    if(parent) {
+        if(parent.$options.name == targetName) {
+            return parent
+        } else {
+            let deepFind = findComponentUpward(parent,targetName)
+            if(deepFind) {
+                return deepFind
+            }
+        }
+    }
+    return null
+}
+
+export function findComponentDownward(component,targetName) {
+    if(component.$children && component.$children.length) {
+        for(let i=0;i<component.$children.length;i++) {
+            const child = component.$children[i]
+            const name = child.$options.name
+            if(name == targetName) {
+                return child
+            } else {
+                let deepFind = findComponentDownward(child,targetName)
+                if(deepFind) {
+                    return deepFind
+                }
+            }
+        }
+    }
+    return null
+}

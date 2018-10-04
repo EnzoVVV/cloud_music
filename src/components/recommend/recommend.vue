@@ -1,6 +1,6 @@
 <template>
     <div class='recommend'>
-        <scroll ref='scroll' class='recommend-content' :data='discLists'>
+        <scroll ref='scroll' class='recommend-content'>
             <div>
                 <div v-if='recommends.length'>
                     <div class='decorate'></div>
@@ -27,7 +27,6 @@
     import discList from 'components/discList/discList'
     import scroll from 'base/scroll/scroll'
     import loading from 'base/loading/loading'
-
     export default {
         name: 'recommend',
         components: {
@@ -78,9 +77,6 @@
         created() {
             this.getRecommends()
             this.getLists()
-        },
-        mounted() {
-
         }
     }
 </script>
@@ -88,10 +84,10 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
     @import "~common/stylus/variable"
     .recommend
-        position: fixed
+        position: absolute
         width: 100%
         height: 100%
-        top: 98px
+        top: 0
         bottom: 0
         &-content
             width: 100%

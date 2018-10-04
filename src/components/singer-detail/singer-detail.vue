@@ -1,20 +1,26 @@
 <template>
-	<transition name="slide">
-		<musiclist :songs="songs" :albums='albums' :singer='singer'></musiclist>
+	<transition name='slide'>
+		<musiclist :songs='songs' :albums='albums' :singer='singer' @goback='goback'></musiclist>
 	</transition>
 </template>
 
 <script>
-	import { mapGetters } from "vuex";
-	import { getSingerDetail } from "api/singer";
-	import { ERR_OK } from "api/config";
-	import { createSong, createAlbum, processSongsUrl } from "common/js/song";
-	import musiclist from "components/music-list/music-list";
+	import { mapGetters } from 'vuex';
+	import { getSingerDetail } from 'api/singer'
+	import { ERR_OK } from 'api/config'
+	import { createSong, createAlbum, processSongsUrl } from 'common/js/song'
+	import musiclist from 'components/music-list/music-list'
 
 	export default {
-		name: "singerdetail",
+		name: 'singerdetail',
 		components: {
 			musiclist
+		},
+		props: {
+			showSingerDetail: {
+				type: Boolean,
+				default: false
+			}
 		},
 		data() {
 			return {
@@ -23,15 +29,18 @@
 			};
 		},
 		computed: {
-			...mapGetters(["singer"])
+			...mapGetters(['singer'])
 		},
 		methods: {
 			check() {
 				// 在歌手详情页刷新时，没有设置singer的vuex信息，所以需要回退到singer列表页
 				if(!this.singer || !this.singer.id) {
-					this.$router.push('/music/singer')
-					return
+					// this.$router.push('/music/singer')
+					this.goback()
 				}
+			},
+			goback() {
+				this.$emit('update:showSingerDetail',false)
 			},
 			getSingerDetails() {
 				let self = this

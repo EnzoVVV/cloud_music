@@ -1,17 +1,16 @@
 <template>
     <div class='header'>
         <IconSvg icon-class='sortlight'></IconSvg>
-        <Tabs :content='content' class='header-tabs'></Tabs>
+        <tabs :content='content' class='header-tabs' @click='clickTab'></tabs>
         <IconSvg icon-class='search'></IconSvg>
     </div>
 </template>
 <script>
-
-    import Tabs from 'base/tabs/tabs'
+    import tabs from 'base/tabs/tabs'
     export default {
         name: 'Header',
         components: {
-            Tabs
+            tabs
         },
         props: {
 
@@ -42,7 +41,9 @@
 
         },
         methods: {
-
+            clickTab(index) {
+                this.$emit('clickTab',index)
+            }
         },
         created() {
 

@@ -1,13 +1,11 @@
 <template>
     <div class="tab">
-        <!-- 不配置路由，点击router-link后url也会跳转到to对应的，只是不加载对应的组件了 -->
-        <!-- router-link的tag: 将router-link渲染为tag对应的element -->
-        <router-link v-for='item in content' :key='item.to' :to='item.to' class="tab-item" tag='div'>
-            <p class='tab-link'>
+        <div v-for='(item,index) in content' :key='item.name' class='tab-item' @click='handleClick(index)'>
+            <p class='tab-link' ref='tablink'>
                 <IconSvg v-if='item.icon' :icon-class='item.icon' class='tab-icon'></IconSvg>
                 <span v-else-if='item.text' class='tab-text'>{{item.text}}</span>
             </p>
-        </router-link>
+        </div>
     </div>
 </template>
 <script>
@@ -17,7 +15,36 @@
             content: {
                 type: Array,
                 default: () => []
+            },
+            activeStyle: {
+                type: Boolean,
+                default: true
+            },
+            defaultIndex: {
+                type: Number,
+                default: 0
             }
+        },
+        methods: {
+            handleClick(index) {
+                this.$emit('click',index)
+                this.setActiveStyle(index)
+            },
+            setActiveStyle(index) {
+                if(!this.activeStyle) {
+                    return
+                }
+                for(let i=0;i<this.content.length;i++) {
+                    if(i!=index) {
+                        this.$refs.tablink[i].style.color = 'rgba(255,255,255,0.6)'
+                    } else {
+                        this.$refs.tablink[i].style.color = 'rgb(255,255,255)'
+                    }
+                }
+            }
+        },
+        mounted() {
+            this.setActiveStyle(this.defaultIndex)
         }
     }
 </script>
@@ -34,11 +61,8 @@
             flex: 1
             text-align: center
             .tab-link
-                color: $color-text-l
+                color: $color-text-i
                 .tab-icon
                     width: 25px !important 
                     height: 25px !important 
-            &.router-link-active
-                .tab-text
-                    border-bottom: 2px solid $color-text-l
 </style>
