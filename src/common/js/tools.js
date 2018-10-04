@@ -46,7 +46,7 @@ export function generateRandomList(list) {
 export function findComponentUpward(component,targetName) {
     const parent = component.$parent
     if(parent) {
-        if(parent.$options.name == targetName) {
+        if(parent.$options.name.toLowerCase() == targetName.toLowerCase()) {
             return parent
         } else {
             let deepFind = findComponentUpward(parent,targetName)
@@ -63,7 +63,7 @@ export function findComponentDownward(component,targetName) {
         for(let i=0;i<component.$children.length;i++) {
             const child = component.$children[i]
             const name = child.$options.name
-            if(name == targetName) {
+            if(name.toLowerCase() == targetName.toLowerCase()) {
                 return child
             } else {
                 let deepFind = findComponentDownward(child,targetName)
