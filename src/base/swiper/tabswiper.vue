@@ -33,6 +33,7 @@
         },
         data() {
             return {
+                // 两个tab中点间的距离
                 tabDistance: 0,
                 touch: {},
                 curIndex: this.defaultIndex,
@@ -56,6 +57,7 @@
                 this.tabDistance = tab1Median - tab0Median
                 this.setMarkerPosition(tab0Median)
             },
+            // 设置marker初始位置
             setMarkerPosition(tab0Median) {
                 this.currentMarkerPosition = tab0Median - this.marker.offsetWidth / 2 + this.defaultIndex * this.tabDistance
                 translate(this.marker,this.currentMarkerPosition)

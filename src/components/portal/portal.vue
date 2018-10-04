@@ -48,7 +48,6 @@
             touchend(diff) {
                 const direction = Math.sign(diff)
                 this.curIndex = this.curIndex - direction
-                console.log('portal touchend, curIndex is ',this.curIndex)
                 this.tabs.setActiveStyle(this.curIndex)
             },
             getTabs() {

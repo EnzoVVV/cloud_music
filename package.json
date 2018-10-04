@@ -17,6 +17,7 @@
     "fastclick": "^1.0.6",
     "js-base64": "^2.4.9",
     "jsonp": "^0.2.1",
+    "lodash": "^4.17.11",
     "lyric-parser": "^1.0.1",
     "open-browser-webpack-plugin": "^0.0.5",
     "stylus": "^0.54.5",

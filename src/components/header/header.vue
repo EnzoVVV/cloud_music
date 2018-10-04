@@ -21,16 +21,13 @@
             return {
                 content: [
                     {
-                        icon: 'yinle1',
-                        to: '/mine'
+                        icon: 'yinle1'
                     },
                     {
-                        icon: 'kefu',
-                        to: '/music'
+                        icon: 'kefu'
                     },
                     {
-                        icon: 'yinlemoshi',
-                        to: '/video'
+                        icon: 'yinlemoshi'
                     }
                 ]
 
