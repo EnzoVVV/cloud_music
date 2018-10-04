@@ -7,45 +7,17 @@ import radio from 'components/radio/radio'
 import mine from 'components/mine/mine'
 import video from 'components/video/video'
 import singerdetail from 'components/singer-detail/singer-detail'
+import portal from 'components/portal/portal'
 Vue.use(Router)
 export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/music'
+      component: portal
     },
     {
-      path: '/music',
-      component: music,
-      redirect: '/music/recommend',
-      children: [
-        {
-          path: '/music/recommend',
-          component: recommend
-        },
-        {
-          path: '/music/singer',
-          component: singer,
-          children: [
-            {
-              path: ':name',
-              component: singerdetail
-            }
-          ]
-        },
-        {
-          path: '/music/radio',
-          component: radio
-        }
-      ]
-    },
-    {
-      path: '/mine',
-      component: mine
-    },
-    {
-      path: '/video',
-      component: video
+      path: '/singerdetail/:name',
+      component: singerdetail
     }
   ]
 })

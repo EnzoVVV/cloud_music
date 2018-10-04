@@ -1,19 +1,31 @@
 <template>
     <div>
-        <tabs :content='musicHeader' class='music-tabs'></tabs>
-        <keep-alive>
-            <router-view></router-view>
-        </keep-alive>
+        <tabswiper :tabContent='musicHeader' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight'></tabswiper>
     </div>
 </template>
 <script>
-    import tabs from 'base/tabs/tabs'
     import recommend from 'components/recommend/recommend'
+    import singer from 'components/singer/singer'
+    import radio from 'components/radio/radio'
+    import tabswiper from 'base/swiper/tabswiper'
+    const componentList = [
+        {
+            name: 'recommend',
+            component: recommend
+        },
+        {
+            name: 'singer',
+            component: singer
+        },
+        {
+            name: 'radio',
+            component: radio
+        }
+    ]
     export default {
         name: 'music',
         components: {
-            tabs,
-            recommend
+            tabswiper
         },
         props: {
 
@@ -33,28 +45,11 @@
                         text: '电台',
                         to: '/music/radio'
                     }
-                ]
+                ],
+                componentList: componentList,
+                swiperHeight: window.innerHeight - 54 - 44,
+                defaultIndex: 1
             }
-        },
-        computed: {
-
-        },
-        watch: {
-
-        },
-        methods: {
-
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>
-<style lang='stylus' scoped>
-    @import '~common/stylus/variable'
-    .music-tabs
-        background: $color-theme
-</style>

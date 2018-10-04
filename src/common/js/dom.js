@@ -46,3 +46,24 @@ export function prefixStyle(style) {
 export const transform = prefixStyle('transform')
 // IE9以及更早版本不支持transition属性
 export const transitionDuration = prefixStyle('transitionDuration')
+
+export function translate(el, x = 0, y = 0, options) {
+    if (!el) return
+    const defaultOptions = {
+        useTransfrom: true,
+        // transitionTimingFunction: 'cubic-bezier(0.165, 0.84, 0.44, 1)',
+        transitionDuration: '0s'
+    }
+    for (let option in options) {
+        defaultOptions[option] = options[option]
+    }
+    if (defaultOptions.useTransfrom) {
+        el.style[transform] = `translate3d(${x}px,${y}px,0)`
+        // el.style.transitionProperty = 'transform'
+        // el.style.transitionTimingFunction = defaultOptions.transitionTimingFunction
+        el.style[transitionDuration] = defaultOptions.transitionDuration
+    } else {
+        el.style.left = x
+        el.style.top = y
+    }
+}
