@@ -35,7 +35,6 @@
 			check() {
 				// 在歌手详情页刷新时，没有设置singer的vuex信息，所以需要回退到singer列表页
 				if(!this.singer || !this.singer.id) {
-					// this.$router.push('/music/singer')
 					this.goback()
 				}
 			},
@@ -77,14 +76,6 @@
 
 <style lang='stylus' scoped>
 	@import '~common/stylus/variable'
-	.singer-detail
-		position: fixed
-		top: 0
-		left: 0
-		right: 0
-		bottom: 0
-		z-index: 100
-		background: $color-background
 	.slide-enter-active, .slide-leave-active
 		transition: all 0.3s
 	.slide-enter, .slide-leave-to

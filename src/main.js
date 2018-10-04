@@ -12,6 +12,7 @@ import lazyload from 'vue-lazyload'
 import VueIconFont from 'vue-icon-font'
 import 'iconfont/iconfont.js'
 import IconSvg from 'components/IconSvg/IconSvg'
+import VueBus from 'vue-bus'
 
 fastclick.attach(document.body)
 
@@ -19,6 +20,7 @@ Vue.use(VueIconFont)
 Vue.use(lazyload, {
   loading: require('common/image/loading.png')
 })
+Vue.use(VueBus)
 
 Vue.component('IconSvg',IconSvg)
 

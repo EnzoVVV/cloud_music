@@ -1,7 +1,12 @@
 <template>
     <div>
-        <Header @clickTab='clickTab' :defaultIndex='defaultIndex'></Header>
-        <swiper :componentList='componentList' :defaultIndex='defaultIndex' :height='swiperHeight' ref='swiper'></swiper>
+        <div>
+            <Header @clickTab='clickTab' :defaultIndex='defaultIndex'></Header>
+            <swiper :componentList='componentList' :defaultIndex='defaultIndex' :height='swiperHeight' ref='swiper'></swiper>
+        </div>
+        <div>
+            <singerdetail v-if='showSingerDetail' :showSingerDetail.sync='showSingerDetail'></singerdetail>
+        </div>
     </div>
 </template>
 <script>
@@ -10,6 +15,7 @@
     import mine from 'components/mine/mine'
     import video from 'components/video/video'
     import swiper from 'base/swiper/swiper'
+    import singerdetail from 'components/singer-detail/singer-detail'
     import { findComponentDownward } from 'common/js/tools'
     const componentList = [
         {
@@ -29,7 +35,8 @@
         name: 'portal',
         components: {
             swiper,
-            Header
+            Header,
+            singerdetail
         },
         data() {
             return {
@@ -37,7 +44,8 @@
                 swiperHeight: window.innerHeight - 44,
                 defaultIndex: 1,
                 curIndex: 1,
-                tabs: null
+                tabs: null,
+                showSingerDetail: false
             }
         },
         methods: {
@@ -52,6 +60,9 @@
             },
             getTabs() {
                 this.tabs = findComponentDownward(this,'tabs')
+            },
+            toggleSingerDetail(flag) {
+                this.showSingerDetail = flag
             }
         },
         created() {
@@ -60,6 +71,7 @@
         mounted() {
             this.$refs.swiper.$on('updatetouchend',this.touchend)
             this.getTabs()
+            this.$bus.on('showSingerDetail',this.toggleSingerDetail)
         }
     }
 </script>
