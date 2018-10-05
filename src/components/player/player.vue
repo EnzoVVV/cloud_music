@@ -63,8 +63,7 @@
                             <IconSvg icon-class='pre'></IconSvg>
                         </div>
                         <div class='operator-icon play' @click='togglePlay'>
-                            <IconSvg icon-class='play' v-show='!playing'></IconSvg>
-                            <IconSvg icon-class='pause' v-show='playing'></IconSvg>
+                            <IconSvg :icon-class='playBtnIcon'></IconSvg>
                         </div>
                         <div class='operator-icon next' @click='playNext'>
                             <IconSvg icon-class='next'></IconSvg>
@@ -80,9 +79,8 @@
             <img  :src='currentSong.img' class='img'></img>
             <div class='name'>{{currentSong.name}}</div>
             <progresscircle :radius="radius" :percent="percent" class='play'>
-                <div @click.stop='togglePlay'>
-                    <IconSvg icon-class='play' v-show='!playing'></IconSvg>
-                    <IconSvg icon-class='pause' v-show='playing'></IconSvg>
+                <div @click.stop='togglePlay' class='circle-button'>
+                    <IconSvg :icon-class='miniPlayBtnIcon'></IconSvg>
                 </div>
             </progresscircle>
             <div class='list' @click.stop='showMiniList'>
@@ -162,6 +160,12 @@
                         break
                 }
                 return icon
+            },
+            playBtnIcon() {
+                return this.playing ? 'pause' : 'play'
+            },
+            miniPlayBtnIcon() {
+                return this.playing ? 'pause-bare' : 'play-bare'
             },
             cdStatus() {
                 // 切歌时，旋转复位
@@ -487,14 +491,15 @@
 
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
-
     .player
+        // z-index不能写在这里，z-index只对定位元素有效
         .normal-player
             position: fixed
             left: 0
             right: 0
             top: 0
             bottom: 0
+            z-index: 9999
             background: $color-background
             .background
                 position: absolute
@@ -534,6 +539,7 @@
                 position: fixed
                 top: 44px
                 bottom: 100px
+                z-index: 9999
                 width: 100%
                 display: flex
                 align-items: center
@@ -671,6 +677,10 @@
                 position: fixed
                 bottom: 0
                 right: 50px
+                .circle-button
+                    position: absolute
+                    top: 4px
+                    left: 4px
             .list
                 position: fixed
                 bottom: 0
