@@ -103,7 +103,13 @@
     import scroll from 'base/scroll/scroll'
     import slider from 'base/slider/slider'
     import progresscircle from 'base/progress-circle/progress-circle'
-    import { transform, transitionDuration } from 'common/js/dom'
+    import { transform, transitionDuration,translate } from 'common/js/dom'
+
+    // 切歌动画transitionDuration(ms)
+    const duration = 300
+    const translateOption = {
+        transitionDuration: duration + 'ms'
+    }
     export default {
         name: 'player',
         components: {
@@ -132,7 +138,8 @@
                 nextSong: null,
                 preSong: null,
                 switchedSong: null,
-                radius: 32
+                radius: 32,
+                clientWidth: window.innerWidth
             }
         },
         computed: {
@@ -258,35 +265,59 @@
                 let index = list.findIndex(i => i.id === this.currentSong.id)
                 this.setCurrentIndex(index)
             },
-            playNext() {
+            playNext(clicked = true) {
                 if (!this.songReady) {
                     return
                 }
+                if(clicked) {
+                    // 点击按钮切歌
+                    translate(this.$refs.nextCdWrapper, 0, 0, translateOption)
+                    translate(this.$refs.cdWrapper, -this.clientWidth, 0, translateOption)
+                    setTimeout(() => {
+                        this.doPlayNext()
+                    },duration)
+                } else {
+                    // 滑动cd触发切歌
+                    this.doPlayNext()
+                }
+            },
+            doPlayNext() {
                 this.setCurrentIndex((this.currentIndex+1) % this.playlist.length)
                 if (!this.playing) {
                     this.setPlayingState(true)
                 }
                 this.songReady = false
             },
-            ended() {
-                console.log('ended')
-                if(this.playlist.length > 1) {
-                    this.setCurrentIndex((this.currentIndex+1) % this.playlist.length)
-                    this.songReady = false
-                } else if(this.playlist.length == 1) {
-                    console.log('single loop')
-                    this.currentTime = this.$refs.audio.currentTime = 0
-                }
-            },
-            playPre() {
+            playPre(clicked = true) {
                 if (!this.songReady) {
                     return
                 }
+                if(clicked) {
+                    // 点击按钮切歌
+                    translate(this.$refs.preCdWrapper, 0, 0, translateOption)
+                    translate(this.$refs.cdWrapper, this.clientWidth, 0, translateOption)
+                    setTimeout(() => {
+                        this.doPlayPre()
+                    },duration)
+                } else {
+                    // 滑动cd触发切歌
+                    this.doPlayPre()
+                }
+            },
+            doPlayPre() {
                 this.setCurrentIndex((this.playlist.length + this.currentIndex -1) % this.playlist.length)
                 if (!this.playing) {
                     this.setPlayingState(true)
                 }
                 this.songReady = false
+            },
+            ended() {
+                if(this.playlist.length > 1) {
+                    this.setCurrentIndex((this.currentIndex+1) % this.playlist.length)
+                    this.songReady = false
+                } else if(this.playlist.length == 1) {
+                    this.currentTime = this.$refs.audio.currentTime = 0
+                }
             },
             showPlayList() {
                 this.miniListFlag = true
@@ -360,12 +391,11 @@
                     // 判断为非横滑
                     // return
                 }
-                const clientWidth = this.$refs.middle.clientWidth
                 let offsetWidth = 0
-                this.touch.percent = deltaX / clientWidth
+                this.touch.percent = deltaX / this.clientWidth
                 if(deltaX < 0) {
                     // 左滑，下一首
-                    offsetWidth = Math.max(0, clientWidth + deltaX)
+                    offsetWidth = Math.max(0, this.clientWidth + deltaX)
                     this.$refs.nextCdWrapper.style[transform] = `translate3d(${offsetWidth}px,0,0)`
                     this.$refs.cdWrapper.style[transform] = `translate3d(${deltaX}px,0,0)`
                     // 滑动超过一半时，切换header处显示的歌曲信息
@@ -376,7 +406,7 @@
                     }
                 } else {
                     // 右滑，上一首
-                    offsetWidth = Math.min(clientWidth, -clientWidth + deltaX)
+                    offsetWidth = Math.min(this.clientWidth, -this.clientWidth + deltaX)
                     this.$refs.preCdWrapper.style[transform] = `translate3d(${offsetWidth}px,0,0)`
                     this.$refs.cdWrapper.style[transform] = `translate3d(${deltaX}px,0,0)`
                     // 滑动超过一半时，切换header处显示的歌曲信息
@@ -401,39 +431,33 @@
                         return
                     }
                 }
-                const clientWidth = this.$refs.middle.clientWidth
-                const duration = 300
                 if(this.touch.percent < 0) {
                     // 左滑
-                    this.$refs.nextCdWrapper.style[transitionDuration] = duration + 'ms'
-                    this.$refs.cdWrapper.style[transitionDuration] = duration + 'ms'
                     if(-this.touch.percent >= 0.5) {
                         // 切下一首
-                        this.$refs.nextCdWrapper.style[transform] = 'translate3d(0,0,0)'
-                        this.$refs.cdWrapper.style[transform] = `translate3d(${-clientWidth}px,0,0)`
+                        translate(this.$refs.nextCdWrapper, 0, 0, translateOption)
+                        translate(this.$refs.cdWrapper, -this.clientWidth, 0, translateOption)
                         setTimeout(() => {
-                            this.playNext()
+                            this.playNext(false)
                         },duration)
                     } else {
                         // 切回本首
-                        this.$refs.nextCdWrapper.style[transform] = `translate3d(${clientWidth}px,0,0)`
-                        this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
+                        translate(this.$refs.nextCdWrapper, this.clientWidth, 0, translateOption)
+                        translate(this.$refs.cdWrapper, 0, 0, translateOption)
                     }
                 } else {
                     // 右滑
-                    this.$refs.preCdWrapper.style[transitionDuration] = duration + 'ms'
-                    this.$refs.cdWrapper.style[transitionDuration] = duration + 'ms'
                     if(this.touch.percent >= 0.5) {
                         // 切前一首
-                        this.$refs.preCdWrapper.style[transform] = 'translate3d(0,0,0)'
-                        this.$refs.cdWrapper.style[transform] = `translate3d(${clientWidth}px,0,0)`
+                        translate(this.$refs.preCdWrapper, 0, 0, translateOption)
+                        translate(this.$refs.cdWrapper, this.clientWidth, 0, translateOption)
                         setTimeout(() => {
-                            this.playPre()
+                            this.playPre(false)
                         },duration)
                     } else {
                         // 切回本首
-                        this.$refs.preCdWrapper.style[transform] = `translate3d(${-clientWidth}px,0,0)`
-                        this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
+                        translate(this.$refs.preCdWrapper, -this.clientWidth, 0, translateOption)
+                        translate(this.$refs.cdWrapper, 0, 0, translateOption)
                     }
                 }
             },
@@ -442,18 +466,13 @@
                 this.nextSong = this.playlist[(this.currentIndex + 1) % this.playlist.length]
                 this.preSong = this.playlist[(this.playlist.length + this.currentIndex -1) % this.playlist.length]
                 this.$nextTick(() => {
-                    let clientWidth = this.$refs.middle.clientWidth
-                    // transitionDuration必须带单位，如果为0s为是默认值，如果为0则是无效值
-                    this.$refs.nextCdWrapper.style[transitionDuration] = '0s'
-                    this.$refs.preCdWrapper.style[transitionDuration] = '0s'
-                    this.$refs.nextCdWrapper.style[transform] = `translate3d(${clientWidth}px,0,0)`
-                    this.$refs.preCdWrapper.style[transform] = `translate3d(${-clientWidth}px,0,0)`
+                    translate(this.$refs.nextCdWrapper, this.clientWidth)
+                    translate(this.$refs.preCdWrapper, -this.clientWidth)
                 })
             },
             getLyric() {
                 this.currentSong.getLyric().then(lyric => {
                     this.currentLyric = new Lyric(lyric,this.handleLyric)
-                    console.log('currentLyric is ',this.currentLyric)
                 }).catch(() => {
                     this.currentLyric = null
                     this.currentLineNum = 0
@@ -470,7 +489,6 @@
                 })
             },
             handleLyric({lineNum, txt}) {
-                console.log('handleLyric, lineNum is ',lineNum)
                 if(!this.$refs.lyricLine) {
                     return
                 }
@@ -483,7 +501,6 @@
                 }
             },
             toggleLyric(flag) {
-                console.log('toggleLyric')
                 // 从歌词页面切回cd时，cd需要继续从之前的位置开始旋转，在cdStatus的代码控制暂停
                 // cdWrapper不能用v-show='!showLyric'控制，因为v-show为false时，display：none，就不能切回时继续上次的位置了
                 if(flag) {
