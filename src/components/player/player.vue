@@ -354,13 +354,16 @@
             progressBarChanging (percent) {
                 this.progressBarMoving = true
                 this.currentTime = this.currentSong.duration * percent
+                if (this.currentLyric) {
+                    this.currentLyric.seek(this.currentTime * 1000)
+                }
             },
             progressBarChange(percent) {
                 const currentTime = this.currentSong.duration * percent
                 this.currentTime = this.$refs.audio.currentTime = currentTime
                 this.progressBarMoving = false
                 if(this.currentLyric) {
-                    this.currentLyric.seek(currentTime * 1000) // 毫秒
+                    this.currentLyric.seek(this.currentTime * 1000) // 毫秒
                 }
             },
             formatTime(interval) {

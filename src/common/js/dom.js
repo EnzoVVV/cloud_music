@@ -49,13 +49,14 @@ export const transitionDuration = prefixStyle('transitionDuration')
 
 export function translate(el, x = 0, y = 0, options) {
     if (!el) return
+    // transitionDuration必须带单位，如果为0s为是默认值，如果为0则是无效值
     const defaultOptions = {
         useTransfrom: true,
         // transitionTimingFunction: 'cubic-bezier(0.165, 0.84, 0.44, 1)',
         transitionDuration: '0s'
     }
-    for (let option in options) {
-        defaultOptions[option] = options[option]
+    if(options) {
+      Object.assign(defaultOptions,options)
     }
     if (defaultOptions.useTransfrom) {
         el.style[transform] = `translate3d(${x}px,${y}px,0)`
