@@ -16,8 +16,9 @@
                     </div>
                 </div>
                 <div class='middle' ref='middle'>
+                    <!-- 切换歌词页面的click事件替换成在touchend中处理了 -->
                     <!-- 移动端，touch事件之后是click事件，为了click所以此处不能touchstart.prevent，如必须，则可以在touch处理函数中e.preventDefault -->
-                    <div class='cd-wrapper' ref='cdWrapper' @click='toggleLyric(true)' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
+                    <div class='cd-wrapper' ref='cdWrapper' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
                         <div class='cd' :class='cdStatus'>
                             <img :src='currentSong.img' class='cd-img'></img>
                         </div>
@@ -33,11 +34,11 @@
                         </div>
                     </div>
                     <scroll class='lyric-wrapper' ref='lyricWrapper'>
-                        <div class="lyric" @click='toggleLyric(false)'>
-                            <div v-if="currentLyric">
-                                <p v-for="(line,index) in currentLyric.lines" :key='index' ref="lyricLine" class="text" :class="{'current': currentLineNum ===index}" >{{line.txt}}</p>
+                        <div class='lyric' @click='toggleLyric(false)'>
+                            <div v-if='currentLyric'>
+                                <p v-for='(line,index) in currentLyric.lines' :key='index' ref='lyricLine' class='text' :class="{'current': currentLineNum === index}" >{{line.txt}}</p>
                             </div>
-                            <div class="pure-music" v-if="isPureMusic">
+                            <div class='pure-music' v-if='isPureMusic'>
                                 <p>{{pureMusicLyric}}</p>
                             </div>
                             <div v-if='!currentLyric' class='no-lyric' ref='noLyric'>
@@ -50,7 +51,7 @@
                     <div class='progress'>
                         <span class='time time-left'>{{formatTime(currentTime)}}</span>
                         <div class='progressbar'>
-                            <progressbar :percent='percent' @percentChange="progressBarChange" @percentChanging="progressBarChanging"></progressbar>
+                            <progressbar :percent='percent' @percentChange='progressBarChange' @percentChanging='progressBarChanging'></progressbar>
                         </div>
                         <span class='time time-right'>{{formatTime(currentSong.duration)}}</span>
                     </div>
@@ -78,7 +79,7 @@
         <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen'>
             <img  :src='currentSong.img' class='img'></img>
             <div class='name'>{{currentSong.name}}</div>
-            <progresscircle :radius="radius" :percent="percent" class='play'>
+            <progresscircle :radius='radius' :percent='percent' class='play'>
                 <div @click.stop='togglePlay' class='circle-button'>
                     <IconSvg :icon-class='miniPlayBtnIcon'></IconSvg>
                 </div>
@@ -214,11 +215,8 @@
                     return
                 }
                 const audio = this.$refs.audio
-                audio.load()
                 this.$nextTick(() => {
-                    console.log('start pause')
                     val ? audio.play() : audio.pause()
-                    console.log('complete pause')
                 })
             }
         },
@@ -300,12 +298,20 @@
                 this.setFullScreen(true)
             },
             audioReady() {
+                this.clearTimer()
+                // 监听 playing 这个事件可以确保慢网速或者快速切换歌曲导致的 DOM Exception
                 this.songReady = true
+                // 如果歌曲的播放晚于歌词的出现，播放的时候需要同步歌词
+                if (this.currentLyric && !this.isPureMusic) {
+                    this.currentLyric.seek(this.currentTime * 1000)
+                }
             },
             paused() {
                 // 一首歌播放完，先触发了audio的pause，然后是ended
-                console.log('pause')
-                // this.setPlayingState(false)
+                this.setPlayingState(false)
+                if (this.currentLyric) {
+                    this.currentLyric.stop()
+                }
             },
             timeupdate(e) {
                 // 移动进度条时，更新this.currentTime，同时在播放，也会触发更新this.currentTime的这个函数
@@ -313,9 +319,6 @@
                     return
                 }
                 this.currentTime = e.target.currentTime
-                if(!this.playing) {
-                    console.log('timeupdate',this.currentTime)
-                }
             },
             progressBarChanging (percent) {
                 this.progressBarMoving = true
@@ -344,6 +347,7 @@
                 const touch = e.touches[0]
                 this.touch.startX = touch.pageX
                 this.touch.startY = touch.pageY
+                this.touch.startTime = new Date()
             },
             touchmove(e) {
                 if(!this.touch.initiated) {
@@ -388,6 +392,15 @@
                     return
                 }
                 this.touch.initiated = false
+                // 元素同时有touch事件和click事件，click事件的触发会守影响(延迟，被touch事件处理函数preventDefault或return而阻拦等)，所以用touchend检测click
+                // percent是undefined，说明没有touchmove，是click
+                if(this.touch.percent === undefined) {
+                    const timecost = new Date() - this.touch.startTime
+                    if(timecost < 120) {
+                        this.toggleLyric(true)
+                        return
+                    }
+                }
                 const clientWidth = this.$refs.middle.clientWidth
                 const duration = 300
                 if(this.touch.percent < 0) {
@@ -602,8 +615,10 @@
                             line-height: 32px
                             // 没有这个height，无法scroll
                             height: 32px
-                            color: $color-text-d
+                            color: $color-text-i
                             font-size: $font-size-medium
+                            &.current
+                                color: $color-text-a
                         &.current
                             color: $color-text-l
                         .pure-music
