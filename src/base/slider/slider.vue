@@ -61,13 +61,6 @@
       })
     },
     methods: {
-      // 阻止事件冒泡，解决recommend组件滑动slider的时候也同时触发了页面swipe的问题
-      // recommend组件，滑动slider的时候，外层swiper接收不到touchstart事件
-      // slider的滑动，外层swiper能接收到touchmove事件，因为这里没有阻止touchmove冒泡
-      // 但是swiper组件的touchmove函数会检测iniatied，就被return了
-      touchstart(e) {
-        e.stopPropagation()
-      },
       init() {
         this.initSlotContentStyle()
         this.initDots()
@@ -122,6 +115,13 @@
         this.timer = setTimeout(() => {
           this.slider.next()
         },this.interval)
+      },
+      // 阻止事件冒泡，解决recommend组件滑动slider的时候也同时触发了页面swipe的问题
+      // recommend组件，滑动slider的时候，外层swiper接收不到touchstart事件
+      // slider的滑动，外层swiper能接收到touchmove事件，因为这里没有阻止touchmove冒泡
+      // 但是swiper组件的touchmove函数会检测iniatied，就被return了
+      touchstart(e) {
+        e.stopPropagation()
       },
       clearTimer() {
         clearTimeout(this.timer)
