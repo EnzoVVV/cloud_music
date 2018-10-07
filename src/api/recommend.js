@@ -15,20 +15,41 @@ export function getBanner() {
 }
 
 export function getRecommendList() {
-  return new Promise((resolve,reject) => {
-    let array = []
-    let result = {
-      code: 0,
-      data: array
-    }
-    for(let i=0;i<24;i++) {
-      array.push({
-        imgUrl: '',
-        discription: '日系 | 一调静谧的温暖，一曲细腻的厚重',
-        playCount: '15万',
-        id: i
-      })
-    }
-    resolve(result)
+  // return new Promise((resolve,reject) => {
+  //   let array = []
+  //   let result = {
+  //     code: 0,
+  //     data: {
+  //       list: array
+  //     }
+  //   }
+  //   for(let i=0;i<24;i++) {
+  //     array.push({
+  //       imgurl: '',
+  //       dissname: '日系 | 一调静谧的温暖，一曲细腻的厚重',
+  //       listennum: '15万',
+  //       dissid: i
+  //     })
+  //   }
+  //   resolve(result)
+  // })
+  const url = '/api/getDiscList'
+
+  const data = Object.assign({}, commonParams, {
+    platform: 'yqq',
+    hostUin: 0,
+    sin: 0,
+    ein: 29,
+    sortId: 5,
+    needNewCode: 0,
+    categoryId: 10000000,
+    rnd: Math.random(),
+    format: 'json'
+  })
+
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
   })
 }
