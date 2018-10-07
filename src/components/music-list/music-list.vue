@@ -96,12 +96,11 @@
             },
             handleScroll(pos) {
                 let scrollY = pos.y
-                let scale = 1
                 if(scrollY > 0) {
                     // 下滑
-                    scale = 1 + scrollY/this.imgHeight
+                    const scale = 1 + scrollY/this.imgHeight
                     this.$refs.img.style.zIndex = (this.$refs.list.$el.style.zIndex || 0) + 10
-                    this.$refs.img.style[transform] = `scale${scale}`
+                    this.$refs.img.style[transform] = `scale(${scale})`
                 } else {
                     //上滑
                     if(-scrollY <= this.imgHeight - this.headerHeight) {
@@ -192,8 +191,10 @@
             align-items: center
             z-index: 150
             &-back
+                color: $color-text-a
                 float: left 
             &-title
+                color: $color-text-a
                 padding-left: 10px
         .bg-img
             position: relative
