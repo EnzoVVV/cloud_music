@@ -22,7 +22,7 @@
 </template>
 <script>
     import { getRecommendList, getBanner } from 'api/recommend'
-    import { ERR_OK } from 'api/config'
+import { ERR_OK } from 'api/config'
     import slider from 'base/slider/slider'
     import discList from 'components/discList/discList'
     import scroll from 'base/scroll/scroll'
@@ -62,7 +62,7 @@
             getLists() {
                 getRecommendList().then( res => {
                     if(res.code === ERR_OK) {
-                        this.discLists = res.data
+                        this.discLists = res.data.list
                     }
                 })
             },
