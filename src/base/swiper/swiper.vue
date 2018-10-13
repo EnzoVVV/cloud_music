@@ -208,10 +208,16 @@
 				const component = this.compList[index]
 				if(component.innerSwiper) {
 					// 如果当前swipecontainer里的组件，组件里面还有swiper，就需要特殊处理
-					// 比如music组件的外层swiper，会走到这里
-					// 得到组件里面的swiper组件，如果内部swiper在最左，则当前swipercontainer监听滑动事件，否则不监听滑动事件
+					// 得到组件里面的swiper组件，如果内部swiper在最左，则当前swipercontainer监听滑动事件(this.direction为right，只能右滑)，否则不监听滑动事件
 					const innerSwiper = component.innerSwiper
-					if(innerSwiper.curIndex == 0 || innerSwiper.curIndex == innerSwiper.componentList.length -1) {
+					if(innerSwiper.curIndex == 0 && this.curIndex == 0) {
+						// 如果当前swiper在最左，内部swiper也在最左，那当前swiper就不能滑动
+						// 这个判断不能放到computed direction下，因为，函数调用到this.direction时，才会重新计算当前的direction值，此时已经开始滑动了，晚了
+						this.removeTouchEventListener(swipecontainer)
+					} else if(innerSwiper.curIndex == innerSwiper.componentList.length -1 && this.curIndex == this.componentList.length - 1) {
+						// 如果当前swiper在最右，内部swiper也在最右，那当前swiper就不能滑动
+						this.removeTouchEventListener(swipecontainer)
+					} else if(innerSwiper.curIndex == 0 || innerSwiper.curIndex == innerSwiper.componentList.length -1) {
 						this.addTouchEventListener(swipecontainer)
 					} else {
 						this.removeTouchEventListener(swipecontainer)
