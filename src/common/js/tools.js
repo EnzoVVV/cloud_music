@@ -44,6 +44,9 @@ export function generateRandomList(list) {
 }
 
 export function findComponentUpward(component,targetName) {
+    if(!component) {
+        return null
+    }
     const parent = component.$parent
     if(parent) {
         const name = parent.$options.name
@@ -60,6 +63,9 @@ export function findComponentUpward(component,targetName) {
 }
 
 export function findComponentDownward(component,targetName) {
+    if(!component) {
+        return null
+    }
     if(component.$children && component.$children.length) {
         for(let i=0;i<component.$children.length;i++) {
             const child = component.$children[i]
