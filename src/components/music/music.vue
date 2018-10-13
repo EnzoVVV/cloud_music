@@ -1,6 +1,6 @@
 <template>
     <div>
-        <tabswiper :tabContent='musicHeader' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight'></tabswiper>
+        <tabswiper :tabContent='musicHeader' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight' :showMarker='true'></tabswiper>
     </div>
 </template>
 <script>

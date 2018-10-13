@@ -1,7 +1,7 @@
 <template>
     <div class='header'>
         <IconSvg icon-class='sortlight'></IconSvg>
-        <tabs :content='content' class='header-tabs' refs='tabs' :defaultIndex='defaultIndex' @click='clickTab'></tabs>
+        <tabs :content='content' class='header-tabs' ref='tabs' :defaultIndex='defaultIndex' @click='clickTab'></tabs>
         <IconSvg icon-class='search'></IconSvg>
     </div>
 </template>
