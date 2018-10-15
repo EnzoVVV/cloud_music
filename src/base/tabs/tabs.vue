@@ -104,7 +104,13 @@
                     const diff = index - this.curIndex
                     this.curMarkerTransform = this.curMarkerTransform + diff * this.tabWidth
                 }
-                translate(this.marker, this.curMarkerTransform)
+                this.translateMarkers()
+            },
+            translateMarkers() {
+                const duration = 200
+                translate(this.marker, this.curMarkerTransform, 0, {
+                    transitionDuration: duration + 'ms'
+                })
             },
             isMiddleTab(index) {
                 return this.long && index >= 2 && index < this.content.length - 2
