@@ -304,14 +304,4 @@
 				transform: translateX(-100%)
 			&.swipe-right-enter-active, &.swipe-right-leave-active 
 				transition: transform linear 0.2s
-		.out-of-screen 
-			position: absolute
-			width: 100%
-			height: 100%
-			>:first-child 
-				height: 100%
-			&.out-of-screen--left 
-				left: -100%
-			&.out-of-screen--right 
-				right: -100%
 </style>

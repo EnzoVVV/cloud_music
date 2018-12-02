@@ -84,26 +84,25 @@
                     <IconSvg :icon-class='miniPlayBtnIcon'></IconSvg>
                 </div>
             </progresscircle>
-            <div class='list' @click.stop='showMiniList'>
+            <div class='list' @click.stop='miniListFlag = true'>
                 <IconSvg icon-class='play-history'></IconSvg>
             </div>
         </div>
-        <minilist :list='sequenceList' v-show='miniListFlag'></minilist>
+        <minisonglist :list='sequenceList' v-show='miniListFlag'></minisonglist>
         <audio ref='audio' @playing='audioReady' @timeupdate='timeupdate' @ended='ended' @pause='paused'></audio>
     </div>
 </template>
 
 <script>
     import { mapGetters, mapMutations } from 'vuex'
-    import { playMode } from 'common/js/config'
-    import { generateRandomList } from 'common/js/tools'
-    import minilist from 'components/mini-list/mini-list'
+    import minisonglist from 'components/mini-song-list/mini-song-list'
     import progressbar from 'base/progress-bar/progress-bar'
     import Lyric from 'lyric-parser'
     import scroll from 'base/scroll/scroll'
     import slider from 'base/slider/slider'
     import progresscircle from 'base/progress-circle/progress-circle'
     import { transform, transitionDuration,translate } from 'common/js/dom'
+    import { playerMixin } from 'common/js/mixins'
 
     // 切歌动画transitionDuration(ms)
     const duration = 300
@@ -112,8 +111,9 @@
     }
     export default {
         name: 'player',
+        mixins: [playerMixin],
         components: {
-            minilist,
+            minisonglist,
             progressbar,
             scroll,
             slider,
@@ -146,29 +146,9 @@
             ...mapGetters([
                 'fullScreen',
                 'playlist',
-                'currentSong',
                 'playing',
-                'currentIndex',
-                'mode',
-                'sequenceList'
+                'currentIndex'
             ]),
-            modeIcon() {
-                let icon = null
-                switch(this.mode) {
-                    case 0:
-                        icon = 'list-cycle'
-                        break
-                    case 1:
-                        icon = 'random'
-                        break
-                    case 2:
-                        icon = 'single-cycle'
-                        break
-                    default:
-                        break
-                }
-                return icon
-            },
             playBtnIcon() {
                 return this.playing ? 'pause' : 'play'
             },
@@ -230,10 +210,7 @@
         methods: {
             ...mapMutations({
                 setFullScreen: 'SET_FULL_SCREEN',
-                setPlayingState: 'SET_PLAYING_STATE',
-                setCurrentIndex: 'SET_CURRENT_INDEX',
-                setPlayMode: 'SET_PLAY_MODE',
-                setPlaylist: 'SET_PLAYLIST'
+                setPlayingState: 'SET_PLAYING_STATE'
             }),
             togglePlay() {
                 if (!this.songReady) {
@@ -244,26 +221,6 @@
                 if(this.currentLyric) {
                     this.currentLyric.togglePlay()
                 }
-            },
-            toggleMode() {
-                const modesCount = Object.keys(playMode).length
-                const nextMode = (this.mode + 1) % modesCount
-                this.setPlayMode(nextMode)
-                let list = null
-                if(nextMode === playMode.random) {
-                    list = generateRandomList(this.sequenceList)
-                } else if(nextMode == playMode.listCycle) {
-                    list = this.sequenceList
-                } else if(nextMode == playMode.singleCycle) {
-                    list = [this.currentSong]
-                }
-                // 切换list时，确保currentIndex不变
-                this.resetCurrentIndex(list)
-                this.setPlaylist(list)
-            },
-            resetCurrentIndex(list) {
-                let index = list.findIndex(i => i.id === this.currentSong.id)
-                this.setCurrentIndex(index)
             },
             playNext(clicked = true) {
                 if (!this.songReady) {

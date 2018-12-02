@@ -66,7 +66,11 @@ export function processSongsUrl(songs) {
       }
       return songs
     })
-  }
+}
+
+export function isValidMusic(musicData) {
+    return musicData.songid && musicData.albumid && (!musicData.pay || musicData.pay.payalbumprice === 0)
+}
 
 export class Album {
     constructor({id, mid, name, date, img, url}) {

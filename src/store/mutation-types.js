@@ -11,3 +11,9 @@ export const SET_SEQUENCE_LIST = 'SET_SEQUENCE_LIST'
 export const SET_PLAY_MODE = 'SET_PLAY_MODE'
 
 export const SET_CURRENT_INDEX = 'SET_CURRENT_INDEX'
+
+export const SET_QUERY = 'SET_QUERY'
+
+export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
+
+export const SET_DISCS = 'SET_DISCS'

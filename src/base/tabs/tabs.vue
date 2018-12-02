@@ -4,6 +4,7 @@
             <div v-for='(item,index) in content' :key='item.name' class='tab-item' :style='tabStyle(index)' @click='handleClick(index)' ref='tabitem'>
                 <p class='tab-link' ref='tablink'>
                     <IconSvg v-if='item.icon' :icon-class='item.icon' class='tab-icon'></IconSvg>
+                    <IconImg v-else-if='item.img' :imgName='item.img'></IconImg>
                     <span v-else-if='item.text' class='tab-text'>{{item.text}}</span>
                 </p>
             </div>
@@ -206,10 +207,15 @@
                     return
                 }
                 for(let i=0;i<this.content.length;i++) {
-                    if(i!=index) {
-                        this.$refs.tablink[i].style.color = 'rgba(255,255,255,0.6)'
-                    } else {
-                        this.$refs.tablink[i].style.color = 'rgb(255,255,255)'
+                    let tablink = this.$refs.tablink[i]
+                    let child = tablink ? tablink.firstElementChild : null
+                    let childVueInstance = child ? child.__vue__ : null
+                    // 含有img的
+                    if(childVueInstance && childVueInstance.$options.name == 'IconImg') {
+                        i == index ? childVueInstance.activate() : childVueInstance.mute()
+                    } else if(tablink) {
+                        // 不是含有img的
+                        tablink.style.color = i == index ? 'rgb(255,255,255)' : 'rgba(255,255,255,0.6)'
                     }
                 }
             },
@@ -242,12 +248,15 @@
     .wrapper
         width: 100%
         overflow: hidden
+        position: relative
         .tab
             position: relative
             height: 44px
             line-height: 44px
             font-size: $font-size-medium
             overflow: hidden
+            display: flex
+            align-items: center
             .tab-item
                 display: flex
                 justify-content: center
@@ -255,6 +264,8 @@
                 left: 0
                 .tab-link
                     color: $color-text-i
+                    display: flex
+                    align-items: center
                     .tab-icon
                         width: 25px !important 
                         height: 25px !important

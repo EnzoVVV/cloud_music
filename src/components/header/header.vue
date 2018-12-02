@@ -1,18 +1,27 @@
 <template>
+<div>
     <div class='header'>
-        <IconSvg icon-class='sortlight'></IconSvg>
+        <div @click='toggleLeftMenu'><IconSvg icon-class='sortlight'></IconSvg></div>
+        <div class='empty'></div>
         <tabs :content='content' class='header-tabs' ref='tabs' :defaultIndex='defaultIndex' @click='clickTab'></tabs>
-        <IconSvg icon-class='search'></IconSvg>
+        <div class='empty'></div>
+        <div @click='popupSearch'><IconSvg icon-class='search'></IconSvg></div>
     </div>
+    <search v-show='showSearch' :showSearch.sync='showSearch'></search> 
+</div>
 </template>
 <script>
     import tabs from 'base/tabs/tabs'
+    import search from 'components/search/search'
+    import leftmenu from 'components/left-menu/left-menu'
     export default {
         name: 'Header',
         components: {
-            tabs
+            tabs,
+            search,
+            leftmenu
         },
-        props: {
+        props: {  
             defaultIndex: {
                 type: Number
             }
@@ -21,16 +30,17 @@
             return {
                 content: [
                     {
-                        icon: 'yinle1'
+                        img: 'mine'
                     },
                     {
-                        icon: 'kefu'
+                        img: 'music'
                     },
                     {
-                        icon: 'yinlemoshi'
+                        icon: 'video'
                     }
-                ]
-
+                ],
+                showSearch: false,
+                showLeftMenu: false
             }
         },
         computed: {
@@ -42,6 +52,15 @@
         methods: {
             clickTab(index) {
                 this.$emit('clickTab',index)
+            },
+            popupSearch() {
+                this.showSearch = true
+            },
+            toggleLeftMenu() {
+                this.showLeftMenu = true
+            },
+            hideLeftMenu() {
+                this.showLeftMenu = false
             }
         },
         created() {
@@ -58,6 +77,7 @@
     display: flex
     padding: 10px 5px 0 5px
     background: $color-theme
+    align-items: center
     &-left
         width: 25px !important
         height: 25px !important
@@ -73,4 +93,6 @@
         height: 25px !important 
         line-height: 44px
         margin-right: 30px 
+    .empty
+        width: 25%
 </style>

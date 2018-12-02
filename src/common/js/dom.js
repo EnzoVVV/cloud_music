@@ -68,3 +68,9 @@ export function translate(el, x = 0, y = 0, options) {
         el.style.top = y
     }
 }
+
+// 旋转元素
+export function rotate(el, angle, duration = 200) {
+  el.style[transitionDuration] = duration + 'ms'
+  el.style[transform] = `rotate(${angle}deg)`
+}
