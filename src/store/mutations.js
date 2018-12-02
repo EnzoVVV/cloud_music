@@ -21,6 +21,15 @@ const matutaions = {
   },
   [types.SET_CURRENT_INDEX](state, index) {
     state.currentIndex = index
+  },
+  [types.SET_QUERY](state, query) {
+    state.query = query
+  },
+  [types.SET_SEARCH_HISTORY](state, history) {
+    state.history = history
+  },
+  [types.SET_DISCS](state, discs) {
+    state.discs = discs
   }
 }
 

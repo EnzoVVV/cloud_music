@@ -4,7 +4,7 @@
         <!-- 需要给ul清除浮动才能滚动 -->
         <!-- li是浮动元素，脱离文档流，所以ul没有高度，外层的recommend也会没法scroll -->
         <ul class='items'>
-            <li v-for='disc in discList' :key='disc.dissid' class='item'>
+            <li v-for='disc in discList' :key='disc.dissid' class='item' @click='selectDisc(disc)'>
                 <div class='cover'>
                     <div class='gradients'></div>
                     <img v-lazy='disc.imgurl' class='img needsclick'></img>
@@ -13,7 +13,7 @@
                         <span class='play-count-text'>{{disc.listennum}}</span>
                     </p>
                 </div>
-                <p class='text'>{{disc.dissname}}</p>
+                <div class='text'>{{disc.dissname}}</div>
             </li>
         </ul>
     </div>
@@ -43,7 +43,9 @@
 
         },
         methods: {
-
+            selectDisc(disc) {
+                this.$bus.emit('showDiscDetail', disc)
+            }
         },
         created() {
 
@@ -116,4 +118,7 @@
                 .text
                     padding-top: 10px
                     font-size: $font-size-small
+                    text-overflow: ellipsis 
+                    overflow: hidden
+                    white-space: nowrap
 </style>

@@ -12,6 +12,22 @@
                         </div>
                     </slider>
                 </div>
+                <div class='features'>
+                    <div class='feature fm'>
+                        <IconImg imgName='fm' size='80px'></IconImg>
+                        <span class='title'>私人FM</span>
+                    </div>
+                    <div class='feature today' @click='showDailyRecommend'>
+                        <span class='date'>{{day}}</span>
+                        <IconImg imgName='today' size='80px'></IconImg>
+                        <span class='title'>每日推荐</span>
+                    </div>
+                    <div class='feature rankboard' @click='showRank'>
+                        <IconImg imgName='rankboard' size='80px'></IconImg>
+                        <span class='title'>排行榜</span>
+                    </div>
+                </div>
+                <div class='border'></div>
                 <discList :discList='discLists' v-if='discLists.length'></discList>
             </div>
             <div class='loading' v-if='!discLists.length'>
@@ -22,7 +38,7 @@
 </template>
 <script>
     import { getRecommendList, getBanner } from 'api/recommend'
-import { ERR_OK } from 'api/config'
+    import { ERR_OK } from 'api/config'
     import slider from 'base/slider/slider'
     import discList from 'components/discList/discList'
     import scroll from 'base/scroll/scroll'
@@ -46,7 +62,9 @@ import { ERR_OK } from 'api/config'
             }
         },
         computed: {
-
+            day() {
+                return (new Date()).getDate()
+            }
         },
         watch: {
 
@@ -71,6 +89,12 @@ import { ERR_OK } from 'api/config'
                     this.loadImg = true
                     this.$refs.scroll.refresh()
                 }
+            },
+            showRank() {
+                this.$bus.emit('showRank', true)
+            },
+            showDailyRecommend() {
+                this.$bus.emit('showDailyRecommend', true)
             }
 
         },
@@ -103,6 +127,32 @@ import { ERR_OK } from 'api/config'
                 vertical-align: inherit
             .slider-content
                 padding: 0 5px
+            .features
+                display: flex
+                align-items: center
+                height: 100px
+                // 为了看起来上下空白间距一样
+                margin-top: -5px
+                margin-bottom: 10px
+                .feature
+                    flex: 1
+                    display: flex
+                    justify-content: center
+                    position: relative
+                    .title
+                        position: relative
+                        bottom: 0
+                        font-size: $font-size-small-s
+                .today
+                    position: relative
+                    .date
+                        position: absolute 
+                        top: 36px
+            .border
+                height: 1px
+                transform: scaleY(0.3)
+                transform-origin: 50% 100%
+                background: $color-text-light
         .loading
             position: absolute
             width: 100%

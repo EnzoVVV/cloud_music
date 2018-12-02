@@ -19,7 +19,7 @@
                         <p class='tab-text'>{{tab}}</p>
                     </div>
                 </div>
-                <songlist :songs='songs' ref='songlist' v-show='activeTab == 0' @click='selectSong'></songlist>
+                <songlist :songs='songs' ref='songlist' v-show='activeTab == 0' @click='selectSong' :showIndex='true'></songlist>
                 <albumlist :albums='albums' ref='albumlist' v-show='activeTab == 1'></albumlist>
                 <div v-show='activeTab == 2'>
                 </div>

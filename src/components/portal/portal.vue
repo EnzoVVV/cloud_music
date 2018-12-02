@@ -4,9 +4,7 @@
             <Header @clickTab='clickTab' :defaultIndex='defaultIndex'></Header>
             <swiper :componentList='componentList' :defaultIndex='defaultIndex' :height='swiperHeight' ref='swiper'></swiper>
         </div>
-        <div>
-            <singerdetail v-if='showSingerDetail' :showSingerDetail.sync='showSingerDetail'></singerdetail>
-        </div>
+        <hub></hub>
     </div>
 </template>
 <script>
@@ -15,8 +13,9 @@
     import mine from 'components/mine/mine'
     import video from 'components/video/video'
     import swiper from 'base/swiper/swiper'
-    import singerdetail from 'components/singer-detail/singer-detail'
     import { findComponentDownward } from 'common/js/tools'
+    import { mapActions } from 'vuex'
+    import hub from 'components/hub/hub'
     const componentList = [
         {
             component: mine,
@@ -36,7 +35,7 @@
         components: {
             swiper,
             Header,
-            singerdetail
+            hub
         },
         data() {
             return {
@@ -44,8 +43,7 @@
                 swiperHeight: window.innerHeight - 44,
                 defaultIndex: 1,
                 curIndex: 1,
-                tabs: null,
-                showSingerDetail: false
+                tabs: null
             }
         },
         methods: {
@@ -61,17 +59,17 @@
             getTabs() {
                 this.tabs = findComponentDownward(this,'tabs')
             },
-            toggleSingerDetail(flag) {
-                this.showSingerDetail = flag
-            }
+            ...mapActions([
+                'restoreDisc'
+            ])
         },
         created() {
             this.curIndex = this.defaultIndex
+            this.restoreDisc()
         },
         mounted() {
             this.$refs.swiper.$on('updatetouchend',this.touchend)
             this.getTabs()
-            this.$bus.on('showSingerDetail',this.toggleSingerDetail)
         }
     }
 </script>

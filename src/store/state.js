@@ -7,7 +7,10 @@ const state = {
   playlist: [],
   sequenceList: [],
   mode: playMode.listCycle,
-  currentIndex: -1
+  currentIndex: -1,
+  query: '',
+  searchHistory: [],
+  discs: []
 }
 
 export default state

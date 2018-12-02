@@ -15,24 +15,6 @@ export function getBanner() {
 }
 
 export function getRecommendList() {
-  // return new Promise((resolve,reject) => {
-  //   let array = []
-  //   let result = {
-  //     code: 0,
-  //     data: {
-  //       list: array
-  //     }
-  //   }
-  //   for(let i=0;i<24;i++) {
-  //     array.push({
-  //       imgurl: '',
-  //       dissname: '日系 | 一调静谧的温暖，一曲细腻的厚重',
-  //       listennum: '15万',
-  //       dissid: i
-  //     })
-  //   }
-  //   resolve(result)
-  // })
   const url = '/api/getDiscList'
 
   const data = Object.assign({}, commonParams, {
@@ -52,4 +34,10 @@ export function getRecommendList() {
   }).then((res) => {
     return Promise.resolve(res.data)
   })
+}
+
+// 获取每日推荐歌单
+export function getDailyRecommend() {
+  const url = HOST + '/recommend/songs'
+  return axios.get(url)
 }
