@@ -38,12 +38,14 @@
                         <div @click='showCListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='list in createdLists' :key='list.name' v-show='!clistFold'>
-                            <img class='img' :src='list.picUrl'></img>
+                        <li class='list' v-for='list in discs' :key='list.name' v-show='!clistFold'>
+                            <img class='img' v-lazy='list.picUrl'></img>
                             <div class='text'>
-                                <p class='name'>{{list.name}}</p>
-                                <p class='info'>{{clistInfo(list)}}></p>
+                                <div class='name'>{{list.name}}</div>
+                                <p class='info'>{{clistInfo(list)}}</p>
                             </div>
+                            <!-- TODO，搞个图标 -->
+                            <div class='icon' @click='showListControl(list,1)' v-if='list.id != 1'><IconImg img-name='music'></IconImg></div>
                         </li>
                     </transition-group>
                 </div>
@@ -54,30 +56,46 @@
                         <div @click='showFListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='list in favoriteLists' :key='list.name' v-show='!flistFold'>
-                            <img class='img' :src='list.picUrl'></img>
+                        <li class='list' v-for='list in fdiscs' :key='list.name' v-show='!flistFold'>
+                            <img class='img' v-lazy='list.picUrl'></img>
                             <div class='text'>
-                                <p class='name'>{{list.name}}</p>
-                                <p class='info'>{{flistInfo(list)}}></p>
+                                <div class='name'>{{list.name}}</div>
+                                <p class='info'>{{flistInfo(list)}}</p>
                             </div>
+                            <div class='icon' @click='showListControl(list,2)'><IconImg img-name='music'></IconImg></div>
                         </li>
                     </transition-group>
                 </div>
             </div>
         </scroll>
+        <!-- 我喜欢的音乐，没有这个， 创建的歌单，有编辑歌单信息 -->
+        <minilist :title='listControl,title' v-if='listControl.show' @hide='listControl.show = false'>
+            <ul>
+                <li class='line' v-if='listControl.isCList'>
+                    <IconSvg icon-class='video' class='icon'></IconSvg>
+                    <div>编辑歌单信息</div>
+                </li>
+                <li class='line' @click='requestDeleteList'>
+                    <IconSvg icon-class='clear' class='icon'></IconSvg>
+                    <div>删除</div>
+                </li>
+            </ul>
+        </minilist>
     </div>
 </template>
 <script>
     const mockUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4o0FN1T9tJYFQsg6VS_ABXxB1tIvndE7cwipQH79XaxxAMZ5f'
     import scroll from 'base/scroll/scroll'
+    import minilist from 'base/mini-list/mini-list'
     import { rotate } from 'common/js/dom'
     import { playlistMixin } from 'common/js/mixins'
-    import { mapGetters } from 'vuex'
+    import { mapGetters, mapActions } from 'vuex'
     export default {
         name: 'mine',
         mixins: [playlistMixin],
         components: {
-            scroll
+            scroll,
+            minilist
         },
         props: {
 
@@ -86,41 +104,15 @@
             return {
                 clistFold: false,
                 flistFold: false,
-                createdLists: [
-                    {
-                        name: '我喜欢的音乐',
-                        count: 30,
-                        picUrl: mockUrl
-                    },
-                    {
-                        name: '下载的音乐',
-                        count: 30,
-                        picUrl: mockUrl
-                    },
-                    {
-                        name: '背景音乐',
-                        count: 30,
-                        picUrl: mockUrl
-                    }
-                ],
-                favoriteLists: [
-                    {
-                        name: '我喜欢的音乐',
-                        count: 30,
-                        picUrl: mockUrl
-                    },
-                    {
-                        name: '下载的音乐',
-                        count: 30,
-                        picUrl: mockUrl
-                    },
-                    {
-                        name: '背景音乐',
-                        count: 30,
-                        picUrl: mockUrl
-                    }
-                ],
-                CreatedDiscManageFlag: false
+                CreatedDiscManageFlag: false,
+                listControl: {
+                    show: false,
+                    id: null,
+                    title: '',
+                    isCList: false,
+                    isDefaultCList: false
+                },
+                modalFlag: false
             }
         },
         computed: {
@@ -128,13 +120,11 @@
                 return '用户名'
             },
             ...mapGetters([
-                'discs'
+                'discs',
+                'fdiscs'
             ])
         },
         watch: {
-            discs(val) {
-                this.createdLists = val
-            }
         },
         methods: {
             // TODO，精简
@@ -157,24 +147,42 @@
                 this.flistFold = !this.flistFold
             },
             clistInfo(list) {
-                return `共${list.count}首`
+                return `${list.count}首`
             },
             flistInfo(list) {
-                return `共${list.count}首 by ${list.creator}`
+                return `${list.count}首 by ${list.creator}`
             },
             showCListSetting() {
                 this.$bus.emit('showDiscManage', 0)
             },
             showFListSetting() {
-
-            }
-
+                this.$bus.emit('showDiscManage', 1)
+            },
+            showListControl(list, type) {
+                Object.assign(this.listControl, {
+                    show: true,
+                    id: list.id,
+                    title: list.name,
+                    isCList: type === 1,
+                    idDefaultCList: type === 0
+                })
+            },
+            requestDeleteList() {
+                this.$modal(this, {
+                    title: '确认删除此歌单吗',
+                    confirmBtnText: '删除'
+                }, 'deleteList')
+            },
+            deleteList() {
+                this.deleteDisc(this.listControl)
+                this.listControl.show = false
+                this.$message('已删除')
+            },
+            ...mapActions([
+                'deleteDisc'
+            ])
         },
         created() {
-            // mock
-            this.favoriteLists = this.favoriteLists.concat(this.favoriteLists)
-            this.favoriteLists = this.favoriteLists.concat(this.favoriteLists)
-            this.createdLists = this.discs
         },
         mounted() {
 
@@ -247,6 +255,7 @@
                         right: 15px
                 .lists
                     .list
+                        margin-left: 5px
                         height: 60px
                         display: flex
                         align-items: center
@@ -271,9 +280,25 @@
                             overflow: hidden
                         .text
                             margin-left: 10px
+                            width: calc(100% - 100px)
                             .name
                                 padding-bottom: 6px
                             .info
                                 color: $color-text-g
                                 font-size: $font-size-small
+    .line
+        height: 44px
+        display: flex
+        align-items: center
+        position: relative
+        .icon
+            margin: 0 15px
+        &:after
+            content: ''
+            position: absolute 
+            left: 13%
+            bottom: 0
+            right: 0
+            height: 1px
+            background: $color-light
 </style>

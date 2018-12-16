@@ -136,7 +136,7 @@ export function compare(item1, item2) {
 
 // 对象对比
 export function compareObject(o1, o2) {
-    if(typeOf(o1) === 'object' || typeOf(o2) === 'object') return false
+    if(typeOf(o1) != 'object' || typeOf(o2) != 'object') return false
     // 将key的数组排序
     const keys1 = Object.keys(o1).sort()
     const keys2 = Object.keys(o2).sort()
@@ -149,7 +149,7 @@ export function compareObject(o1, o2) {
         const value1 = o1[keys1[index]]
         const value2 = o2[keys2[index]]
         if(typeof value1 != 'object' || typeof value2 != 'object') {
-            return value1 === value2
+            if(value1 != value2) return false
         } else if(typeOf(value1) === 'object' && typeOf(value2) === 'object') {
             if(!compareObject(value1, value2)) return false
         } else if(typeOf(value1) === 'array' && typeOf(value2) === 'array') {
@@ -171,8 +171,8 @@ export function compareArray(a1, a2) {
     while(index < len) {
         const item1 = a1[index]
         const item2 = a2[index]
-        if(typeof item1 != 'object' || typeof item2 != 'object') {
-            return item1 === item2
+        if(typeof item1 != 'object' && typeof item2 != 'object') {
+            if(item1 != item2) return false
         } else if(typeOf(item1) === 'object' && typeOf(item2) === 'object') {
             if(!compareObject(item1, item2)) return false
         } else if(typeOf(item1) === 'array' && typeOf(item2) === 'array') {

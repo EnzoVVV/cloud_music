@@ -10,7 +10,8 @@ const state = {
   currentIndex: -1,
   query: '',
   searchHistory: [],
-  discs: []
+  discs: [],
+  fdiscs: []
 }
 
 export default state

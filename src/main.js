@@ -13,7 +13,9 @@ import VueIconFont from 'vue-icon-font'
 import 'iconfont/iconfont.js'
 import IconSvg from 'base/IconSvg/IconSvg'
 import IconImg from 'base/IconImg/IconImg'
+import loading from 'base/loading/loading'
 import VueBus from 'vue-bus'
+import { UV_UDP_REUSEADDR } from 'constants';
 
 fastclick.attach(document.body)
 
@@ -25,6 +27,9 @@ Vue.use(VueBus)
 
 Vue.component('IconSvg',IconSvg)
 Vue.component('IconImg',IconImg)
+Vue.component('loading', loading)
+
+window.useCloud = true
 
 /* eslint-disable no-new */
 new Vue({

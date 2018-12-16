@@ -2,7 +2,7 @@
     <div class='album-list'>
         <ul>
             <li v-for='album in albums' :key='album.id' class='item'>
-                <img class='img' v-lazy='album.img'></img>
+                <img class='img' :src='album.img'></img>
                 <div class='content'>
                     <p class='name'>{{album.name}}</p>
                     <p class='desc'>{{album.date}}</p>

@@ -1,13 +1,14 @@
 <template>
     <div class='searchpanel'>
         <div class='searchpanel-header border line' @click='select(query)'>{{headerContent}}</div>
-        <div v-for='(result, index) in results' :key='result' class='searchpanel-item line' :class='borderClass(index)' @click='select(result)'>
+        <div v-for='(result, index) in results' :key='index' class='searchpanel-item line' :class='borderClass(index)' @click='select(result)'>
             <IconSvg icon-class='search-light' class='icon'></IconSvg>
-            <span>{{result}}</span>
+            <div class='text'>{{result}}</div>
         </div>
     </div>
 </template>
 <script>
+    import { suggest } from 'api/search'
     export default {
         name: 'suggest',
         components: {
@@ -16,26 +17,34 @@
         props: {
             query: {
                 type: String,
-                default: Boolean
+                default: ''
             }
         },
         data() {
             return {
-                results: ['abc','ccc','xxxxx','fewfewaf','xgvrgfreaw','greafea']
+                results: []
             }
         },
         computed: {
             headerContent() {
-                return `搜索${this.query}`
+                return `搜索"${this.query}"`
             }
         },
         watch: {
             query(val) {
-                // 调服务
-                // 最多取15条
+                this.getSuggest()
             }
         },
         methods: {
+            getSuggest() {
+                if(!this.query || this.query.length === 0) {
+                    this.results = []
+                    return
+                }
+                suggest(this.query).then(res => {
+                    this.results = res
+                })
+            },
             select(item) {
                 this.$emit('select', item)
             },
@@ -44,10 +53,9 @@
             }
         },
         created() {
-
+            this.getSuggest()
         },
         mounted() {
-
         }
     }
 </script>
@@ -59,17 +67,23 @@
         box-shadow: 0 0 20px rgba(0,0,0,0.3)
         &-header
             color: rgb(65,105,225)
-            padding-left: 12.5px
+            height: 30px
+            line-height: 30px
+            padding: 5px 12px
+            border-bottom: 1px solid rgba(0,0,0,0.05)
         &-item
             color: $color-text-ii
+            height: 30px
+            display: flex
+            align-items: center
+            padding: 5px 12px
+            border-bottom: 1px solid rgba(0,0,0,0.05)
             .icon
-                margin: 12.5px
                 width: 15px
                 height: 15px
-            .border
-                border-bottom: 1px solid rgba(0,0,0,0.5)
-            .line
-                height: 40px
-                display: flex
-                align-items: center
+            .text
+                margin-left: 12px
+                text-overflow: ellipsis 
+                overflow: hidden
+                white-space: nowrap
 </style>

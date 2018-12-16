@@ -7,7 +7,8 @@
         <div class='empty'></div>
         <div @click='popupSearch'><IconSvg icon-class='search'></IconSvg></div>
     </div>
-    <search v-show='showSearch' :showSearch.sync='showSearch'></search> 
+    <search v-if='showSearchFlag' v-show='showSearch' :showSearch.sync='showSearch'></search>
+    <leftmenu v-if='showLeftMenu' @hide='hideLeftMenu'></leftmenu>
 </div>
 </template>
 <script>
@@ -40,6 +41,7 @@
                     }
                 ],
                 showSearch: false,
+                showSearchFlag: false,
                 showLeftMenu: false
             }
         },
@@ -54,7 +56,10 @@
                 this.$emit('clickTab',index)
             },
             popupSearch() {
-                this.showSearch = true
+                this.showSearchFlag = true
+                this.$nextTick(() => {
+                    this.showSearch = true
+                })
             },
             toggleLeftMenu() {
                 this.showLeftMenu = true

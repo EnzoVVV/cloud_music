@@ -3,6 +3,11 @@ import { playMode } from 'common/js/config'
 import { generateRandomList, deepCopy } from 'common/js/tools'
 import { saveSearch, deleteSearch, clearSearch, restoreSearch } from 'common/js/cache'
 
+function findIndex(list, song) {
+    return list.findIndex((item) => {
+        return item.id === song.id
+    })
+}
 
 export const selectPlay = function ({commit, state}, {list, index}) {
     commit(types.SET_SEQUENCE_LIST, list)
@@ -49,9 +54,9 @@ export const insertSong = function ({commit, state}, song) {
 
     if (fsIndex > -1) {
         if (curSIndex < fsIndex) {
-            playList.splice(fsIndex + 1, 1)
+            playlist.splice(fsIndex + 1, 1)
         } else {
-            playList.splice(fsIndex, 1)
+            playlist.splice(fsIndex, 1)
         }
     }
 
@@ -88,7 +93,7 @@ export const deleteSongList = function ({commit}) {
     commit(types.SET_PLAYLIST, [])
     commit(types.SET_SEQUENCE_LIST, [])
     commit(types.SET_PLAYING_STATE, false)
-  }
+}
   
 export const saveSearchHistory = function ({commit}, query) {
     commit(types.SET_SEARCH_HISTORY, saveSearch(query))
@@ -106,7 +111,7 @@ export const restoreSearchHistory = function ({commit}) {
     commit(types.SET_SEARCH_HISTORY, restoreSearch())
 }
 
-import { addToDisc, getDiscs, saveDisc } from 'common/js/cache'
+import { addToDisc, getDiscs, saveDisc, deleteDisc as deleteADisc, deleteSongFromDisc as deleteSongFromADisc, toggleSongFS } from 'common/js/cache'
 import { createDisc as createADisc } from 'common/js/disc'
 
 // 将歌曲添加到歌单, 入参为类的实例
@@ -117,7 +122,7 @@ export const addSongToDisc = function ({commit}, song, disc) {
 
 // 创建歌单, 入参： 歌单名
 export const createDisc = function ({commit}, discName) {
-    let disc = createDisc({
+    let disc = createADisc({
         name: discName
     })
     saveDisc(disc)
@@ -125,7 +130,7 @@ export const createDisc = function ({commit}, discName) {
 }
 // 创建歌单并添加歌曲
 export const createDiscAndAddSong = function ({commit}, song, discName) {
-    let disc = createDisc({
+    let disc = createADisc({
         name: discName
     })
     saveDisc(disc)
@@ -134,5 +139,37 @@ export const createDiscAndAddSong = function ({commit}, song, discName) {
 }
 // 从storage中恢复歌单信息
 export const restoreDisc = function ({commit}) {
-    commit(types.SET_DISCS, getDiscs())
+    commit(types.SET_DISCS, getDiscs(0))
+    commit(types.SET_F_DISCS, getDiscs(1))
+}
+
+//删除歌单
+// disc包含id就可以, 不要求是disc实例还是对象
+export const deleteDisc = function ({commit}, disc, type = 0) {
+    deleteADisc(disc, type)
+    const mutationType = type === 0 ? types.SET_DISCS : types.SET_F_DISCS
+    commit(mutationType, getDiscs(type))
+}
+
+// 从歌单中删除一首歌
+// disc包含id就可以
+export const deleteSongFromDisc = function ({commit}, song, disc) {
+    deleteSongFromADisc(song, disc)
+    commit(types.SET_DISCS, getDiscs(0))
+}
+
+// 收藏歌单，status true 添加收藏，false 取消收藏
+export const favoriteDisc = function ({commit}, disc, status = true) {
+    if(status) {
+        saveDisc(disc, 1)
+    } else {
+        deleteADisc(disc, 1)
+    }
+    commit(types.SET_F_DISCS, getDiscs(1))
+}
+
+// 添加/移除歌曲到“我喜欢的音乐”歌单
+export const toggleFS = function ({commit}, song) {
+    toggleSongFS(song)
+    commit(types.SET_DISCS, getDiscs(0))
 }

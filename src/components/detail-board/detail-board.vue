@@ -15,7 +15,7 @@
             <scroll class='scroll' ref='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll'>
                 <div>
                     <div class='bg' ref='bg'>
-                        <img :src='mockImg' class='bg-img' :class='{"blur": blur}'></img>
+                        <img :src='cover' class='bg-img' :class='{"blur": blur}'></img>
                     </div>
                     <div class='info' ref='info'>
                         <slot name='info'></slot>
@@ -24,7 +24,7 @@
                 </div>
             </scroll>
             <div class='fixed-background' v-show='showFixedBG' ref='fbg'>
-                <img :src='mockImg' class='bg-img' :class='{"blur": blur}'></img>
+                <img :src='cover' class='bg-img' :class='{"blur": blur}'></img>
             </div>
         </div>
     </transition>
@@ -36,6 +36,7 @@
     import { mapActions } from 'vuex'
     import { mockImg } from 'common/js/config'
     import { createSong } from 'common/js/song'
+    import { opacity } from 'common/js/dom'
     export default {
         name: 'detailboard',
         mixins: [playlistMixin, scrollMixin],
@@ -54,6 +55,11 @@
             },
             // 向上滑动时显示的标题
             headerScrollTitle: {
+                type: String,
+                default: ''
+            },
+            // 背景图片src
+            cover: {
                 type: String,
                 default: ''
             },
@@ -107,7 +113,7 @@
                 this.showFixedBG = Math.abs(val) > this.diff
                 // info内容按滚动比例降低opacity
                 const percent = Math.abs(val) / this.diff
-                this.$refs.info.style.opacity = 1 - percent
+                this.$refs.info.style[opacity] = 1 - percent
                 // 更换title
                 if(this.headerScrollTitle) {
                     if(percent > 0.4) {
@@ -143,10 +149,16 @@
                 }
             },
             selectSong(song, index) {
-                this.selectPlay(this.songs, index)
+                this.selectPlay({
+                    list: this.songs,
+                    index: index
+                })
             },
             playAll() {
-                this.selectPlay(this.songs, 0)
+                this.selectPlay({
+                    list: this.songs,
+                    index: 0
+                })
             },
             ...mapActions([
                 'selectPlay'

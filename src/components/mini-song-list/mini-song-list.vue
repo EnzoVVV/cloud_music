@@ -12,18 +12,16 @@
                     <p class='modeText'>{{modeText}}</p>
                     <IconSvg icon-class='clear' class='clear'></IconSvg>
                 </div>
-                <div @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
-                   <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll'>
-                       <transition-group name='list' tag='ul'>
-                           <li v-for='item in mockList' :key='item.id' @click='select(item)' ref='item' class='item'>
-                               <span class='name' :class='{active: currentSong.id == item.id }'>{{item.name}}</span>
-                               <span class='singer' :class='{active: currentSong.id == item.id }'>{{'- ' + item.singer}}</span>
-                               <div class='delete' @click.stop='delteOne(item)'><IconSvg icon-class='delete'></IconSvg></div>
-                               <div class='border'></div>
-                           </li>
-                       </transition-group>
-                   </scroll>
-                </div>
+                <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
+                    <transition-group name='list' tag='ul'>
+                        <li v-for='item in mockList' :key='item.id' @click='select(item)' ref='item' class='item'>
+                            <span class='name' :class='{active: currentSong.id == item.id }'>{{item.name}}</span>
+                            <span class='singer' :class='{active: currentSong.id == item.id }'>{{'- ' + item.singer}}</span>
+                            <div class='delete' @click.stop='deleteOne(item)'><IconSvg icon-class='delete'></IconSvg></div>
+                            <div class='border'></div>
+                        </li>
+                    </transition-group>
+                </scroll>
             </div>
         </transition>
         <confirm class='confirm' ref='confirm' text='是否清空播放列表' confirmBtnText='清空' @confirm='clear'></confirm>
@@ -83,9 +81,9 @@
                 }
             },
             currentSong(val) {
-                const index = this.secquenceList.find(i => i.id === val.id)
+                const index = this.sequenceList.find(i => i.id === val.id)
                 if(index > 3) {
-                    const el = this.$refs.items[index - 3]
+                    const el = this.$refs.item[index - 3]
                     this.$refs.scroll.scrollToElement(el, 1000)
                 } else {
                     this.$refs.scroll.scrollTo(0, 0, 1000)
@@ -234,10 +232,9 @@
             }
         },
         mounted() {
-            debugger
-            let self = this
+            const self = this
             setTimeout(() => {
-                debugger
+                // TODO， 为啥这里的this是window？？？
                 self.scrollEl = self.$refs.scroll.$el
                 self.headerEl = self.$refs.header
                 self.maxMoveDistance = self.headerEl.getBoundingClientRect().bottom
@@ -253,7 +250,7 @@
         left: 0
         right: 0
         bottom: 0
-        background: $color-text-m
+        background: $color-text
         opacity: 0.5
         z-index: 2900
     .mini-list

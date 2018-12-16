@@ -1,13 +1,14 @@
 <template>
     <transition name='modal-fade'>
         <div class='modal' @click.stop='hide'>
-            <div class='modal-wrapper'>
+            <!-- 点wrapper不冒泡, 这样点击wrapper外的空白区域才能将modal隐藏 -->
+            <div class='modal-wrapper' :style='computedStyle' @click.stop>
                 <div class='modal-content'>
                     <div class='header'><span class='text'>{{title}}</span></div>
                     <slot class='slot'></slot>
-                    <div class='operate'>
+                    <div class='operate' v-if='!hideBtn'>
                         <div @click.stop='cancel' class='operate-btn left'>{{cancelBtnText}}</div>
-                        <div @click.stop='confirm' class='operate-btn'>{{confirmBtnText}}</div>
+                        <div @click.stop='confirm' class='operate-btn' :class='{disable: disableConfirm === true}'>{{confirmBtnText}}</div>
                     </div>
                 </div>
             </div>
@@ -27,34 +28,57 @@
             },
             cancelBtnText: {
                 type: String,
-                default: '确定'
+                default: '取消'
             },
             confirmBtnText: {
                 type: String,
-                default: '取消'
+                default: '确定'
             },
+            hideBtn: {
+                type: Boolean,
+                default: false
+            },
+            // 别忘了带单位
+            width: {
+                type: String,
+                default: ''
+            },
+            // 控制禁用确认按钮
+            disableConfirm: {
+                type: Boolean,
+                default: false
+            }
 
         },
         data() {
             return {
-                showFlag: true
             }
         },
         computed: {
-
+            computedStyle() {
+                if(this.width) {
+                    return {
+                        width: this.width
+                    }
+                }
+                return ''
+            }
         },
         watch: {
 
         },
         methods: {
             hide() {
-                this.showFlag = false
+                this.$emit('hide')
             },
             cancel() {
                 this.hide()
                 this.$emit('cancel')
             },
             confirm() {
+                if(this.disableConfirm) {
+                    return
+                }
                 this.hide()
                 this.$emit('confirm')
             }
@@ -87,8 +111,9 @@
             left: 50%
             transform: translate(-50%, -50%)
             z-index: 999
+            width: 70%
             .modal-content
-                width: 270px
+                
                 border-radius: 5px
                 background: $color-background
                 .header
@@ -113,11 +138,13 @@
                         color: $color-theme
                         &.left
                             border-right: 1px solid $color-background
+                        &.disable
+                            color: $color-d-theme !important
     @keyframes modal-fadein
         0%
             opacity: 0
         100%
-            opacity: 0
+            opacity: 1
     @keyframes modal-zoom
         0%
             transform: scale(0)

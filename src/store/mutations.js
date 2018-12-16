@@ -26,10 +26,13 @@ const matutaions = {
     state.query = query
   },
   [types.SET_SEARCH_HISTORY](state, history) {
-    state.history = history
+    state.searchHistory = history
   },
   [types.SET_DISCS](state, discs) {
     state.discs = discs
+  },
+  [types.SET_F_DISCS](state, discs) {
+    state.fdiscs = discs
   }
 }
 

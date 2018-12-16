@@ -35,6 +35,7 @@
     import albumlist from 'components/album-list/album-list'
     import { transform } from 'common/js/dom'
     import { mapActions } from 'vuex'
+    import { getSongsUrl } from 'api/song'
     export default {
         name: 'musiclist',
         components: {
@@ -125,9 +126,9 @@
             },
             loadImg() {
                 let img = new Image()
-                img.src = this.singer.imgUrl
+                img.src = this.singer.picUrl
                 img.onload = () => {
-                    this.bgStyle = `background-image: url(${this.singer.imgUrl})`
+                    this.bgStyle = `background-image: url(${this.singer.picUrl})`
                     this.$nextTick(() => {
                         this.imgHeight = this.$refs.img.clientHeight
                         // $refs.name如果取的是组件，那么是获取到了vue实例，取得dom还要$refs.name.$el
@@ -154,6 +155,9 @@
                 this.minHeight = viewerHeight - this.headerHeight - tabHeight + 1
             },
             selectSong(song,index) {
+                if(!song.picUrl) {
+                    getSongPicUrl(song)
+                }
                 this.selectPlay({
                     list: this.songs,
                     index
@@ -179,7 +183,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 100
+        z-index: 9000
         background: $color-background
         .header
             position: fixed

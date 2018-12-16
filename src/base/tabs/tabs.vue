@@ -215,7 +215,7 @@
                         i == index ? childVueInstance.activate() : childVueInstance.mute()
                     } else if(tablink) {
                         // 不是含有img的
-                        tablink.style.color = i == index ? 'rgb(255,255,255)' : 'rgba(255,255,255,0.6)'
+                        tablink.style.color = i == index ? 'rgb(255,255,255)' : 'rgba(255,255,255,0.5)'
                     }
                 }
             },
@@ -274,5 +274,5 @@
             top: 36px
             left: 0
             width: 35px
-            border: 1px solid $color-background
+            border-bottom: 1px solid $color-background
 </style>

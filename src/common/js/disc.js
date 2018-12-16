@@ -23,7 +23,7 @@ const defaultDiscImg = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJ
 
 export function createDisc(discData) {
     return new Disc({
-        id: id++,
+        id: discData.id || id++,
         name: discData.name || '未命名歌单',
         songList: discData.songList || [],
         picUrl: discData.picUrl || defaultDiscImg,
@@ -32,7 +32,9 @@ export function createDisc(discData) {
 }
 
 export const defaultDiscs = [
+    // 默认的“我喜欢的音乐”歌单id为1
     createDisc({
+        id: 1,
         name: '我喜欢的音乐'
     })
 ]

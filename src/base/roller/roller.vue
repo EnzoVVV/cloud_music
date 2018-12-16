@@ -75,7 +75,7 @@
                 this.front.style['font-size'] = this.tail.style['font-size'] = this.fontSize + 'px'
                 this.front.style.left = 0
                 // front与tail的起始点距离
-                this.distace = this.$el.offsetWidth - this.actualWidth > this.space ? this.$el.offsetWidth : this.actualWidth + this.space
+                this.distance = this.$el.offsetWidth - this.actualWidth > this.space ? this.$el.offsetWidth : this.actualWidth + this.space
                 this.tail.style.left = this.distance + 'px'
                 this.timer = setInterval(() => {
                     this.scrollmarquee()
