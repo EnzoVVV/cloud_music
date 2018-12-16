@@ -5,8 +5,8 @@
                 <div class='confirm-content'>
                 <p class='text'>{{text}}</p>
                 <div class='operate'>
-                    <div @click='cancel' class='operate-btn left'>{{cancelBtnText}}</div>
-                    <div @click='confirm' class='operate-btn'>{{confirmBtnText}}</div>
+                    <div @click.stop='cancel' class='operate-btn left'>{{cancelBtnText}}</div>
+                    <div @click.stop='confirm' class='operate-btn'>{{confirmBtnText}}</div>
                 </div>
                 </div>
             </div>
@@ -81,27 +81,27 @@ export default {
             z-index: 9999
             .confirm-content
                 width: 270px
-                border-radius: 13px
-                background: $color-highlight-background
+                border-radius: 5px
+                background: $color-background
                 .text
-                    padding: 19px 15px
+                    padding: 12px 15px
                     line-height: 22px
                     text-align: center
-                    font-size: $font-size-large
-                    color: $color-text-l
+                    font-size: $font-size-medium-x
+                    color: $color-text
                 .operate
                     display: flex
                     align-items: center
                     text-align: center
-                    font-size: $font-size-large
+                    font-size: $font-size-medium-x
                     .operate-btn
                         flex: 1
                         line-height: 22px
                         padding: 10px 0
-                        border-top: 1px solid $color-background-d
-                        color: $color-text-d
+                        border-top: 1px solid $color-background
+                        color: $color-theme
                         &.left
-                            border-right: 1px solid $color-background-d
+                            border-right: 1px solid $color-background
     @keyframes confirm-fadein
         0%
             opacity: 0

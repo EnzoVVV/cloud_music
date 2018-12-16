@@ -44,30 +44,14 @@
 			getSingerDetails() {
 				let self = this
 				getSingerDetail(this.singer.id).then(res => {
-					if (res.code === ERR_OK) {
-						processSongsUrl(self.getSongs(res.data.list)).then((songs) => {
-							self.songs = songs
-						})
-						// TODO
-						self.albums = self.getAlbums(res.data.albumlist)
-					}
+					self.songs = res.songs
+					self.albums = res.albums
+					self.brief = res.brief
 				})
-
-			},
-			getSongs(list) {
-				if(!list) {
-					return []
-				}
-				return list.map(item => createSong(item.musicData))
-			},
-			getAlbums(list) {
-				if(!list) {
-					return []
-				}
-				return list.map(item => createAlbum(item))
 			}
 		},
 		created() {
+			console.log('singer detail created')
 			this.check()
 			this.getSingerDetails()
 		}

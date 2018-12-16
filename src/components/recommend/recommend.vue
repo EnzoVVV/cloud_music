@@ -7,7 +7,7 @@
                     <slider>
                         <div v-for='item in recommends' :key='item.id' class='slider-content'>
                             <a>
-                                <img :src='item.picUrl' class='needsclick' @load='imgLoaded'></img>
+                                <img v-lazy='item.picUrl' class='needsclick' @load='imgLoaded'></img>
                             </a>
                         </div>
                     </slider>
@@ -38,7 +38,6 @@
 </template>
 <script>
     import { getRecommendList, getBanner } from 'api/recommend'
-    import { ERR_OK } from 'api/config'
     import slider from 'base/slider/slider'
     import discList from 'components/discList/discList'
     import scroll from 'base/scroll/scroll'
@@ -72,16 +71,12 @@
         methods: {
             getRecommends() {
                 getBanner().then(res => {
-                    if(res.code === ERR_OK) {
-                        this.recommends = res.data.slider
-                    }
+                    this.recommends = res
                 })
             },
             getLists() {
                 getRecommendList().then( res => {
-                    if(res.code === ERR_OK) {
-                        this.discLists = res.data.list
-                    }
+                    this.discLists = res
                 })
             },
             imgLoaded() {
@@ -140,7 +135,7 @@
                     justify-content: center
                     position: relative
                     .title
-                        position: relative
+                        position: absolute
                         bottom: 0
                         font-size: $font-size-small-s
                 .today

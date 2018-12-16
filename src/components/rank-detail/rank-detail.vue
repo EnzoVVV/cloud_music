@@ -1,5 +1,5 @@
 <template>
-    <detailboard headerTitle='歌单' :blur='false' :song='songs' @toggleFS='toggleFS'>
+    <detailboard headerTitle='歌单' :blur='false' :songs='songs' @toggleFS='toggleFS'>
     </detailboard>
 </template>
 <script>
@@ -21,7 +21,7 @@
         },
         data() {
             return {
-                songs: songs,
+                songs: [],
                 node: null,
                 headerTitle: '',
                 mockImg: mockImg

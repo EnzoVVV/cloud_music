@@ -1,9 +1,9 @@
 <template>
     <transition name='slide'>
-        <div>
-            <div class='background' @click='hide'>
+        <div v-show='showLeftMenu' class='left-menu'>
+            <div class='background' @click='hide' ref='bg'>
             </div>
-            <div class='menu'>
+            <div class='menu' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend' ref='menu'>
                 <scroll class='scroll' ref='scroll' :listen-scroll='listenScroll' :probe-type='probeType'>
                     <div>
                         <div class='header'>
@@ -72,6 +72,7 @@
 </template>
 <script>
     import { scrollMixin } from 'common/js/mixins'
+    import { translate, changeOpacity, opacity } from 'common/js/dom'
     export default {
         name: 'leftmenu',
         mixins: [scrollMixin],
@@ -79,14 +80,11 @@
 
         },
         props: {
-            showLeftMenu: {
-                type: Boolean,
-                default: false
-            }
         },
         data() {
             return {
-
+                showLeftMenu: false,
+                touch: {}
             }
         },
         computed: {
@@ -97,25 +95,71 @@
         methods: {
             hide() {
                 this.$emit('hide')
+            },
+            touchstart(e) {
+                this.touch.initiated = true
+                const touch = e.touches[0]
+                this.touch.startX = touch.pageX
+            },
+            touchmove(e) {
+                if(!this.touch.initiated) {
+                    return
+                }
+                const touch = e.touches[0]
+                const deltaX = touch.pageX - this.touch.startX
+                this.touch.totalDiff = deltaX < 0 ? deltaX : 0
+                if(this.touch.totalDiff < 0) {
+                    translate(this.$refs.menu, this.touch.totalDiff, 0)
+                    this.$refs.bg.style[opacity] = 0.5 * (1 + this.touch.totalDiff / this.maxMoveDistance)
+                }
+            },
+            touchend(e) {
+                if(!this.touch.initiated) {
+                    return 
+                }
+                if(this.touch.totalDiff < 0) {
+                    let moveDistance = 0
+                    if(Math.abs(this.touch.totalDiff) > this.maxMoveDistance / 2) {
+                        moveDistance = -this.maxMoveDistance
+                    } else {
+                        moveDistance = this.touch.totalDiff = 0
+                    }
+                    translate(this.$refs.menu, moveDistance, 0, {
+                        transitionDuration: duration + 'ms'
+                    })
+                    changeOpacity(this.$refs.bg, 0.5, duration)
+                    if(moveDistance < 0) {
+                        setTimeout(() => {
+                            this.hide()
+                        }, duration)
+                    }
+                }
+                this.touch = {}
             }
         },
         created() {
 
         },
         mounted() {
-
+            this.showLeftMenu = true
+            this.maxMoveDistance = window.innerWidth * 0.85
         }
     }
 </script>
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
+    &.slide-enter-active, &.slide-leave-active
+        transition: all 0.3s
+    &.slide-enter, &.slide-leave-to
+        .background .menu
+            transform: translate3d(-100%, 0, 0)
     .background
         position: fixed
         top: 0
         left: 0
         right: 0
         bottom: 0
-        background: $color-text-m
+        background: $color-text
         opacity: 0.5
         z-index: 2900
     .menu

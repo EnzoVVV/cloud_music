@@ -11,7 +11,7 @@
                 <div class='recommend'>
                     <div class='title'>热门搜索</div>
                     <div class='items'>
-                        <div v-for='item in mockRecommend' :key='item' class='item' @click='search(item)'>
+                        <div v-for='item in hotKeys' :key='item' class='item' @click='search(item)'>
                             <div class='container'>{{item}}</div>
                         </div>
                     </div>
@@ -21,7 +21,7 @@
                         <span class='title'>搜索历史</span>
                         <div @click='showConfirm' class='clear'><IconSvg class='back' icon-class='clear'></IconSvg></div>
                     </div>
-                    <searchlist :conten='searchHistory' @select='search' @delete='deleteSearchHistory'></searchlist>
+                    <searchlist :content='searchHistory' @select='search' @delete='deleteSearchHistory'></searchlist>
                 </div>
                 <confirm text='是否清空搜索历史' confirmBtnText='清空' @confirm='clearSearchHistory' ref='confirm'></confirm>
             </div>
@@ -35,6 +35,7 @@
     import searchlist from 'base/search-list/search-list'
     import confirm from 'base/confirm/confirm'
     import { mapMutations, mapGetters, mapActions } from 'vuex'
+    import { getHotKey } from 'api/search'
     export default {
         name: 'search',
         components: {
@@ -53,15 +54,13 @@
         data() {
             return {
                 inputValue: '',
-                mockRecommend: [
-                    'abc','ccc','xxxxx','fewfewaf','xgvrgfreaw','greafea'
-                ],
                 showResult: false,
-                showSuggest: true,
+                showSuggest: false,
                 searchbarStyle: {
                     color: 'rgb(228, 228, 228)',
                     background: 'rgb(212, 68, 57)'
-                }
+                },
+                hotKeys: []
             }
         },
         computed: {
@@ -78,10 +77,15 @@
                 }
             },
             inputValue(val) {
-                this.showSuggest = true
+                this.showSuggest = val.length != 0
             }
         },
         methods: {
+            getHotKeys() {
+                getHotKey().then(res => {
+                    this.hotKeys = res
+                })
+            },
             ...mapMutations({
                 setQuery: 'SET_QUERY'
             }),
@@ -99,7 +103,7 @@
                     this.showSuggest = false
                 })
                 // 保存搜索历史
-                this.saveSearchHistory()
+                this.saveSearchHistory(item)
             },
             showConfirm() {
                 this.$refs.confirm.show()
@@ -117,6 +121,7 @@
         created() {
             // 从localstorage里恢复缓存的历史搜搜记录
             this.restoreSearchHistory()
+            this.getHotKeys()
         },
         mounted() {
 
@@ -154,7 +159,7 @@
             z-index: 1200
         .recommend
             width: 100%
-            margin: 20px 20px
+            margin: 20px 10px
             .title
                 color: $color-text-g
                 margin-bottom: 10px

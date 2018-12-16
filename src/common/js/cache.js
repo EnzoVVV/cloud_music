@@ -60,7 +60,38 @@ export function restoreSearch() {
 }
 
 const DISC_KEY = '__disc__'
+const DISC_F_KEY = '__favorite_disc__'
 import { defaultDiscs } from 'common/js/disc'
+// 获取storage中所有歌单
+export function getDiscs(type = 0) {
+    if(!checkDiscType(type)) {
+        return
+    }
+    if(type === 0) {
+        // 当storage中没有DISC_KEY时，才返回defaultDiscs
+        // 如果DISC_KEY对应值为空数组时，也算有值，不返回defaultDiscs
+        let discs = storage.get(DISC_KEY, defaultDiscs)
+        if(discs && discs.length == 0) {
+            discs = defaultDiscs
+        }
+        return discs
+    } else if(type === 1) {
+        return storage.get(DISC_F_KEY, [])
+    }
+}
+
+
+// 将disc实例保存到storage, type 0 创建的歌单 type 1 收藏的歌单
+export function saveDisc(disc, type = 0) {
+    if(!checkDiscType(type)) {
+        return
+    }
+    let discs = getDiscs(type)
+    discs.push(disc)
+    const discKey = getDiscKey(type)
+    storage.set(discKey, discs)
+}
+
 // 添加歌曲到歌单
 // song，disc都是对应的类实例
 export function addToDisc(song, disc) {
@@ -68,14 +99,49 @@ export function addToDisc(song, disc) {
     saveDisc(disc)
 }
 
-// 将disc实例保存到storage
-export function saveDisc(disc) {
+// 添加/移除歌曲到'我喜欢的音乐'歌单
+export function toggleSongFS(song) {
+    // 切换song实例里的状态
+    song.toggleFavoriteStatus()
     let discs = getDiscs()
-    discs.push(disc)
+    let favoriteDisc = discs.find(i = i.id === 1)
+    if(song.favorite) {
+        // 添加
+        favoriteDisc.push(song)
+    } else {
+        // 移除
+        favoriteDisc = favoriteDisc.filter(i => i.id != song.id)
+    }
     storage.set(DISC_KEY, discs)
 }
 
-// 获取storage中所有歌单
-export function getDiscs() {
-    return storage.get(DISC_KEY, defaultDiscs)
+// 删除歌单
+export function deleteDisc(disc, type = 0) {
+    if(!checkDiscType(type)) {
+        return
+    }
+    let discs = getDiscs(type)
+    let newDiscs = discs.filter(i => i.id != disc.id)
+    const discKey = getDiscKey(type)
+    storage.set(discKey, newDiscs)
+}
+
+// 从歌单中删除一首歌
+export function deleteSongFromDisc(song ,disc) {
+    let discs = getDiscs()
+    let targetDisc = discs.find(i => i.id === disc.id)
+    targetDisc = targetDisc.filter(i => i.id === song.id)
+    storage.set(DISC_KEY, discs)
+}
+
+function getDiscKey(type = 0) {
+    return type === 0 ? DISC_KEY : DISC_F_KEY
+}
+
+function checkDiscType(type) {
+    if(type != undefined && type !=0 && type != 1) {
+        console.error('type应为0或1')
+        return false
+    }
+    return true
 }

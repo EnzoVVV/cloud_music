@@ -45,7 +45,9 @@
 
         },
         methods: {
-
+            hide() {
+                this.$emit('hide')
+            }
         },
         created() {
 

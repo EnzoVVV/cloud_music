@@ -1,33 +1,36 @@
 import { getSongsUrl } from 'api/song'
 import { ERR_OK } from 'api/config'
 import { getLyric } from 'api/song'
-import { Base64 } from 'js-base64'
 
 export class Song {
-    constructor({id, mid, name, singer, album, duration, img, url}) {
-      this.id = id
-      this.mid = mid
-      this.name = name
-      this.singer = singer
-      this.album = album
-      this.duration = duration
-      this.img = img
-      this.url = url
+    constructor({id, mid, name, singer, album, picUrl, url, albummid}) {
+        this.id = id
+        this.mid = mid
+        this.name = name
+        this.singer = singer
+        this.album = album
+        this.picUrl = picUrl
+        this.url = url
+        this.favorite = false
+        this.albummid = albummid
     }
     getLyric() {
         if(this.lyric) {
             return Promise.resolve(this.lyric)
         }
         return new Promise((resolve, reject) => {
-            getLyric(this.mid).then((res) => {
-                if (res.retcode === ERR_OK) {
-                    this.lyric = Base64.decode(res.lyric)
+            getLyric(this.mid || this.id).then(res => {
+                if (res && res.length) {
+                    this.lyric = res
                     resolve(this.lyric)
                 } else {
                     reject('no lyric')
                 }
             })
         })
+    }
+    toggleFavoriteStatus() {
+        this.favorite = !this.favorite
     }
 }
   
@@ -38,9 +41,9 @@ export function createSong(musicData) {
         name: musicData.songname,
         singer: getSinger(musicData.singer),
         album: musicData.albumname,
-        duration: musicData.interval,
-        img: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-        url: musicData.url
+        picUrl: window.useCloud ? musicData.picUrl : `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
+        url: musicData.url,
+        albummid: musicData.albummid
     })
 }
   
@@ -48,10 +51,32 @@ function getSinger(singer) {
     if (!singer) {
       return ''
     }
-    let singerNames = singer.map(singer => singer.name)
+    let singerNames = typeof singer == 'sring' ? singer : singer.map(singer => singer.name)
     return singerNames.join('/')
 }
 
+// 将服务返回的歌曲列表，生成song类的数组
+export function getSongs(list) {
+    if(!list) {
+        return []
+    }
+    if(window.useCloud) {
+        return list.map(item => createSong({
+            songid: item.id,
+            songname: item.name,
+            singer: item.ar || item.artists,
+            albumname: item.al ? item.al.name : item.album ? item.album.name : '',
+            picUrl: item.al ? item.al.picUrl : '',
+            url: `https://music.163.com/song/media/outer/url?id=${item.id}.mp3`,
+            albummid: item.al ? item.al.id : item.album ? item.album.id : ''
+        }))
+    } else {
+        return list.map(item => createSong(item.musicData))
+    }
+}
+
+
+// qq接口，获取歌曲url
 export function processSongsUrl(songs) {
     if (!songs.length) {
       return Promise.resolve(songs)
@@ -69,7 +94,7 @@ export function processSongsUrl(songs) {
 }
 
 export function isValidMusic(musicData) {
-    return musicData.songid && musicData.albumid && (!musicData.pay || musicData.pay.payalbumprice === 0)
+    return musicData.songid && musicData.albummid && (!musicData.pay || musicData.pay.payalbumprice === 0)
 }
 
 export class Album {
@@ -92,6 +117,13 @@ export function createAlbum(albumData) {
         img: albumData.pic,
         url: albumData.url
     })
+}
+
+export function getAlbums(list) {
+    if(!list) {
+        return []
+    }
+    return list.map(item => createAlbum(item))
 }
   
   

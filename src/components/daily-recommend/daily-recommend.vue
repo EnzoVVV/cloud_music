@@ -10,7 +10,7 @@
                             <span class='date'>{{day}}</span>
                         </div>
                     </div>
-                    <songlist :songs='songs' @click='seletSong' @clickHeader='playAll' class='songlist' :showHeader='true'></songlist>
+                    <songlist :songs='songs' @click='selectSong' @clickHeader='playAll' class='songlist' :showHeader='true'></songlist>
                 </div>
             </scroll>
         </div>
@@ -59,10 +59,16 @@
                 this.$emit('back')
             },
             selectSong(song, index) {
-                this.selectPlay(this.songs, index)
+                this.selectPlay({
+                    list: this.songs,
+                    index
+                })
             },
             playAll() {
-                this.selectPlay(this.songs, 0)
+                this.selectPlay({
+                    list: this.songs,
+                    index: 0
+                })
             },
             ...mapActions([
                 'selectPlay'
@@ -74,6 +80,8 @@
             }
         },
         created() {
+            // TODO， 需要登陆
+            this.getRecommend()
             for(let i=0;i<30;i++) {
                 const songData = {
                     id: i,
@@ -113,10 +121,9 @@
             bottom: 0
             width: 100%
             .bg
-                position: absolute 
+                position: relative 
                 width: 100%
                 height: 160px
-                z-index: -10
                 overflow: hidden
                 .info
                     position: absolute 

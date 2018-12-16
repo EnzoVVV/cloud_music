@@ -29,9 +29,7 @@
         methods: {
             getSingerLists() {
                 getSingerList().then(res => {
-                    if (res.code === ERR_OK) {
-                        this.singerList = this.assembleList(res.data.list)
-                    }
+                    this.singerList = this.assembleList(res)
                 })
             },
             assembleList(list) {
@@ -43,9 +41,10 @@
                 }
                 list.forEach((item, index) => {
                     const singerInfo = new Singer({
-                        id: item.Fsinger_id,
-                        mid: item.Fsinger_mid,
-                        name: item.Fsinger_name
+                        id: item.id,
+                        mid: item.mid,
+                        name: item.name,
+                        picUrl: item.picUrl
                     })
                     if (index < HOT_SINGER_LEN) {
                         map.hot.items.push(singerInfo)
@@ -73,8 +72,8 @@
                 return hot.concat(normal).concat(special)
             },
             handleClick(singer) {
-                this.$bus.emit('showSingerDetail',true)
                 this.setSinger(singer)
+                this.$bus.emit('showSingerDetail',true)
             },
             ...mapMutations({
                 setSinger: 'SET_SINGER'
@@ -89,8 +88,6 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
 .singer
     position: absolute
-    // top: 88px
-    // bottom: 0
     width: 100%
     height: 100%
 </style>

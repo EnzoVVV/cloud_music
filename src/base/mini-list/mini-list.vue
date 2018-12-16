@@ -1,30 +1,26 @@
 <template>
-    <div v-show='showMiniList'>
-        <!-- 让背景亮度降低的方法， 配一个fixed布局占全屏的，z-index低的div，颜色黑色， 透明度0.5 -->
-        <div class='empty'>
-        </div>
-        <transition name='mini-list'>
-            <div class='mini-list'>
-                <div class='decorate' @click='hide'>
-                </div>
-                <div class='header' @touchstart='headerTouchStart' @touchmove='headerTouchMove' @touchend='headerTouchEnd' ref='header'>
-                    <p>{{title}}</p>
-                </div>
-                <div @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
-                   <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll'>
-                       <slot></slot>
-                   </scroll>
-                </div>
+    <transition name='list'>
+        <div class='mini-list' v-show='flag'>
+            <div class='decorate' @click='hide'>
             </div>
-        </transition>
-    </div>
+            <div class='wrapper'>
+                <div class='header' @touchstart='headerTouchStart' @touchmove='headerTouchMove' @touchend='headerTouchEnd' ref='header'>
+                    <div class='title'>{{title}}</div>
+                </div>
+                <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
+                    <slot></slot>
+                </scroll>
+            </div>
+        </div>
+    </transition>
 </template>
 <script>
     import scroll from 'base/scroll/scroll'
     import { translate } from 'common/js/dom'
     const duration = 200
+    // transition动画时间
+    const AnimationDuration = 200
     export default {
-        // TODO, 让minislit的transition生效
         name: 'minilist',
         components: {
             scroll
@@ -43,25 +39,23 @@
                 maxMoveDistance: 300,
                 headerTouch: {},
                 touch: {},
-                position: 0
+                position: 0,
+                flag: false
             }
         },
         computed: {
         },
         watch: {
-            showList(val) {
-                this.showMiniList = val
-                if(val) {
-                    // transition动画完成后刷新scroll，不然没法滚动
-                    setTimeout(() => {
-                        this.$refs.scroll.refresh()
-                    }, 500)
-                }
-            }
         },
         methods: {
             hide() {
-                this.$emit('hide')
+                this.flag = false
+                // 需要transition动画结束后再emit hide事件
+                // 原因：emit hide事件后父组件会终结此实例，就来不及完成动画了
+                setTimeout(() => {
+                    this.$emit('hide')
+                }, AnimationDuration)
+                
             },
             handleScroll(pos) {
                 this.position = pos.y
@@ -162,24 +156,17 @@
         created() {
         },
         mounted() {
-            this.scrollEl = this.$refs.scroll.$el
-            this.headerEl = this.$refs.header
-            this.headerEl.style.bottom = this.scrollEl.offsetHeight + 'px'
-            this.maxMoveDistance = this.scrollEl.offsetHeight
+            this.flag = true
+            setTimeout(() => {
+                this.scrollEl = this.$refs.scroll.$el
+                this.headerEl = this.$refs.header
+                this.maxMoveDistance = this.scrollEl.offsetHeight
+            }, AnimationDuration) 
         }
     }
 </script>
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
-    .empty
-        position: fixed
-        top: 0
-        left: 0
-        right: 0
-        bottom: 0
-        background: $color-text-m
-        opacity: 0.5
-        z-index: 2900
     .mini-list
         position: fixed
         top: 0
@@ -204,23 +191,29 @@
             left: 0
             right: 0
             height: 100%
-        .header
+            background: $color-text
+            opacity: 0.5
+        .wrapper
             position: absolute
             left: 0
             right: 0
-            height: 44px
-            padding-left: 10px
-            border-radius: 15px 15px 0 0
-            background: $color-background
-            display: flex
-            align-items: center 
-            font-size: $font-size-small
-            color: $color-text-g
-        .scroll
-            position: absolute 
             bottom: 0
-            max-height: 30%
-            width: 100%
-            background: $color-background
-            overflow: hidden
+            max-height: 40%
+            .header
+                height: 44px
+                padding-left: 10px
+                border-radius: 15px 15px 0 0
+                background: $color-background
+                display: flex
+                align-items: center 
+                font-size: $font-size-small
+                color: $color-text-g
+                .title
+                    text-overflow: ellipsis
+                    overflow: hidden
+                    white-space: nowrap
+            .scroll
+                width: 100%
+                background: $color-background
+                overflow: hidden
 </style>

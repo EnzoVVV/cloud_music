@@ -4,16 +4,16 @@
         <!-- 需要给ul清除浮动才能滚动 -->
         <!-- li是浮动元素，脱离文档流，所以ul没有高度，外层的recommend也会没法scroll -->
         <ul class='items'>
-            <li v-for='disc in discList' :key='disc.dissid' class='item' @click='selectDisc(disc)'>
+            <li v-for='disc in discList' :key='disc.id' class='item' @click='selectDisc(disc)'>
                 <div class='cover'>
                     <div class='gradients'></div>
-                    <img v-lazy='disc.imgurl' class='img needsclick'></img>
+                    <img v-lazy='disc.picUrl' class='img needsclick'></img>
                     <p class='play-count'>
                         <IconSvg icon-class='yinle' class='play-count-icon'></IconSvg>
-                        <span class='play-count-text'>{{disc.listennum}}</span>
+                        <span class='play-count-text'>{{disc.playCount}}</span>
                     </p>
                 </div>
-                <div class='text'>{{disc.dissname}}</div>
+                <div class='text'>{{disc.name}}</div>
             </li>
         </ul>
     </div>
@@ -43,8 +43,8 @@
 
         },
         methods: {
-            selectDisc(disc) {
-                this.$bus.emit('showDiscDetail', disc)
+            selectDisc(discInfo) {
+                this.$bus.emit('showDiscDetail', discInfo)
             }
         },
         created() {
@@ -109,8 +109,8 @@
                         top: 5px
                         right: 8px
                         &-icon
-                            width: 12px
-                            height: 12px
+                            width: 15px !important
+                            height: 15px !important
                             color: $color-text-l
                         &-text
                             font-size: $font-size-small-s

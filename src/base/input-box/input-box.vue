@@ -49,6 +49,7 @@
             },
             clear() {
                 this.inputValue = ''
+                console.log('clear, inputValue is ',this.inputValue)
                 this.focus()
             }
         },

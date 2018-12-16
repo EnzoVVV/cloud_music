@@ -5,7 +5,7 @@
                 <h2 class='group-title'>{{group.title}}</h2>
                 <ul>
                     <li v-for='item in group.items' :key='item.id' class='group-item' @click='handleClick(item)'>
-                        <img v-lazy='item.imgUrl' class='group-item-img needsclick'></img>
+                        <img v-lazy='item.picUrl' class='group-item-img needsclick'></img>
                         <span class='group-item-name'>{{item.name}}</span>
                     </li>
                 </ul>

@@ -3,7 +3,7 @@
         <transition name='normal'>
             <div class='normal-player' v-show='fullScreen'>
                 <div class='background'>
-                    <img :src='currentSong.img' class='background-img'></img>
+                    <img :src='currentSong.picUrl' class='background-img'></img>
                 </div>
                 <div class='header' ref='header'>
                     <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
@@ -20,17 +20,17 @@
                     <!-- 移动端，touch事件之后是click事件，为了click所以此处不能touchstart.prevent，如必须，则可以在touch处理函数中e.preventDefault -->
                     <div class='cd-wrapper' ref='cdWrapper' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
                         <div class='cd' :class='cdStatus'>
-                            <img :src='currentSong.img' class='cd-img'></img>
+                            <img :src='currentSong.picUrl' class='cd-img'></img>
                         </div>
                     </div>
                     <div class='next-cd-wrapper' ref='nextCdWrapper' v-if='nextSong'>
                         <div class='next-cd'>
-                            <img :src='nextSong.img' class='next-cd-img'></img>
+                            <img :src='nextSong.picUrl' class='next-cd-img'></img>
                         </div>
                     </div>
                     <div class='pre-cd-wrapper' ref='preCdWrapper' v-if='preSong'>
                         <div class='pre-cd'>
-                            <img :src='preSong.img' class='pre-cd-img'></img>
+                            <img :src='preSong.picUrl' class='pre-cd-img'></img>
                         </div>
                     </div>
                     <scroll class='lyric-wrapper' ref='lyricWrapper'>
@@ -53,7 +53,7 @@
                         <div class='progressbar'>
                             <progressbar :percent='percent' @percentChange='progressBarChange' @percentChanging='progressBarChanging'></progressbar>
                         </div>
-                        <span class='time time-right'>{{formatTime(currentSong.duration)}}</span>
+                        <span class='time time-right'>{{formatTime(audioDuration)}}</span>
                     </div>
                     <div class='operator'>
                         <!-- 这五个按钮公用一个样式类，就是operator-icon，用空格和自有样式类分开 -->
@@ -77,7 +77,7 @@
             </div>
         </transition>
         <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen'>
-            <img  :src='currentSong.img' class='img'></img>
+            <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'></img></div>
             <div class='name'>{{currentSong.name}}</div>
             <progresscircle :radius='radius' :percent='percent' class='play'>
                 <div @click.stop='togglePlay' class='circle-button'>
@@ -139,7 +139,9 @@
                 preSong: null,
                 switchedSong: null,
                 radius: 32,
-                clientWidth: window.innerWidth
+                clientWidth: window.innerWidth,
+                // 音频时长
+                audioDuration: 0
             }
         },
         computed: {
@@ -169,7 +171,7 @@
                 }
             },
             percent() {
-                return this.currentTime / this.currentSong.duration
+                return this.audioDuration != 0 ? this.currentTime / this.audioDuration : 0
             }
         },
         watch: {
@@ -286,6 +288,8 @@
                 this.setFullScreen(true)
             },
             audioReady() {
+                // 获取音频时长
+                this.audioDuration = this.$refs.audio.duration
                 this.clearTimer()
                 // 监听 playing 这个事件可以确保慢网速或者快速切换歌曲导致的 DOM Exception
                 this.songReady = true
@@ -310,13 +314,13 @@
             },
             progressBarChanging (percent) {
                 this.progressBarMoving = true
-                this.currentTime = this.currentSong.duration * percent
+                this.currentTime = this.audioDuration * percent
                 if (this.currentLyric) {
                     this.currentLyric.seek(this.currentTime * 1000)
                 }
             },
             progressBarChange(percent) {
-                const currentTime = this.currentSong.duration * percent
+                const currentTime = this.audioDuration * percent
                 this.currentTime = this.$refs.audio.currentTime = currentTime
                 this.progressBarMoving = false
                 if(this.currentLyric) {
@@ -499,7 +503,7 @@
                 height: 100%
                 z-index: -1
                 opacity: 0.6
-                filter: blur(80px) brightness(50%)
+                filter: blur(80px) brightness(5%)
                 &-img
                     width: 100%
                     height: 100%
@@ -630,7 +634,7 @@
                             padding-right: 5px
                         &.time-right
                             text-align: right
-                            padding-right: 5px
+                            padding-left: 5px
                     .progressbar
                         flex: 1
                 .operator
@@ -656,27 +660,29 @@
             bottom: 0
             height: 44px
             width: 100%
-            z-index: 1000
+            z-index: 9000
             background: $color-background
+            display: flex
+            align-items: center
+            padding-left: 5px
             .img
-                height: 44px
+                height: 34px
+                width: 34px
                 border-radius: 20%
                 float: left
             .name
+                width: calc(100% - 40px - 80px)
                 padding-left: 5px
                 float: left
             .play
-                position: fixed
-                bottom: 0
-                right: 50px
+                margin: 0 15px
+                position: relative
                 .circle-button
                     position: absolute
                     top: 4px
                     left: 4px
             .list
-                position: fixed
-                bottom: 0
-                right: 10px
+                margin-right: 10px
     // 定义cd旋转的rotate
     @keyframes rotate
         0%

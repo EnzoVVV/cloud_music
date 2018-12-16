@@ -9,10 +9,10 @@
             </div>
             <ul>
                 <li v-for='(song,index) in songs' :key='song.id' class='item' @click='handleClick(song,index)'>
-                    <div class='img-wrapper' v-if='!showIndex'><img :src='mockImg' class='img'></img></div>
+                    <div class='img-wrapper' v-if='!showIndex && showImg'><img v-lazy='song.picUrl' class='img'></img></div>
                     <p class='index' v-if='showIndex'>{{index + 1}}</p>
                     <div class='content'>
-                        <h2 class='name'>{{song.name}}</h2>
+                        <div class='name'>{{song.name}}</div>
                         <p class='desc'>{{getDesc(song)}}</p>
                     </div>
                 </li>
@@ -22,8 +22,9 @@
     </div>
 </template>
 <script>
-    import { mockImg } from 'common/js/config'
+    import { mapActions } from 'vuex'
     import confirm from 'base/confirm/confirm'
+    import { getSongPicUrl } from 'common/js/song'
     export default {
         name: 'songlist',
         components: {
@@ -36,6 +37,10 @@
             showIndex: {
                 type: Boolean,
                 default: false
+            },
+            showImg: {
+                type: Boolean,
+                default: true
             },
             showHeader: {
                 type: Boolean,
@@ -57,7 +62,6 @@
         },
         data() {
             return {
-
             }
         },
         computed: {
@@ -99,7 +103,6 @@
 
         },
         mounted() {
-
         }
     }
 </script>
@@ -124,20 +127,11 @@
                 margin-left: 35%
                 color: $color-text-ii
         .item
-            position: relative
             display: flex
             align-items: center
             box-sizing: border-box
             height: 60px
             font-size: $font-size-medium
-            &:after
-                content: ''
-                position: absolute 
-                left: 13%
-                bottom: 0
-                right: 0
-                height: 1px
-                background-color: $color-light
             .index
                 float: left 
                 width: 50px
@@ -157,15 +151,26 @@
                     height: 40px
                     overflow: hidden
             .content
-                margin-left: 10px
+                padding-left: 10px
                 line-height: 20px
                 align-items: center
-                overflow: hidden
+                width: 100%
+                position: relative
+                &:after
+                    content: ''
+                    position: absolute 
+                    left: 2%
+                    bottom: 0
+                    right: 0
+                    height: 1px
+                    background-color: $color-light
                 .name
                     margin-top: 4px
                     font-size: $font-size-medium-x
-                    no-wrap()
                     color: $color-text
+                    text-overflow: ellipsis 
+                    overflow: hidden
+                    white-space: nowrap
                 .desc
                     no-wrap()
                     font-size: $font-size-small

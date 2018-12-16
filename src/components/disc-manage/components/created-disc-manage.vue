@@ -4,7 +4,7 @@
             <ul>
                 <li class='line' @click='popUpCreateDisc'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
-                    <div>创建的歌单</div>
+                    <div>创建新歌单</div>
                 </li>
                 <li class='line'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
@@ -16,7 +16,7 @@
                 </li>
             </ul>
         </minilist>
-        <createdisc v-if='modalFlag'></createdisc>
+        <createdisc v-if='modalFlag' @hide='hide'></createdisc>
     </div>
 </template>
 <script>

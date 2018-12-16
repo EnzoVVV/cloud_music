@@ -15,7 +15,7 @@
                                     <img v-lazy='item.picUrl' width='100' height='100'>
                                 </div>
                                 <ul class='songlist'>
-                                    <li class='song' v-for='(song, index) in item.songlist' :key='song.id || index'>
+                                    <li class='song' v-for='(song, index) in item.songList' :key='song.id || index'>
                                         <div class='index'>{{index + 1}}</div>
                                         <div class='text'>{{song.name}} - {{song.singer}}</div>
                                     </li>
@@ -120,7 +120,7 @@
             right: 0
             overflow: hidden
             .title
-                padding: 0 10px
+                padding: 10px
                 height: 30px
                 line-height: 30px
                 font-weight: bold

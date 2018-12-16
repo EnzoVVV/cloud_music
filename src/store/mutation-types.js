@@ -17,3 +17,5 @@ export const SET_QUERY = 'SET_QUERY'
 export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
 
 export const SET_DISCS = 'SET_DISCS'
+
+ export const SET_F_DISCS = 'SET_F_DISCS'

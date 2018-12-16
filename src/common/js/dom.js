@@ -14,38 +14,39 @@ export function addClass(element,className) {
 let elementStyle = document.createElement('div').style
 
 let vendor = (() => {
-  let transformNames = {
-    webkit: 'webkitTransform',
-    Moz: 'MozTransform',
-    O: 'OTransform',
-    ms: 'msTransform',
-    standard: 'transform'
-  }
+	let transformNames = {
+		webkit: 'webkitTransform',
+		Moz: 'MozTransform',
+		O: 'OTransform',
+		ms: 'msTransform',
+		standard: 'transform'
+	}
 
-  for (let key in transformNames) {
-    if (elementStyle[transformNames[key]] !== undefined) {
-      return key
-    }
-  }
+	for (let key in transformNames) {
+		if (elementStyle[transformNames[key]] !== undefined) {
+			return key
+		}
+	}
 
-  return false
+  	return false
 })()
 
 export function prefixStyle(style) {
-  if (vendor === false) {
-    return false
-  }
+	if (vendor === false) {
+		return false
+	}
 
-  if (vendor === 'standard') {
-    return style
-  }
+	if (vendor === 'standard') {
+		return style
+	}
 
-  return vendor + style.charAt(0).toUpperCase() + style.substr(1)
+	return vendor + style.charAt(0).toUpperCase() + style.substr(1)
 }
 
 export const transform = prefixStyle('transform')
 // IE9以及更早版本不支持transition属性
 export const transitionDuration = prefixStyle('transitionDuration')
+export const opacity = prefixStyle('opacity')
 
 export function translate(el, x = 0, y = 0, options) {
     if (!el) return
@@ -56,7 +57,7 @@ export function translate(el, x = 0, y = 0, options) {
         transitionDuration: '0s'
     }
     if(options) {
-      Object.assign(defaultOptions,options)
+      	Object.assign(defaultOptions,options)
     }
     if (defaultOptions.useTransfrom) {
         el.style[transform] = `translate3d(${x}px,${y}px,0)`
@@ -71,6 +72,17 @@ export function translate(el, x = 0, y = 0, options) {
 
 // 旋转元素
 export function rotate(el, angle, duration = 200) {
-  el.style[transitionDuration] = duration + 'ms'
-  el.style[transform] = `rotate(${angle}deg)`
+	el.style[transitionDuration] = duration + 'ms'
+	el.style[transform] = `rotate(${angle}deg)`
+}
+
+// 改变透明度
+export function changeOpacity(el, value, duration = 200) {
+	el.style[transitionDuration] = duration + 'ms'
+	el.style[opacity] = value
+	// 把transitionDuration归0
+	setTimeout(() => {
+		el.style[transitionDuration] = 0
+	}, duration)
+
 }
