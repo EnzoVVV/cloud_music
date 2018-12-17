@@ -97,33 +97,5 @@ export function isValidMusic(musicData) {
     return musicData.songid && musicData.albummid && (!musicData.pay || musicData.pay.payalbumprice === 0)
 }
 
-export class Album {
-    constructor({id, mid, name, date, img, url}) {
-        this.id = id
-        this.mid = mid
-        this.name = name
-        this.date = date
-        this.img = img
-        this.url = url
-    }  
-}
-
-export function createAlbum(albumData) {
-    return new Album({
-        id: albumData.id,
-        mid: albumData.albummid,
-        name: albumData.name,
-        date: albumData.publish_date,
-        img: albumData.pic,
-        url: albumData.url
-    })
-}
-
-export function getAlbums(list) {
-    if(!list) {
-        return []
-    }
-    return list.map(item => createAlbum(item))
-}
   
   

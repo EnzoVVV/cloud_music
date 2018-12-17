@@ -1,6 +1,6 @@
 <template>
   <div class="singer">
-    <listview :content="singerList" @click='handleClick'></listview>
+    <listview :content="singerList" @click='handleClick' ref='listview'></listview>
   </div>
 </template>
 
@@ -11,12 +11,13 @@
     import { isCharacter } from 'common/js/tools'
     import listview from "base/listview/listview"
     import { mapMutations } from 'vuex'
-
+    import { playlistMixin } from 'common/js/mixins'
     const HOT_SINGER_LEN = 10
     const HOT_NAME = "热门"
 
     export default {
         name: 'singer',
+        mixins: [playlistMixin],
         components: {
             listview,
         },
@@ -77,7 +78,14 @@
             },
             ...mapMutations({
                 setSinger: 'SET_SINGER'
-            })
+            }),
+            handlePlaylist(playlist) {
+                if(!playlist) return
+                const scroll = this.$refs.listview.$refs.listview
+                const bottom = playlist.length > 0 ? '60px' : ''
+                scroll.$el.style.bottom = bottom
+                scroll.refresh()
+            }
         },
         created() {
             this.getSingerLists()

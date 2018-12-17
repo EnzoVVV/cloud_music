@@ -1,31 +1,28 @@
 <template>
-    <detailboard headerTitle='歌单' :headerScrollTitle='title' :rollingTitle='true' :songs='songs' :favoriteStatus='favoriteStatus' :cover='cover' @toggleFS='toggleFS' @back='goback'>
+    <detailboard headerTitle='专辑' :headerScrollTitle='album.name' :rollingTitle='true' :songs='songs' :favoriteStatus='favoriteStatus' :cover='album.picUrl' :showSearch='false' @toggleFS='toggleFS' @back='goback'>
         <div slot='info'>
-            <img class='img' :src='cover'></img>
-            <div class='title'>{{title}}</div>
+            <img class='img' :src='album.picUrl'></img>
+            <div class='title'>{{album.name}}</div>
         </div>
     </detailboard>
 </template>
 <script>
     import detailboard from 'components/detail-board/detail-board'
     import { mapActions } from 'vuex'
-    import { getDiscDetail } from 'api/disc'
+    import { getAlbumDetail } from 'api/album'
     export default {
-        name: 'discdetail',
+        name: 'albumdetail',
         components: {
             detailboard
         },
         props: {
-            discInfo: {
+            album: {
                 type: Object
             }
         },
         data() {
             return {
-                disc: null,
                 songs: [],
-                title: '',
-                cover: '',
                 favoriteStatus: false
             }
         },
@@ -47,12 +44,9 @@
             ...mapActions([
                 'favoriteDisc'
             ]),
-            getDiscDetails() {
-                getDiscDetail(this.discInfo.id).then(res => {
-                    this.disc = res
-                    this.songs = this.disc.songList
-                    this.title = this.disc.name
-                    this.cover = this.disc.picUrl
+            getAlbumDetails() {
+                getAlbumDetail(this.album.id).then(res => {
+                    this.songs = res
                 })
             },
             goback() {
@@ -60,7 +54,7 @@
             }
         },
         created() {
-            this.getDiscDetails()
+            this.getAlbumDetails()
         },
         mounted() {
 

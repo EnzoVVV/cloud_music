@@ -7,7 +7,7 @@
                     <slider>
                         <div v-for='item in recommends' :key='item.id' class='slider-content'>
                             <a>
-                                <img v-lazy='item.picUrl' class='needsclick' @load='imgLoaded'></img>
+                                <img :src='item.picUrl' class='needsclick' @load='imgLoaded'></img>
                             </a>
                         </div>
                     </slider>
