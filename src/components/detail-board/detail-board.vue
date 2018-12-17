@@ -1,8 +1,8 @@
 <template>
     <transition name='detail-board'>
         <div class='detail-board'>
-            <FunctionalHeader :title='curTitle' :rollingTitle='rollingTitle' sbph='搜索歌单内歌曲' :showSearch='true' :searchbarStyle='searchbarStyle' @back='goback' @search='search' class='custom-header' ref='header'></FunctionalHeader>
-            <scroll v-if='searching' class='search-result'>
+            <FunctionalHeader :title='curTitle' :rollingTitle='rollingTitle' sbph='搜索歌单内歌曲' :showSearch='showSearch' :searchbarStyle='searchbarStyle' @back='goback' @search='search' class='custom-header' ref='header'></FunctionalHeader>
+            <scroll v-if='searching' class='search-result' ref='scroll'>
                 <ul>
                     <li v-for='wrapper in searches' :key='wrapper.song.id' class='item' @click='selectSong(wrapper.song,wrapper.index)'>
                         <div class='content'>
@@ -73,6 +73,11 @@
                 default: false
             },
             showIndex: {
+                type: Boolean,
+                default: true
+            },
+            // header的搜索
+            showSearch: {
                 type: Boolean,
                 default: true
             },
@@ -190,7 +195,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 3000
+        z-index: 8000
         background: $color-background
         &.detail-board-enter-active, &.detail-board-leave-active
             transition: all 0.4s

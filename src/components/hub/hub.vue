@@ -5,6 +5,7 @@
         <DailyRecommend v-if='dailyFlag' @back='dailyFlag = false'></DailyRecommend>
         <discmanage v-if='discManageFlag' :type='discManageType' @hide='discManageFlag = false'></discmanage>
         <discdetail v-if='discDetailFlag' :discInfo='discInfo' @back='discDetailFlag = false'></discdetail>
+        <albumdetail v-if='albumDetailFlag' :album='album' @back='albumDetailFlag=false'></albumdetail>
         <message v-if='messageFlag' :text='messageContent' ref='message'></message>
         <modal v-if='modalFlag' :title='modalInfo.title' :confirmBtnText='modalInfo.confirmBtnText' :cancelBtnText='cancelBtnText' @confrim='modalConfirm' @hide='modalFlag = false'></modal>
     </div>
@@ -15,6 +16,7 @@
     import DailyRecommend from 'components/daily-recommend/daily-recommend'
     import discmanage from 'components/disc-manage/disc-manage'
     import discdetail from 'components/disc-detail/disc-detail'
+    const albumdetail = () => import('components/album-detail/album-detail') 
     import message from 'base/message/message'
     import modal from 'base/modal/modal'
     import Vue from 'vue'
@@ -26,6 +28,7 @@
             DailyRecommend,
             discmanage,
             discdetail,
+            albumdetail,
             message,
             modal
         },
@@ -41,6 +44,8 @@
                 discManageType: 0,
                 discDetailFlag: false,
                 discInfo: null,
+                albumDetailFlag: false,
+                album: null,
                 messageFlag: false,
                 messageContent: '',
                 modalFlag: false,
@@ -76,6 +81,10 @@
                 this.discDetailFlag = true
                 this.discInfo = discInfo
             },
+            showAlbumDetail(album) {
+                this.albumDetailFlag = true
+                this.album = album
+            },
             showMessage(messageContent) {
                 this.messageContent = messageContent
                 if(this.messageFlag) {
@@ -105,6 +114,7 @@
             this.$bus.on('showDiscDetail', this.showDiscDetail)
             this.$bus.on('unrevealed', this.showUnrevealedMessage)
             this.$bus.on('showMessage', this.showMessage)
+            this.$bus.on('showAlbumDetail', this.showAlbumDetail)
 
             const self = this
             Vue.prototype.$unrevealed = function() {

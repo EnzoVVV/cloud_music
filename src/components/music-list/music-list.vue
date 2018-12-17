@@ -12,7 +12,7 @@
         </div>
         <div class='bg-layer' ref='layer'>
         </div>
-        <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list' @scroll='handleScroll' ref='list'>
+        <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list' @scroll='handleScroll' ref='scroll'>
             <div class='wrapper'>
                 <div class='tab' ref='tab'>
                     <div v-for='(tab,index) in tabs' :key='tab' class='tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
@@ -36,8 +36,10 @@
     import { transform } from 'common/js/dom'
     import { mapActions } from 'vuex'
     import { getSongsUrl } from 'api/song'
+    import { playlistMixin } from 'common/js/mixins'
     export default {
         name: 'musiclist',
+        mixins: [playlistMixin],
         components: {
             scroll,
             songlist,
@@ -87,7 +89,6 @@
         methods: {
             goBack() {
                 this.$emit('goback')
-                // this.$router.back()
             },
             selectTab(tab) {
                 this.activeTab = this.tabs.indexOf(tab)
@@ -100,7 +101,7 @@
                 if(scrollY > 0) {
                     // 下滑
                     const scale = 1 + scrollY/this.imgHeight
-                    this.$refs.img.style.zIndex = (this.$refs.list.$el.style.zIndex || 0) + 10
+                    this.$refs.img.style.zIndex = (this.$refs.scroll.$el.style.zIndex || 0) + 10
                     this.$refs.img.style[transform] = `scale(${scale})`
                 } else {
                     //上滑
@@ -133,7 +134,7 @@
                         this.imgHeight = this.$refs.img.clientHeight
                         // $refs.name如果取的是组件，那么是获取到了vue实例，取得dom还要$refs.name.$el
                         // 如果取的是element，那么直接$refs.name.style就行
-                        this.$refs.list.$el.style.top = `${this.imgHeight}px`
+                        this.$refs.scroll.$el.style.top = `${this.imgHeight}px`
                     })
                 }
             },
@@ -183,7 +184,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 9000
+        z-index: 5000
         background: $color-background
         .header
             position: fixed
@@ -259,8 +260,5 @@
                 &.active
                     .fixed-tab-text
                         color: $color-theme
-                        border-bottom: 1px solid $color-theme
-
-
-                    
+                        border-bottom: 1px solid $color-theme        
 </style>

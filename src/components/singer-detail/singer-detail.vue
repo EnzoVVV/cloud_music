@@ -43,10 +43,11 @@
 			},
 			getSingerDetails() {
 				let self = this
-				getSingerDetail(this.singer.id).then(res => {
-					self.songs = res.songs
-					self.albums = res.albums
-					self.brief = res.brief
+				getSingerDetail(this.singer.id).then(({songs, brief}) => {
+				// getSingerDetail(this.singer.id).then(([{songs, brief}, albums]) => {
+					self.songs = songs
+					// self.albums = albums || []
+					self.brief = brief
 				})
 			}
 		},

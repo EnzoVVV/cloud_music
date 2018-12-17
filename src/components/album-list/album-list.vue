@@ -1,8 +1,8 @@
 <template>
     <div class='album-list'>
         <ul>
-            <li v-for='album in albums' :key='album.id' class='item'>
-                <img class='img' :src='album.img'></img>
+            <li v-for='album in albumList' :key='album.id' class='item' @click='selectAlbum(album)'>
+                <img class='img' :src='album.picUrl'></img>
                 <div class='content'>
                     <p class='name'>{{album.name}}</p>
                     <p class='desc'>{{album.date}}</p>
@@ -12,6 +12,8 @@
     </div>
 </template>
 <script>
+    import { mapGetters } from 'vuex'
+    import { getSingerAlbums } from 'api/singer'
     export default {
         name: 'albumlist',
         components: {
@@ -24,20 +26,29 @@
         },
         data() {
             return {
-
+                albumList: this.albums
             }
         },
         computed: {
-
+            ...mapGetters([
+                'singer'
+            ])
         },
         watch: {
 
         },
         methods: {
-
+            selectAlbum(album) {
+                this.$bus.emit('showAlbumDetail',album)
+            }
         },
         created() {
-
+            // 外部没有传入albums, 则自行调服务取
+            if(!this.albums || this.albums.length == 0) {
+                getSingerAlbums(this.singer.id).then(res => {
+                    this.albumList = res
+                })
+            }
         },
         mounted() {
 
@@ -53,8 +64,8 @@
             align-items: center
             box-sizing: border-box
             height: 60px
-            border-bottom: 1px solid rgb(228, 228, 228)
             font-size: $font-size-medium
+            padding-left: 5px
             .img
                 float: left
                 width: 50px
@@ -62,16 +73,14 @@
                 border-radius: 10%
             .content
                 flex: 1
-                line-height: 20px
-                align-items: center
-                overflow: hidden
-                padding-left: 20px
+                height: 60px
+                line-height: 24px
+                margin-left: 20px
+                border-bottom: 1px solid rgb(228, 228, 228)
                 .name
-                    margin-top: 4px
-                    no-wrap()
+                    margin-top: 8px
                     color: $color-text
                 .desc
-                    no-wrap();
                     width: 80%
                     font-size: 12px
                     color: $color-text-g

@@ -11,7 +11,7 @@ export function getBanner() {
 			if(success(res.status)) {
 				result = res.data.banners.map(item => {
 					return  {
-						picUrl: item.picUrl,
+						picUrl: item.imageUrl,
 						url: item.url
 					}
 				})

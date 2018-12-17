@@ -151,19 +151,10 @@
                     height: 40px
                     overflow: hidden
             .content
-                padding-left: 10px
-                line-height: 20px
-                align-items: center
+                line-height: 25px
                 width: 100%
                 position: relative
-                &:after
-                    content: ''
-                    position: absolute 
-                    left: 2%
-                    bottom: 0
-                    right: 0
-                    height: 1px
-                    background-color: $color-light
+                border-bottom: 1px solid $color-light
                 .name
                     margin-top: 4px
                     font-size: $font-size-medium-x

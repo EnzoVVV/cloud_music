@@ -3,7 +3,8 @@ import { commonParams, options, HOST } from './config'
 import { success } from './shared'
 import axios from 'axios'
 import getFirstLetter from 'common/js/getFirstLetter/getFirstLetter'
-import { getSongs, createAlbum, processSongsUrl, getAlbums } from 'common/js/song'
+import { getSongs, processSongsUrl } from 'common/js/song'
+import { getAlbums } from 'common/js/album'
 
 export function getSingerList() {
 	if(window.useCloud) {
@@ -90,6 +91,17 @@ export function getSingerDetail(singerId) {
 				result.albums = getAlbums(res.data.albumlist)
 				return result
 			})
+		}
+		return result
+	})
+}
+
+export function getSingerAlbums(singerId) {
+	const url = HOST + `/artist/album?id=${singerId}`
+	return axios.get(url).then(res => {
+		let result = []
+		if(success(res.status)) {
+			result = getAlbums(res.data.hotAlbums)
 		}
 		return result
 	})

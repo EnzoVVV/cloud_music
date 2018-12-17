@@ -202,3 +202,8 @@ export function deepCopy(data) {
     }
     return result
 }
+
+export function formatTimestamp(timestamp) {
+    const time = new Date(timestamp)
+    return [time.getFullYear(), time.getMonth(), time.getDate()].join('.')
+}
