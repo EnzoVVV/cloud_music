@@ -38,15 +38,15 @@
                         <div @click='showCListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='list in discs' :key='list.name' v-show='!clistFold'>
-                            <img class='img' v-lazy='list.picUrl'></img>
+                        <li class='list' v-for='disc in discs' :key='disc.name' v-show='!clistFold' @click='showDiscDetail(disc)'>
+                            <img class='img' v-lazy='disc.picUrl'></img>
                             <div class='text'>
-                                <div class='name'>{{list.name}}</div>
-                                <p class='info'>{{clistInfo(list)}}</p>
+                                <div class='name'>{{disc.name}}</div>
+                                <p class='info'>{{clistInfo(disc)}}</p>
                             </div>
                             <!-- TODO，搞个图标 -->
                             <!-- '我喜欢的音乐' id是1, 我喜欢的音乐  没有这个按钮 -->
-                            <div class='icon' @click='showListControl(list,0)' v-if='list.id != 1'><IconImg img-name='music'></IconImg></div>
+                            <div class='icon' @click.stop='showListControl(disc,0)' v-if='disc.id != 1'><IconImg img-name='music'></IconImg></div>
                         </li>
                     </transition-group>
                 </div>
@@ -57,13 +57,13 @@
                         <div @click='showFListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='list in fdiscs' :key='list.name' v-show='!flistFold'>
-                            <img class='img' v-lazy='list.picUrl'></img>
+                        <li class='list' v-for='disc in fdiscs' :key='disc.name' v-show='!flistFold' @click='showDiscDetail(disc)'>
+                            <img class='img' v-lazy='disc.picUrl'></img>
                             <div class='text'>
-                                <div class='name'>{{list.name}}</div>
-                                <p class='info'>{{flistInfo(list)}}</p>
+                                <div class='name'>{{disc.name}}</div>
+                                <p class='info'>{{flistInfo(disc)}}</p>
                             </div>
-                            <div class='icon' @click='showListControl(list,1)'><IconImg img-name='music'></IconImg></div>
+                            <div class='icon' @click.stop='showListControl(disc,1)'><IconImg img-name='music'></IconImg></div>
                         </li>
                     </transition-group>
                 </div>
@@ -180,6 +180,9 @@
                 })
                 this.listControl.show = false
                 this.$message('已删除')
+            },
+            showDiscDetail(disc) {
+                this.$bus.emit('showDiscDetail', disc)
             },
             ...mapActions([
                 'deleteDisc'
