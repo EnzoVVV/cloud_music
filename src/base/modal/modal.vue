@@ -7,8 +7,8 @@
                     <div class='header'><span class='text'>{{title}}</span></div>
                     <slot class='slot'></slot>
                     <div class='operate' v-if='!hideBtn'>
-                        <div @click.stop='cancel' class='operate-btn left'>{{cancelBtnText}}</div>
-                        <div @click.stop='confirm' class='operate-btn' :class='{disable: disableConfirm === true}'>{{confirmBtnText}}</div>
+                        <div @click.stop='cancel' class='operate-btn left'>{{cancelBtnText || '取消'}}</div>
+                        <div @click.stop='confirm' class='operate-btn' :class='{disable: disableConfirm === true}'>{{confirmBtnText || '确定'}}</div>
                     </div>
                 </div>
             </div>
@@ -113,7 +113,6 @@
             z-index: 999
             width: 70%
             .modal-content
-                
                 border-radius: 5px
                 background: $color-background
                 .header

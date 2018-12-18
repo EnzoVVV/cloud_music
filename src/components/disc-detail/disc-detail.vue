@@ -8,7 +8,7 @@
 </template>
 <script>
     import detailboard from 'components/detail-board/detail-board'
-    import { mapActions } from 'vuex'
+    import { mapActions, mapGetters } from 'vuex'
     import { getDiscDetail } from 'api/disc'
     export default {
         name: 'discdetail',
@@ -30,19 +30,23 @@
             }
         },
         computed: {
-
+            ...mapGetters([
+                'fdiscs'
+            ])
         },
         watch: {
 
         },
         methods: {
+            checkFavoriteStatus() {
+                this.favoriteStatus = !!this.fdiscs.find(i => i.id === this.discInfo.id)
+            },
             toggleFS(status) {
-                if(status) {
-                    // 添加收藏
-                    this.favoriteDisc()
-                } else {
-                    // 取消收藏
-                }
+                this.favoriteDisc({
+                    disc: this.discInfo, 
+                    status: status
+                })
+                this.favoriteStatus = !this.favoriteStatus
             },
             ...mapActions([
                 'favoriteDisc'
@@ -61,6 +65,7 @@
         },
         created() {
             this.getDiscDetails()
+            this.checkFavoriteStatus()
         },
         mounted() {
 

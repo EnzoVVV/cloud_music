@@ -45,7 +45,8 @@
                                 <p class='info'>{{clistInfo(list)}}</p>
                             </div>
                             <!-- TODO，搞个图标 -->
-                            <div class='icon' @click='showListControl(list,1)' v-if='list.id != 1'><IconImg img-name='music'></IconImg></div>
+                            <!-- '我喜欢的音乐' id是1, 我喜欢的音乐  没有这个按钮 -->
+                            <div class='icon' @click='showListControl(list,0)' v-if='list.id != 1'><IconImg img-name='music'></IconImg></div>
                         </li>
                     </transition-group>
                 </div>
@@ -62,16 +63,16 @@
                                 <div class='name'>{{list.name}}</div>
                                 <p class='info'>{{flistInfo(list)}}</p>
                             </div>
-                            <div class='icon' @click='showListControl(list,2)'><IconImg img-name='music'></IconImg></div>
+                            <div class='icon' @click='showListControl(list,1)'><IconImg img-name='music'></IconImg></div>
                         </li>
                     </transition-group>
                 </div>
             </div>
         </scroll>
         <!-- 我喜欢的音乐，没有这个， 创建的歌单，有编辑歌单信息 -->
-        <minilist :title='listControl,title' v-if='listControl.show' @hide='listControl.show = false'>
+        <minilist :title='listControl.title' v-if='listControl.show' @hide='listControl.show = false'>
             <ul>
-                <li class='line' v-if='listControl.isCList'>
+                <li class='line' v-if='listControl.type === 0'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
                     <div>编辑歌单信息</div>
                 </li>
@@ -109,8 +110,8 @@
                     show: false,
                     id: null,
                     title: '',
-                    isCList: false,
-                    isDefaultCList: false
+                    // 0是'创建的歌单', 1是'收藏的歌单'
+                    type: 0
                 },
                 modalFlag: false
             }
@@ -163,8 +164,7 @@
                     show: true,
                     id: list.id,
                     title: list.name,
-                    isCList: type === 1,
-                    idDefaultCList: type === 0
+                    type: type
                 })
             },
             requestDeleteList() {
@@ -174,7 +174,10 @@
                 }, 'deleteList')
             },
             deleteList() {
-                this.deleteDisc(this.listControl)
+                this.deleteDisc({
+                    disc: this.listControl,
+                    type: this.listControl.type
+                })
                 this.listControl.show = false
                 this.$message('已删除')
             },

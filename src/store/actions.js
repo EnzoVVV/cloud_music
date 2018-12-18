@@ -115,9 +115,9 @@ import { addToDisc, getDiscs, saveDisc, deleteDisc as deleteADisc, deleteSongFro
 import { createDisc as createADisc } from 'common/js/disc'
 
 // 将歌曲添加到歌单, 入参为类的实例
-export const addSongToDisc = function ({commit}, song, disc) {
+export const addSongToDisc = function ({commit}, {song, disc}) {
     addToDisc(song, disc)
-    commit(types.SET_DISCS, getDiscs())
+    commit(types.SET_DISCS, getDiscs(0))
 }
 
 // 创建歌单, 入参： 歌单名
@@ -126,16 +126,17 @@ export const createDisc = function ({commit}, discName) {
         name: discName
     })
     saveDisc(disc)
-    commit(types.SET_DISCS, getDiscs())
+    commit(types.SET_DISCS, getDiscs(0))
 }
 // 创建歌单并添加歌曲
-export const createDiscAndAddSong = function ({commit}, song, discName) {
+// 入参的payload只能有一个, 所以用对象与结构 {song, discName}
+export const createDiscAndAddSong = function ({commit}, {song, discName}) {
     let disc = createADisc({
         name: discName
     })
     saveDisc(disc)
     addToDisc(song, disc)
-    commit(types.SET_DISCS, getDiscs())
+    commit(types.SET_DISCS, getDiscs(0))
 }
 // 从storage中恢复歌单信息
 export const restoreDisc = function ({commit}) {
@@ -145,7 +146,7 @@ export const restoreDisc = function ({commit}) {
 
 //删除歌单
 // disc包含id就可以, 不要求是disc实例还是对象
-export const deleteDisc = function ({commit}, disc, type = 0) {
+export const deleteDisc = function ({commit}, {disc, type}) {
     deleteADisc(disc, type)
     const mutationType = type === 0 ? types.SET_DISCS : types.SET_F_DISCS
     commit(mutationType, getDiscs(type))
@@ -153,13 +154,13 @@ export const deleteDisc = function ({commit}, disc, type = 0) {
 
 // 从歌单中删除一首歌
 // disc包含id就可以
-export const deleteSongFromDisc = function ({commit}, song, disc) {
+export const deleteSongFromDisc = function ({commit}, {song, disc}) {
     deleteSongFromADisc(song, disc)
     commit(types.SET_DISCS, getDiscs(0))
 }
 
 // 收藏歌单，status true 添加收藏，false 取消收藏
-export const favoriteDisc = function ({commit}, disc, status = true) {
+export const favoriteDisc = function ({commit}, {disc, status}) {
     if(status) {
         saveDisc(disc, 1)
     } else {

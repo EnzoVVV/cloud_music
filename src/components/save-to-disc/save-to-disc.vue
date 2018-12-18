@@ -65,7 +65,10 @@
                 this.$emit('hide')
             },
             add(disc) {
-                this.addSongToDisc(this.song, disc)
+                this.addSongToDisc({
+                    song: this.song,
+                    disc: disc
+                })
             },
             ...mapActions([
                 'addSongToDisc'
