@@ -89,7 +89,7 @@
                 this.$emit('toggleFS', false)
             },
             toggleFS() {
-                if(this.favoriteStatus) {
+                if(!this.favoriteStatus) {
                     // 添加收藏
                     this.$emit('toggleFS', true)
                 } else {
@@ -132,6 +132,7 @@
             box-sizing: border-box
             height: 60px
             font-size: $font-size-medium
+            padding-left: 5px
             .index
                 float: left 
                 width: 50px

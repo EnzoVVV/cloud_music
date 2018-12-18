@@ -38,7 +38,10 @@
                 this.modalFlag = false
                 if(this.song && this.song.id !== undefined && this.song.id !== null) {
                     // 创建歌单并添加歌曲
-                    this.createDiscAndAddSong(this.song, this.discName)
+                    this.createDiscAndAddSong({
+                        song: this.song, 
+                        discName: this.discName
+                    })
                     this.$message('已收藏')
                 } else {
                     // 仅收藏

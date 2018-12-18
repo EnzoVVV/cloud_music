@@ -93,7 +93,6 @@ export function getRecommendList() {
 
 // 获取每日推荐歌单
 export function getDailyRecommend() {
-	debugger
 	const url = HOST + '/recommend/songs'
 	return axios.get(url).then(res => {
 		debugger

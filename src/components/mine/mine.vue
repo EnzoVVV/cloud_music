@@ -38,14 +38,15 @@
                         <div @click='showCListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='list in discs' :key='list.name' v-show='!clistFold'>
-                            <img class='img' v-lazy='list.picUrl'></img>
+                        <li class='list' v-for='disc in discs' :key='disc.name' v-show='!clistFold' @click='showDiscDetail(disc)'>
+                            <img class='img' v-lazy='disc.picUrl'></img>
                             <div class='text'>
-                                <div class='name'>{{list.name}}</div>
-                                <p class='info'>{{clistInfo(list)}}</p>
+                                <div class='name'>{{disc.name}}</div>
+                                <p class='info'>{{clistInfo(disc)}}</p>
                             </div>
                             <!-- TODO，搞个图标 -->
-                            <div class='icon' @click='showListControl(list,1)' v-if='list.id != 1'><IconImg img-name='music'></IconImg></div>
+                            <!-- '我喜欢的音乐' id是1, 我喜欢的音乐  没有这个按钮 -->
+                            <div class='icon' @click.stop='showListControl(disc,0)' v-if='disc.id != 1'><IconImg img-name='music'></IconImg></div>
                         </li>
                     </transition-group>
                 </div>
@@ -56,22 +57,22 @@
                         <div @click='showFListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='list in fdiscs' :key='list.name' v-show='!flistFold'>
-                            <img class='img' v-lazy='list.picUrl'></img>
+                        <li class='list' v-for='disc in fdiscs' :key='disc.name' v-show='!flistFold' @click='showDiscDetail(disc)'>
+                            <img class='img' v-lazy='disc.picUrl'></img>
                             <div class='text'>
-                                <div class='name'>{{list.name}}</div>
-                                <p class='info'>{{flistInfo(list)}}</p>
+                                <div class='name'>{{disc.name}}</div>
+                                <p class='info'>{{flistInfo(disc)}}</p>
                             </div>
-                            <div class='icon' @click='showListControl(list,2)'><IconImg img-name='music'></IconImg></div>
+                            <div class='icon' @click.stop='showListControl(disc,1)'><IconImg img-name='music'></IconImg></div>
                         </li>
                     </transition-group>
                 </div>
             </div>
         </scroll>
         <!-- 我喜欢的音乐，没有这个， 创建的歌单，有编辑歌单信息 -->
-        <minilist :title='listControl,title' v-if='listControl.show' @hide='listControl.show = false'>
+        <minilist :title='listControl.title' v-if='listControl.show' @hide='listControl.show = false'>
             <ul>
-                <li class='line' v-if='listControl.isCList'>
+                <li class='line' v-if='listControl.type === 0'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
                     <div>编辑歌单信息</div>
                 </li>
@@ -109,8 +110,8 @@
                     show: false,
                     id: null,
                     title: '',
-                    isCList: false,
-                    isDefaultCList: false
+                    // 0是'创建的歌单', 1是'收藏的歌单'
+                    type: 0
                 },
                 modalFlag: false
             }
@@ -163,8 +164,7 @@
                     show: true,
                     id: list.id,
                     title: list.name,
-                    isCList: type === 1,
-                    idDefaultCList: type === 0
+                    type: type
                 })
             },
             requestDeleteList() {
@@ -174,9 +174,15 @@
                 }, 'deleteList')
             },
             deleteList() {
-                this.deleteDisc(this.listControl)
+                this.deleteDisc({
+                    disc: this.listControl,
+                    type: this.listControl.type
+                })
                 this.listControl.show = false
                 this.$message('已删除')
+            },
+            showDiscDetail(disc) {
+                this.$bus.emit('showDiscDetail', disc)
             },
             ...mapActions([
                 'deleteDisc'

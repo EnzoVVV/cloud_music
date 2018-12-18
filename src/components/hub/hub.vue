@@ -7,7 +7,7 @@
         <discdetail v-if='discDetailFlag' :discInfo='discInfo' @back='discDetailFlag = false'></discdetail>
         <albumdetail v-if='albumDetailFlag' :album='album' @back='albumDetailFlag=false'></albumdetail>
         <message v-if='messageFlag' :text='messageContent' ref='message'></message>
-        <modal v-if='modalFlag' :title='modalInfo.title' :confirmBtnText='modalInfo.confirmBtnText' :cancelBtnText='cancelBtnText' @confrim='modalConfirm' @hide='modalFlag = false'></modal>
+        <modal v-if='modalFlag' :title='modalInfo.title' :confirmBtnText='modalInfo.confirmBtnText' :cancelBtnText='modalInfo.cancelBtnText' @confirm='modalConfirm' @hide='modalFlag = false'></modal>
     </div>
 </template>
 <script>

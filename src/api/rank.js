@@ -8,7 +8,6 @@ export function getTopList() {
 	if(window.useCloud) {
 		const url = HOST + '/toplist/detail'
 		return axios.get(url).then(res => {
-			debugger
 			let result = []
 			if(success(res.status)) {
 				result = res.data.list.map(item => {
