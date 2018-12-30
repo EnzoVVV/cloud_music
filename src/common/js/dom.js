@@ -70,6 +70,23 @@ export function translate(el, x = 0, y = 0, options) {
     }
 }
 
+// 获取元素的transform值
+export function getTransformValue(el) {
+	if(!el) return null
+	let transformMatrix = getComputedStyle(el).transform
+	if(transformMatrix == 'none') {
+		return {
+			x: 0,
+			y: 0
+		}
+	}
+	let split = transformMatrix.split(',')
+	return {
+		x: parseInt(split[split.length - 2]),
+		y: parseInt(split[split.length - 1])
+	}
+}
+
 // 旋转元素
 export function rotate(el, angle, duration = 200) {
 	el.style[transitionDuration] = duration + 'ms'

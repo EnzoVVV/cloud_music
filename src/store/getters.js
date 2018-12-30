@@ -23,3 +23,7 @@ export const searchHistory = state => state.searchHistory
 export const discs = state => state.discs
 
 export const fdiscs = state => state.fdiscs
+
+export const discardDiscs = state => state.discardDiscs
+
+export const fsingers = state => state.fsingers

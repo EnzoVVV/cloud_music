@@ -8,7 +8,7 @@
 </template>
 <script>
     import detailboard from 'components/detail-board/detail-board'
-    import { mapActions } from 'vuex'
+    import { mapGetters, mapActions } from 'vuex'
     import { getAlbumDetail } from 'api/album'
     export default {
         name: 'albumdetail',
@@ -27,7 +27,9 @@
             }
         },
         computed: {
-
+            ...mapGetters([
+                'albums'
+            ])
         },
         watch: {
 
@@ -42,12 +44,15 @@
                 }
             },
             ...mapActions([
-                'favoriteDisc'
+                'favoriteAlbum'
             ]),
             getAlbumDetails() {
                 getAlbumDetail(this.album.id).then(res => {
                     this.songs = res
                 })
+            },
+            checkFavoriteStatus() {
+                this.favoriteStatus = !!this.albums.find(i => i.id === this.album.id)
             },
             goback() {
                 this.$emit('back')
@@ -55,6 +60,7 @@
         },
         created() {
             this.getAlbumDetails()
+            this.checkFavoriteStatus()
         },
         mounted() {
 

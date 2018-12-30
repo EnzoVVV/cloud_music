@@ -11,7 +11,11 @@ const state = {
   query: '',
   searchHistory: [],
   discs: [],
-  fdiscs: []
+  fdiscs: [],
+  discardDiscs: [],
+  albums: [],
+  fsingers: [],
+  discardDiscs: []
 }
 
 export default state
