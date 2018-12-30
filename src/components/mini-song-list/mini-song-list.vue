@@ -1,56 +1,41 @@
 <template>
-    <div v-show='showMiniList'>
-        <!-- 让背景亮度降低的方法， 配一个fixed布局占全屏的，z-index低的div，颜色黑色， 透明度0.5 -->
-        <div class='empty'>
-        </div>
-        <transition name='mini-list'>
-            <div class='mini-list'>
-                <div class='decorate' @click='hide'>
-                </div>
-                <div class='header' @touchstart='headerTouchStart' @touchmove='headerTouchMove' @touchend='headerTouchEnd' ref='header'>
-                    <div class='modeIcon'><IconSvg :icon-class='modeIcon'></IconSvg></div>
-                    <p class='modeText'>{{modeText}}</p>
-                    <IconSvg icon-class='clear' class='clear'></IconSvg>
-                </div>
-                <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
-                    <transition-group name='list' tag='ul'>
-                        <li v-for='item in mockList' :key='item.id' @click='select(item)' ref='item' class='item'>
-                            <span class='name' :class='{active: currentSong.id == item.id }'>{{item.name}}</span>
-                            <span class='singer' :class='{active: currentSong.id == item.id }'>{{'- ' + item.singer}}</span>
-                            <div class='delete' @click.stop='deleteOne(item)'><IconSvg icon-class='delete'></IconSvg></div>
-                            <div class='border'></div>
-                        </li>
-                    </transition-group>
-                </scroll>
+    <div>
+        <minilist @hide='hide' :modifiedHeader='true' @headerClick='headerClick' ref='minilist'>
+            <div slot='header'>
+                <div class='modeIcon'><IconSvg :icon-class='modeIcon'></IconSvg></div>
+                <p class='modeText'>{{modeText}}</p>
+                <IconSvg icon-class='clear' class='clear'></IconSvg>
             </div>
-        </transition>
+            <transition-group name='list' tag='ul' slot='list'>
+                <li v-for='item in mockList' :key='item.id' @click='select(item)' ref='item' class='item'>
+                    <span class='name' :class='{active: currentSong.id == item.id }'>{{item.name}}</span>  
+                    <span class='singer' :class='{active: currentSong.id == item.id }'>{{'- ' + item.singer}}</span>
+                    <div class='delete' @click.stop='deleteOne(item)'><IconSvg icon-class='delete'></IconSvg></div>
+                    <div class='border'></div>
+                </li>
+            </transition-group>
+        </minilist>
         <confirm class='confirm' ref='confirm' text='是否清空播放列表' confirmBtnText='清空' @confirm='clear'></confirm>
     </div>
 </template>
 <script>
-    import scroll from 'base/scroll/scroll'
     import confirm from 'base/confirm/confirm'
-    import { translate, hasClass } from 'common/js/dom'
+    import { hasClass } from 'common/js/dom'
     import { mapActions, mapGetters } from 'vuex'
     import { playerMixin } from 'common/js/mixins'
     import { playMode } from 'common/js/config'
-    const duration = 200
+    import minilist from 'base/mini-list/mini-list'
     export default {
         name: 'minisonglist',
         mixins: [playerMixin],
         components: {
-            scroll,
+            minilist,
             confirm
         },
         props: {
-            showList: {
-                type: Boolean,
-                default: false
-            }
         },
         data() {
             return {
-                showMiniList: true,
                 mockList: [],
                 probeType: 3,
                 listenScroll: true,
@@ -71,26 +56,34 @@
             }
         },
         watch: {
-            showList(val) {
-                this.showMiniList = val
-                if(val) {
-                    // transition动画完成后刷新scroll，不然没法滚动
-                    setTimeout(() => {
-                        this.$refs.scroll.refresh()
-                    }, 500)
-                }
-            },
             currentSong(val) {
-                const index = this.sequenceList.find(i => i.id === val.id)
-                if(index > 3) {
-                    const el = this.$refs.item[index - 3]
-                    this.$refs.scroll.scrollToElement(el, 1000)
-                } else {
-                    this.$refs.scroll.scrollTo(0, 0, 1000)
-                }
+                // const index = this.sequenceList.find(i => i.id === val.id)
+                // if(index > 3) {
+                //     const el = this.$refs.item[index - 3]
+                //     this.$refs.scroll.scrollToElement(el, 1000)
+                // } else {
+                //     this.$refs.scroll.scrollTo(0, 0, 1000)
+                // }
+                this.autoScroll()
             }
         },
         methods: {
+            headerClick(el) {
+                if(el.className == 'modeIcon' || el.className == 'modeText') {
+                    this.toggleMode()
+                } else if(hasClass(el, 'clear')) {
+                    this.confirm()
+                }
+            },
+            autoScroll() {
+                const index = this.sequenceList.find(i => i.id === this.currentSong.id)
+                if(index > 3) {
+                    const el = this.$refs.item[index - 3]
+                    this.scroll.scrollToElement(el, 1000)
+                } else {
+                    this.scroll.scrollTo(0, 0, 1000)
+                }
+            },
             ...mapActions([
                 'selectPlay',
                 'deleteSong',
@@ -115,111 +108,6 @@
             },
             hide() {
                 this.$emit('hide')
-            },
-            handleScroll(pos) {
-                this.position = pos.y
-            },
-            touchstart(e) {
-                // 列表不在初始位置时，this.position < 0, 不进行此逻辑处理， return掉
-                if(this.position < 0) return
-                // 但是，列表在初始位置时， this.position == 0, 此时如果向上滑动， 先执行的touch逻辑， 再触发的scroll事件执行handleScroll函数更新this.position
-                // 所以, 列表从初始位置手指向上划时， 也触发了touch函数，所以在touchmove和touchend中，加上判断，如果totalDiff大于0，才translate
-                this.touch.initiated = true
-                const touch = e.touches[0]
-                this.touch.startY = touch.pageY
-            },
-            touchmove(e) {
-                if(!this.touch.initiated) {
-                    return
-                }
-                const touch = e.touches[0]
-                const deltaY = touch.pageY - this.touch.startY
-                this.touch.totalDiff = deltaY > 0 ? deltaY : 0
-                if(this.touch.totalDiff > 0) {
-                    // scroll组件也感知了滑动，需要先将scroll组件disable
-                    this.$refs.scroll.disable()
-                    translate(this.scrollEl, 0, this.touch.totalDiff)
-                    translate(this.headerEl, 0, this.touch.totalDiff)
-                }
-            },
-            touchend(e) {
-                if(!this.touch.initiated) {
-                    return 
-                }
-                if(this.touch.totalDiff > 0) {
-                    let moveDistance = 0
-                    if(this.touch.totalDiff > this.maxMoveDistance / 2) {
-                        moveDistance = this.maxMoveDistance
-                    } else {
-                        moveDistance = this.touch.totalDiff = 0
-                    }
-                    translate(this.scrollEl, 0, moveDistance, {
-                        transitionDuration: duration + 'ms'
-                    })
-                    translate(this.headerEl, 0, moveDistance, {
-                        transitionDuration: duration + 'ms'
-                    })
-                    if(moveDistance > 0) {
-                        setTimeout(() => {
-                            this.hide()
-                        }, duration)
-                    }
-                }
-                this.touch = {}
-                this.$refs.scroll.enable()
-            },
-            headerTouchStart(e) {
-                this.headerTouch.initiated = true
-                const touch = e.touches[0]
-                this.headerTouch.startY = touch.pageY
-            },
-            headerTouchMove(e) {
-                if(!this.headerTouch.initiated) {
-                    return 
-                }
-                const touch = e.touches[0]
-                const deltaY = touch.pageY - this.headerTouch.startY
-                this.headerTouch.totalDiff = deltaY > 0 ? deltaY : 0
-                translate(this.scrollEl, 0, this.headerTouch.totalDiff)
-                translate(this.headerEl, 0, this.headerTouch.totalDiff)
-            },
-            headerTouchEnd(e) {
-                if(!this.headerTouch.initiated) {
-                    return 
-                }
-                // 是click事件
-                if(this.headerTouch.totalDiff === undefined) {
-                    // currentTarget始终是事件的监听者, 而target是事件的真正发出者
-                    // 此处事件已经冒泡了，e.currrentTarget一定是this.$refs.header，因为header绑定的事件监听处理，e.target是真正点击的元素
-                    const el = e.target
-                    if(el.className == 'modeIcon' || el.className == 'modeText') {
-                        this.toggleMode()
-                    } 
-                    if(hasClass(el, 'clear')) {
-                        this.confirm()
-                    }
-                    this.headerTouch = {}
-                    return   
-                }
-                let moveDistance = 0
-                let duration = 200
-                if(this.headerTouch.totalDiff > this.maxMoveDistance / 2) {
-                    moveDistance = this.maxMoveDistance
-                } else {
-                    moveDistance = this.headerTouch.totalDiff = 0
-                }
-                translate(this.scrollEl, 0, moveDistance, {
-                    transitionDuration: duration + 'ms'
-                })
-                translate(this.headerEl, 0, moveDistance, {
-                    transitionDuration: duration + 'ms'
-                })
-                if(moveDistance > 0) {
-                    setTimeout(() => {
-                        this.hide()
-                    }, duration)
-                }
-                this.headerTouch = {}
             }
         },
         created() {
@@ -232,13 +120,8 @@
             }
         },
         mounted() {
-            const self = this
-            setTimeout(() => {
-                // TODO， 为啥这里的this是window？？？
-                self.scrollEl = self.$refs.scroll.$el
-                self.headerEl = self.$refs.header
-                self.maxMoveDistance = self.headerEl.getBoundingClientRect().bottom
-            }, 500)
+            this.scroll = this.$refs.minilist.$refs.scroll
+            this.autoScroll()
         }
     }
 </script>
