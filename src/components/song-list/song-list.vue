@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class='song-list'>
+        <div class='song-list' :style='computedStyle'>
             <div class='header' v-if='showHeader' @click='clickHeader'>
                 <IconSvg :icon-class='icon' class='icon'></IconSvg>
                 <span class='title'>{{title}}</span>
@@ -57,6 +57,11 @@
             favoriteStatus: {
                 type: Boolean,
                 default: false
+            },
+            // 控制是否有边缘圆角, singer-detail里不需要圆角
+            radius: {
+                type: Boolean,
+                default: true
             }
 
         },
@@ -70,6 +75,15 @@
             },
             favoriteBtn() {
                 return this.favoriteStatus ? '-取消收藏' : '+收藏全部'
+            },
+            computedStyle() {
+                if(this.radius) {
+                    return {
+                        'border-top-left-radius': '10px',
+                        'border-top-right-radius': '10px'
+                    }
+                }
+                return ''
             }
         },
         watch: {
@@ -110,8 +124,6 @@
     @import '~common/stylus/variable'
     .song-list
         background: $color-background
-        border-top-left-radius: 10px
-        border-top-right-radius: 10px
         .header
             height: 44px
             border-bottom: 1px solid $color-light

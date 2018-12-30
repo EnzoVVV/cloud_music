@@ -1,6 +1,6 @@
 <template>
     <div>
-        <tabswiper :tabContent='musicHeader' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight' :showMarker='true'></tabswiper>
+        <tabswiper :tabContent='musicHeader' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight'></tabswiper>
     </div>
 </template>
 <script>
@@ -34,16 +34,13 @@
             return {
                 musicHeader: [
                     {
-                        text: '推荐',
-                        to: '/music/recommend'
+                        text: '推荐'
                     },
                     {
-                        text: '歌手',
-                        to: '/music/singer'
+                        text: '歌手'
                     },
                     {
-                        text: '电台',
-                        to: '/music/radio'
+                        text: '电台'
                     }
                 ],
                 componentList: componentList,

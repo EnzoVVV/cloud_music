@@ -39,7 +39,13 @@
                 default: ''
             },
             searchbarStyle: {
-                type: Object
+                type: Object,
+                default: () => {
+                    return {
+                        background: 'none',
+                        color: 'rgb(228, 228, 228)'
+                    }
+                }
             }
         },
         data() {
