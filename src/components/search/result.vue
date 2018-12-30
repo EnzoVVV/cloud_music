@@ -1,6 +1,6 @@
 <template>
     <div>
-        <tabswiper :tabContent='tabContent' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight' :showMarker='true'></tabswiper>
+        <tabswiper :tabContent='tabContent' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight'></tabswiper>
     </div>
 </template>
 <script>

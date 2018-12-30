@@ -5,10 +5,11 @@
             </div>
             <div class='wrapper'>
                 <div class='header' @touchstart='headerTouchStart' @touchmove='headerTouchMove' @touchend='headerTouchEnd' ref='header'>
-                    <div class='title'>{{title}}</div>
+                    <slot name='header' v-if='modifiedHeader'></slot>
+                    <div class='title' v-else>{{title}}</div>
                 </div>
                 <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
-                    <slot></slot>
+                    <slot name='list'></slot>
                 </scroll>
             </div>
         </div>
@@ -29,6 +30,10 @@
             title: {
                 type: String,
                 default: ''
+            },
+            modifiedHeader: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
@@ -130,6 +135,8 @@
                 }
                 // 是click事件
                 if(this.headerTouch.totalDiff === undefined) {
+                    this.$emit('headerClick', e.target)
+                    this.headerTouch = {}
                     return   
                 }
                 let moveDistance = 0

@@ -27,6 +27,16 @@
             bounce: {
                 type: Boolean,
                 default: false
+            },
+            // 下拉刷新
+            pullup: {
+                type: Boolean,
+                default: false
+            },
+            // 横向滚动
+            scrollX: {
+                type: Boolean,
+                default: false
             }
         },
         mounted() {
@@ -35,38 +45,50 @@
             }, 20)
         },
         methods: {
-        _initScroll() {
-            if (!this.$refs.wrapper) {
-                return
-            }
-            this.scroll = new BScroll(this.$refs.wrapper, {
-                bounce: this.bounce,
-                probeType: this.probeType,
-                click: this.click
-            })
-
-            if (this.listenScroll) {
-                let me = this
-                this.scroll.on('scroll', (pos) => {
-                    me.$emit('scroll', pos)
+            _initScroll() {
+                if (!this.$refs.wrapper) {
+                    return
+                }
+                this.scroll = new BScroll(this.$refs.wrapper, {
+                    bounce: this.bounce,
+                    probeType: this.probeType,
+                    click: this.click,
+                    scrollX: this.scrollX
                 })
+
+                if (this.listenScroll) {
+                    let me = this
+                    this.scroll.on('scroll', (pos) => {
+                        me.$emit('scroll', pos)
+                    })
+                }
+                if(this.pullup) {
+                    this.scroll.on('scrollEnd', () => {
+                        if(this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+                            this.$emit('scrollToEnd')
+                        }
+                        
+                    })
+                }
+            },
+            disable() {
+                this.scroll && this.scroll.disable()
+            },
+            enable() {
+                this.scroll && this.scroll.enable()
+            },
+            refresh() {
+                this.scroll && this.scroll.refresh()
+            },
+            scrollTo() {
+                this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+            },
+            scrollToElement() {
+                this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
+            },
+            stop() {
+                this.scroll && this.scroll.stop.apply(this.scroll, arguments)
             }
-        },
-        disable() {
-            this.scroll && this.scroll.disable()
-        },
-        enable() {
-            this.scroll && this.scroll.enable()
-        },
-        refresh() {
-            this.scroll && this.scroll.refresh()
-        },
-        scrollTo() {
-            this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
-        },
-        scrollToElement() {
-            this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
-        }
         },
         watch: {
             data() {

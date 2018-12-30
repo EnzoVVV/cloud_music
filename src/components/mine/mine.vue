@@ -71,7 +71,7 @@
         </scroll>
         <!-- 我喜欢的音乐，没有这个， 创建的歌单，有编辑歌单信息 -->
         <minilist :title='listControl.title' v-if='listControl.show' @hide='listControl.show = false'>
-            <ul>
+            <ul slot='list'>
                 <li class='line' v-if='listControl.type === 0'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
                     <div>编辑歌单信息</div>
@@ -205,6 +205,7 @@
         overflow: hidden
         .mine
             overflow: hidden
+            height: 100%
             .decorate
                 position: absolute
                 top: -30vh
@@ -243,7 +244,6 @@
                         background: $color-light
             .user-list
                 width: 100%
-                height: 100%
                 .user-list-header
                     height: 30px
                     background: $color-light

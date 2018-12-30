@@ -60,12 +60,16 @@
                 this.tabs = findComponentDownward(this,'tabs')
             },
             ...mapActions([
-                'restoreDisc'
+                'restoreDisc',
+                'restoreAlbums',
+                'restoreSingers'
             ])
         },
         created() {
             this.curIndex = this.defaultIndex
             this.restoreDisc()
+            this.restoreAlbums()
+            this.restoreSingers()
         },
         mounted() {
             this.$refs.swiper.$on('updatetouchend',this.touchend)
