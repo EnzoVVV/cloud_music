@@ -2,17 +2,26 @@
     <div class='musiclist' ref='musiclist'>
         <div class='header' ref='header'>
             <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
-            <div class='header-title'>{{singer.name}}</div>
+            <div class='header-title'>{{title}}</div>
+            <ibutton v-if='!singerFS && reachTop' icon='add' text='收藏' :ref='true' size='small' class='header-favorite' @click='favoriteSinger(singer, true)'></ibutton>
+            <IconSvg icon-class='share' size='23px' class='header-share'></IconSvg>
         </div>
         <div class='bg-img' :style='bgStyle' ref='img'></div>
+        <div class='info' ref='info'>
+            <div class='text'>
+                <div class='name'>{{singer.name}}</div>
+                <div class='other'>test</div>
+                <ibutton icon='person' text='个人主页'></ibutton>
+                <ibutton v-if='!singerFS' icon='add' text='收藏' :ref='true' class='favorite' @click='favoriteSinger(singer, true)'></ibutton>
+                <ibutton v-else icon='bingo-light' text='已收藏' class='favorite' @click='favoriteSinger(singer, false)'></ibutton>
+            </div>
+        </div>
         <div class='fixed-tab' v-show='showFixedTab'>
             <div v-for='(tab,index) in tabs' :key='tab' class='fixed-tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
                 <p class='fixed-tab-text'>{{tab}}</p>
             </div>
         </div>
-        <div class='bg-layer' ref='layer'>
-        </div>
-        <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list' @scroll='handleScroll' ref='scroll'>
+        <scroll :listen-scroll='listenScroll' :probe-type='probeType' :bounce='true' class='list' @scroll='handleScroll' ref='scroll'>
             <div class='wrapper'>
                 <div class='tab' ref='tab'>
                     <div v-for='(tab,index) in tabs' :key='tab' class='tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
@@ -23,27 +32,33 @@
                 <albumlist :albums='albums' ref='albumlist' v-show='activeTab == 1'></albumlist>
                 <div v-show='activeTab == 2'>
                 </div>
-                <div v-show='activeTab == 3'>
-                </div>
+                <brief v-show='activeTab == 3' ref='brief'>
+                </brief>
             </div>
         </scroll>
     </div>
 </template>
 <script>
     import scroll from 'base/scroll/scroll'
+    import ibutton from 'base/button/button'
     import songlist from 'components/song-list/song-list'
     import albumlist from 'components/album-list/album-list'
-    import { transform } from 'common/js/dom'
+    import brief from 'components/brief/brief'
+    import { transform, translate } from 'common/js/dom'
     import { mapActions } from 'vuex'
     import { getSongsUrl } from 'api/song'
     import { playlistMixin } from 'common/js/mixins'
+    const radius = 10
     export default {
         name: 'musiclist',
         mixins: [playlistMixin],
         components: {
             scroll,
+            ibutton,
             songlist,
-            albumlist
+            albumlist,
+            brief
+            
         },
         props: {
             songs: {
@@ -77,16 +92,26 @@
                         ref: 'albumlist',
                         checked: false
                     }
-                ]
+                ],
+                reachTop: false,
+                singerFS: false
             }
         },
         computed: {
-
+            title() {
+                return this.reachTop ? this.singer.name : ''
+            },
+            ...mapGetters([
+                'fsingers'
+            ])
         },
         watch: {
 
         },
         methods: {
+            checkSingerFS() {
+                return !!this.fsingers.find(i => i.id === this.singer.id)
+            },
             goBack() {
                 this.$emit('goback')
             },
@@ -101,25 +126,36 @@
                 if(scrollY > 0) {
                     // 下滑
                     const scale = 1 + scrollY/this.imgHeight
-                    this.$refs.img.style.zIndex = (this.$refs.scroll.$el.style.zIndex || 0) + 10
                     this.$refs.img.style[transform] = `scale(${scale})`
+                    translate(this.$refs.info, 0, scrollY)
+                    this.reachTop = false
                 } else {
                     //上滑
-                    if(-scrollY <= this.imgHeight - this.headerHeight) {
-                        this.$refs.layer.style[transform] = `translate3d(0,${scrollY}px,0)`
-                        this.$refs.img.style.zIndex = 0
-                        this.$refs.img.style.paddingTop = '75%'
-                        this.$refs.img.style.height = 0
+                    if(-scrollY <= this.imgHeight -radius - this.headerHeight) {
+                        this.reachTop = false
                         let distance = scrollY * 0.3
-                        this.$refs.img.style[transform] = `translate3d(0,${distance}px,0)`
+                        let bright = (1 - (Math.abs(scrollY) / this.scrollDistance) * 0.7) * 100
+                        translate(this.$refs.img, 0, distance)
+                        Object.assign(this.$refs.img.style, {
+                            'clip-path': 'none',
+                            'filter': `brightness(${bright}%)`,
+                            'z-index': -1
+                        })
+                        let opacity = 1 - (Math.abs(scrollY) / this.scrollDistance)
+                        translate(this.$refs.info, 0, scrollY)
+                        Object.assign(this.$refs.info.style, {
+                            opacity: opacity
+                        })
                         this.showFixedTab = false
                     } else {
                         // 触顶
+                        this.reachTop = true
+                        let distance = this.scrollDistance * 0.3
+                        let percent = Math.ceil((distance + 44 + radius) / this.imgHeight * 100)
                         this.$refs.img.style[transform] = `translate3d(0,0,0)`
                         Object.assign(this.$refs.img.style, {
-                            zIndex: 10,
-                            paddingTop: 0,
-                            height: this.headerHeight + 'px'
+                            'clip-path': `polygon(0% 0%, 100% 0%, 100% ${percent}%, 0% ${percent}%)`,
+                            'z-index': 1
                         })
                         this.showFixedTab = true
                     }
@@ -134,7 +170,10 @@
                         this.imgHeight = this.$refs.img.clientHeight
                         // $refs.name如果取的是组件，那么是获取到了vue实例，取得dom还要$refs.name.$el
                         // 如果取的是element，那么直接$refs.name.style就行
-                        this.$refs.scroll.$el.style.top = `${this.imgHeight}px`
+                        let scrollTop = this.imgHeight - radius
+                        this.$refs.scroll.$el.style.top = `${scrollTop}px`
+                        let infoTop = this.imgHeight - 80
+                        this.$refs.info.style.top = `${infoTop}px`
                     })
                 }
             },
@@ -165,11 +204,13 @@
                 })
             },
             ...mapActions([
-                'selectPlay'
+                'selectPlay',
+                'favoriteSinger'
             ])
         },
         created() {
             this.loadImg()
+            this.singerFS = this.checkSingerFS()
         },
         mounted() {
             this.getHeight()
@@ -195,30 +236,44 @@
             display: flex
             align-items: center
             z-index: 150
+            margin-left: 10px
             &-back
                 color: $color-text-a
                 float: left 
             &-title
+                flex: 1
                 color: $color-text-a
                 padding-left: 10px
+            &-favorite
+                margin-right: 15px
+            &-share
+                margin-right: 25px
         .bg-img
-            position: relative
+            position: absolute
             width: 100%
-            height: 0
-            padding-top: 75%
-            transform-origin: top
-            background-size: cover
-            background-position: 0 30%
-        .bg-layer
-            position: relative
-            height: 100%
-            background: $color-background
+            height: 30%
+            overflow: hidden
+        .info
+            position: absolute
+            left: 15px
+            right: 15px
+            display: flex
+            align-items: flex-end
+            .text
+                flex: 1
+                .name
+                    color: $color-text-a
+                    font-size: 32px
+                    padding-bottom: 5px
+                .other
+                    color: $color-text-ll
+            .favorite
+                margin-left: 10px
         .list
             position: fixed
             top: 0
             bottom: 0
             width: 100%
-            background: $color-background
             .wrapper
                 position: relative
                 .tab
@@ -245,6 +300,8 @@
             width: 90%
             z-index: 200
             background: $color-background
+            border-top-left-radius: 10px
+            border-top-right-radius: 10px
             display: flex
             flex-direction: row
             height: 30px
