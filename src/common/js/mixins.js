@@ -132,3 +132,14 @@ export const scrollMixin = {
         this.listenScroll = true
     }
 }
+
+import liner from 'base/liner/liner'
+export const collectionMixin = {
+    components: {
+        scroll,
+        liner
+    },
+    mounted() {
+        this.$bus.on('collection-search', this.search)
+    }
+}

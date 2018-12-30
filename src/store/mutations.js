@@ -33,6 +33,15 @@ const matutaions = {
   },
   [types.SET_F_DISCS](state, discs) {
     state.fdiscs = discs
+  },
+  [types.SET_DISCARD_DISCS](state, discs) {
+    state.SET_DISCARD_DISCS = discs
+  },
+  [types.SET_ALBUMS](state, albums) {
+    state.albums = albums
+  },
+  [types.SET_FAVORITE_SINGERS](state, singer) {
+    state.fsinger = singer
   }
 }
 

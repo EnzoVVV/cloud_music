@@ -145,3 +145,60 @@ function checkDiscType(type) {
     }
     return true
 }
+
+const ALBUM_KEY = '__album__'
+// 收藏专辑
+export function saveAlbum(album) {
+    let albums = getAlbums()
+    albums.push(album)
+    storage.set(ALBUM_KEY, albums)
+}
+
+// 取消收藏专辑
+export function deleteAlbum(album) {
+    let albums = getAlbums()
+    albums = albums.filter(i => i.id != album.id)
+    storage.set(ALBUM_KEY, albums)
+}
+// 获取storage中的专辑
+export function getAlbums() {
+    return storage.get(ALBUM_KEY, [])
+}
+
+const SINGER_KEY = '__singer__'
+// 收藏歌手
+export function saveSinger(singer) {
+    let singers = getSingers()
+    if(!singers.find(i => i.id == singer.id)) {
+        singers.push(singer)
+    }
+    storage.set(SINGER_KEY, singer)
+}
+// 取消收藏歌手
+export function deleteSinger(singer) {
+    let singers = getSingers()
+    singers = singers.filter(i => i.id != singer.id)
+    storage.set(SINGER_KEY, singer)
+}
+// 获取storage中的歌手
+export function getSinger() {
+    return storage.get(SINGER_KEY, [])
+}
+
+const DISCARD_DISC = '__discard_disc__'
+// 暂存删除的自建歌单
+export function saveDiscardDisc(disc) {
+    let discs = getDiscardDiscs()
+    discs.push(disc)
+    storage.set(DISCARD_DISC, discs)
+}
+// 清除删除的自建歌单
+export function deleteDiscardDisc(disc) {
+    let discs = getDiscardDiscs()
+    discs = discs.filter(i => i.id != disc.id)
+    storage.set(DISCARD_DISC, discs)
+}
+// 获取storage中的歌手
+export function getDiscardDiscs() {
+    return storage.get(DISCARD_DISC, [])
+}

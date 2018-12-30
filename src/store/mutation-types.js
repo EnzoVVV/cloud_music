@@ -18,4 +18,12 @@ export const SET_SEARCH_HISTORY = 'SET_SEARCH_HISTORY'
 
 export const SET_DISCS = 'SET_DISCS'
 
- export const SET_F_DISCS = 'SET_F_DISCS'
+export const SET_F_DISCS = 'SET_F_DISCS'
+
+export const SET_DISCARD_DISCS = 'SET_DISCARD_DISCS'
+
+export const SET_ALBUMS = 'SET_ALBUMS'
+
+export const SET_FAVORITE_SINGERS = 'SET_FAVORITE_SINGERS'
+
+

@@ -159,6 +159,12 @@ export const deleteSongFromDisc = function ({commit}, {song, disc}) {
     commit(types.SET_DISCS, getDiscs(0))
 }
 
+// 直接创建歌单(恢复歌单)
+export const addDisc = function ({commit}, disc) {
+    saveDisc(disc)
+    commit(types.SET_DISCS, getDiscs(0))
+}
+
 // 收藏歌单，status true 添加收藏，false 取消收藏
 export const favoriteDisc = function ({commit}, {disc, status}) {
     if(status) {
@@ -174,3 +180,56 @@ export const toggleFS = function ({commit}, song) {
     toggleSongFS(song)
     commit(types.SET_DISCS, getDiscs(0))
 }
+
+import { saveAlbum as saveAnAlbum, deleteAlbum as deleteAnAlbum, getAlbums } from 'common/js/cache'
+
+// 收藏/取消收藏 专辑
+export const favoriteAlbum = function ({commit}, {album, status}) {
+    if(status) {
+        saveAnAlbum(album)
+    } else {
+        deleteAnAlbum(album)
+    }
+    commit(types.SET_ALBUMS, getAlbums())
+}
+
+// 从storage中恢复收藏的歌单
+export const restoreAlbums = function ({commit}) {
+    commit(types.SET_ALBUMS, getAlbums())
+}
+
+import { saveSinger, deleteSinger, getSingers } from 'common/js/cache'
+// 收藏/取消收藏 歌手
+export const favoriteSinger = function ({commit}, {singer, status}) {
+    if(status) {
+        saveSinger(singer)
+    } else {
+        deleteSinger(singer)
+    }
+    commit(types.SET_FAVORITE_SINGERS, getSingers())
+}
+
+// 从storage中恢复收藏的歌手
+export const restoreSingers = function ({commit}) {
+    commit(types.SET_FAVORITE_SINGERS, getSingers())
+}
+
+import { getDiscardDiscs, saveDiscardDisc, deleteDiscardDisc } from 'common/js/cache'
+
+// 从storage中恢复删除的歌单
+export const restoreDiscardDiscs = function ({commit}) {
+    commit(types.SET_DISCARD_DISCS, getDiscardDiscs())
+}
+
+// 暂存删除的歌单
+export const storeDiscardDisc = function ({commit}, disc) {
+    saveDiscardDisc(disc)
+    commit(types.SET_DISCARD_DISCS, getDiscardDiscs())
+}
+
+// 清除删除的自建歌单
+export const desertDiscardDisc = function ({commit}, disc) {
+    deleteDiscardDisc(disc)
+    commit(types.SET_DISCARD_DISCS, getDiscardDiscs())
+}
+
