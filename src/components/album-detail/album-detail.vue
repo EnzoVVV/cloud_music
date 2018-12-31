@@ -36,12 +36,11 @@
         },
         methods: {
             toggleFS(status) {
-                if(status) {
-                    // 添加收藏
-                    this.favoriteDisc()
-                } else {
-                    // 取消收藏
-                }
+                this.favoriteAlbum({
+                    album: this.album,
+                    status: status
+                })
+                this.favoriteStatus = !this.favoriteStatus
             },
             ...mapActions([
                 'favoriteAlbum'

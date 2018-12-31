@@ -26,7 +26,7 @@
                 type: Array,
                 default: () => []
             },
-            emitDeleteList: {
+            emitDeletedList: {
                 type: Boolean,
                 default: false
             },
@@ -77,11 +77,11 @@
                 }
             },
             handleDelete() {
-                this.$refs.sortList.doDelete()
-                if(this.emitDeleteList) {
+                this.$refs.sortlist.doDelete()
+                if(this.emitDeletedList) {
                     // 传出被删除的项
                     const deletedList = this.$refs.sortlist.getDeletedList()
-                    this.$emti('deleted', deletedList)
+                    this.$emit('deleted', deletedList)
                 }
                 this.checkedItemCount = 0
             },

@@ -55,20 +55,19 @@
                 })
             },
             finish(list) {
-                if(list != null) {
+                if(list !== null) {
                     this.$el.style.display = 'none'
-                    this.setDisc(this.discs.slice(0,1).concat(list))
+                    this.setDiscs(this.discs.slice(0,1).concat(list))
                 }
                 this.hide()
             },
             ...mapMutations({
-                setDisc: 'SET_DISCS'
+                setDiscs: 'SET_DISCS'
             }),
             ...mapActions([
                 'storeDiscardDisc'
             ]),
             popUpCreateDisc() {
-                this.$bus.emit('showModal')
                 this.modalFlag = true
             }
         },

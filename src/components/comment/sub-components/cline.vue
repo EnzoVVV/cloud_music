@@ -4,7 +4,7 @@
         <div class='content'>
             <div class='comment'>{{content}}</div>
             <div class='reply' v-if='info.reply'>
-                <span class='author'>{{info.reply.user.name}}</span>
+                <span class='author'>{{info.reply.user.name}}: </span>
                 <span>{{info.reply.content}}</span>
             </div>
         </div>

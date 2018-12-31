@@ -2,7 +2,8 @@
     <transition name='comment'>
         <div class='comment'>
             <FunctionalHeader title='评论' @back='back'></FunctionalHeader>
-            <scroll class='scroll' :pullupo='true' @scrollToEnd='loadMore'>
+            <!-- TODO, :data='' -->
+            <scroll class='scroll' :pullup='true' @scrollToEnd='loadMore'>
                 <div>
                     <div class='song' @click='selectSong'>
                         <liner :picUrl='song.picUrl' :main='song.name' :sub='song.singer' height='80px' :hasBorder='false'></liner>
@@ -19,7 +20,7 @@
     </transition>
 </template>
 <script>
-    import FunctionalHeader from 'base/functional-header/function-header'
+    import FunctionalHeader from 'base/functional-header/functional-header'
     import scroll from 'base/scroll/scroll'
     import liner from 'base/liner/liner'
     import cline from './sub-components/cline'
