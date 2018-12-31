@@ -1,21 +1,23 @@
 <template>
     <div>
         <minilist title='收藏的歌单' @hide='hide'>
-            <ul>
+            <ul slot='list'>
                 <li class='line'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
                     <div>歌单管理</div>
                 </li>
             </ul>
         </minilist>
+        <sort v-if='sortFlag' :list='fdiscs' @back='finish'></sort>
     </div>
 </template>
 <script>
-    import minilist from 'base/mini-list/mini-list'
+    import { discMixin } from '../disc-mixin/disc-mixin'
+    import { mapGetters, mapMutations } from 'vuex'
     export default {
         name: 'FavoriteDiscManage',
+        mixins: [discMixin],
         components: {
-            minilist
         },
         props: {
 
@@ -25,15 +27,24 @@
             }
         },
         computed: {
-
+            ...mapGetters([
+                'fdiscs'
+            ])
         },
         watch: {
 
         },
         methods: {
-            hide() {
-                this.$emit('hide')
-            }
+            finish(list) {
+                if(list != null) {
+                    this.$el.style.display = 'none'
+                    this.setFDisc(list)
+                }
+                this.hide()
+            },
+            ...mapMutations({
+                setFDisc: 'SET_F_DISCS'
+            })
         },
         created() {
 

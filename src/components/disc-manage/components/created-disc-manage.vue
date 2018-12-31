@@ -1,12 +1,12 @@
 <template>
     <div>
         <minilist title='创建的歌单' @hide='hide' v-if='!modalFlag'>
-            <ul>
+            <ul slot='list'>
                 <li class='line' @click='popUpCreateDisc'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
                     <div>创建新歌单</div>
                 </li>
-                <li class='line'>
+                <li class='line' @click='showSort'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
                     <div>歌单管理</div>
                 </li>
@@ -17,15 +17,17 @@
             </ul>
         </minilist>
         <createdisc v-if='modalFlag' @hide='hide'></createdisc>
+        <sort v-if='sortFlag' :list='discList' :emitDeletedList='true' @back='finish' @deleted='handleDelete'></sort>
     </div>
 </template>
 <script>
-    import minilist from 'base/mini-list/mini-list'
+    import { discMixin } from '../disc-mixin/disc-mixin'
+    import { mapGetters, mapMutations, mapActions } from 'vuex'
     import createdisc from 'components/create-disc/create-disc'
     export default {
         name: 'CreatedDiscManage',
+        mixins: [discMixin],
         components: {
-            minilist,
             createdisc
         },
         props: {
@@ -33,26 +35,46 @@
         },
         data() {
             return {
-                modalFlag: false
+                modalFlag: false,
+                discList: []
             }
         },
         computed: {
-
+            ...mapGetters([
+                'discs'
+            ])
         },
         watch: {
 
         },
         methods: {
-            hide() {
-                this.$emit('hide')
+            handleDelete(list) {
+                // 把被删除的歌单存起来, 给'恢复歌单'用
+                list.forEach(disc => {
+                    this.storeDiscardDisc(disc)
+                })
             },
+            finish(list) {
+                if(list != null) {
+                    this.$el.style.display = 'none'
+                    this.setDisc(this.discs.slice(0,1).concat(list))
+                }
+                this.hide()
+            },
+            ...mapMutations({
+                setDisc: 'SET_DISCS'
+            }),
+            ...mapActions([
+                'storeDiscardDisc'
+            ]),
             popUpCreateDisc() {
                 this.$bus.emit('showModal')
                 this.modalFlag = true
             }
         },
         created() {
-
+            // 不包含'我喜欢的音乐'
+            this.discList = this.discs.slice(1)
         },
         mounted() {
 
