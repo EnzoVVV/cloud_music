@@ -25,7 +25,7 @@
     import { mapGetters, mapActions } from 'vuex'
     import { deepCopy } from 'common/js/tools'
     export default {
-        name: 'resotredisc',
+        name: 'restoredisc',
         components: {
             scroll,
             liner
@@ -129,6 +129,6 @@
             background: $color-background
             border-top: 1px solid $color-light
             .text
-                padding-top: 3px
+                padding-top: 2px
                 color: $color-text-ii
 </style>

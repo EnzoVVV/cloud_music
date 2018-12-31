@@ -3,7 +3,7 @@
         <div class='header' ref='header'>
             <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
             <div class='header-title'>{{title}}</div>
-            <ibutton v-if='!singerFS && reachTop' icon='add' text='收藏' :ref='true' size='small' class='header-favorite' @click='favoriteSinger(singer, true)'></ibutton>
+            <ibutton v-if='!singerFS && reachTop' icon='add' text='收藏' :red='true' size='small' class='header-favorite' @click='favoriteSinger(singer, true)'></ibutton>
             <IconSvg icon-class='share' size='23px' class='header-share'></IconSvg>
         </div>
         <div class='bg-img' :style='bgStyle' ref='img'></div>
@@ -11,10 +11,10 @@
             <div class='text'>
                 <div class='name'>{{singer.name}}</div>
                 <div class='other'>test</div>
-                <ibutton icon='person' text='个人主页'></ibutton>
-                <ibutton v-if='!singerFS' icon='add' text='收藏' :ref='true' class='favorite' @click='favoriteSinger(singer, true)'></ibutton>
-                <ibutton v-else icon='bingo-light' text='已收藏' class='favorite' @click='favoriteSinger(singer, false)'></ibutton>
             </div>
+            <ibutton icon='person' text='个人主页'></ibutton>
+            <ibutton v-if='!singerFS' icon='add' text='收藏' :ref='true' class='favorite' @click='favoriteSinger(singer, true)'></ibutton>
+            <ibutton v-else icon='bingo-light' text='已收藏' class='favorite' @click='favoriteSinger(singer, false)'></ibutton>
         </div>
         <div class='fixed-tab' v-show='showFixedTab'>
             <div v-for='(tab,index) in tabs' :key='tab' class='fixed-tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
@@ -28,7 +28,7 @@
                         <p class='tab-text'>{{tab}}</p>
                     </div>
                 </div>
-                <songlist :songs='songs' ref='songlist' v-show='activeTab == 0' @click='selectSong' :showIndex='true'></songlist>
+                <songlist :songs='songs' ref='songlist' v-show='activeTab == 0' @click='selectSong' :showIndex='true' :radius='false'></songlist>
                 <albumlist :albums='albums' ref='albumlist' v-show='activeTab == 1'></albumlist>
                 <div v-show='activeTab == 2'>
                 </div>
@@ -91,7 +91,15 @@
                     {
                         ref: 'albumlist',
                         checked: false
-                    }
+                    },
+                    {
+                        ref: 'xxx',
+                        checked: false
+                    },
+                    {
+                        ref: 'brief',
+                        checked: false
+                    },
                 ],
                 reachTop: false,
                 singerFS: false
@@ -125,7 +133,7 @@
                 let scrollY = pos.y
                 if(scrollY > 0) {
                     // 下滑
-                    const scale = 1 + scrollY/this.imgHeight
+                    const scale = 1 + scrollY / (this.imgHeight - 100)
                     this.$refs.img.style[transform] = `scale(${scale})`
                     translate(this.$refs.info, 0, scrollY)
                     this.reachTop = false
@@ -152,7 +160,6 @@
                         this.reachTop = true
                         let distance = this.scrollDistance * 0.3
                         let percent = Math.ceil((distance + 44 + radius) / this.imgHeight * 100)
-                        this.$refs.img.style[transform] = `translate3d(0,0,0)`
                         Object.assign(this.$refs.img.style, {
                             'clip-path': `polygon(0% 0%, 100% 0%, 100% ${percent}%, 0% ${percent}%)`,
                             'z-index': 1
@@ -282,6 +289,9 @@
                     height: 30px
                     line-height: 30px
                     padding: 0 20px
+                    background: $color-background
+                    border-top-left-radius: 10px
+                    border-top-right-radius: 10px
                     font-size: $font-size-small
                     .tab-item
                         flex: 1

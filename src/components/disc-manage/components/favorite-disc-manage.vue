@@ -2,7 +2,7 @@
     <div>
         <minilist title='收藏的歌单' @hide='hide'>
             <ul slot='list'>
-                <li class='line'>
+                <li class='line' @click='showSort'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
                     <div>歌单管理</div>
                 </li>
@@ -36,14 +36,14 @@
         },
         methods: {
             finish(list) {
-                if(list != null) {
+                if(list !== null) {
                     this.$el.style.display = 'none'
-                    this.setFDisc(list)
+                    this.setFDiscs(list)
                 }
                 this.hide()
             },
             ...mapMutations({
-                setFDisc: 'SET_F_DISCS'
+                setFDiscs: 'SET_F_DISCS'
             })
         },
         created() {

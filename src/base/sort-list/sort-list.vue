@@ -19,6 +19,7 @@
     const duration = 200
     export default {
         name: 'sortlist',
+        mixins: [ scrollMixin ],
         components: {
             liner
         },
@@ -97,12 +98,12 @@
                     this.up = curTotalDiff < preTotalDiff
                     const approaching = this.approaching(this.touch.curEl)
                     let approaching_bottom = !this.up && approaching.bottom && (Math.abs(this.scrollY) < Math.abs(this.maxScrollY))
-                    let approaching_up = this.up && approaching.top && this.scrollY != 0
-                    if(approaching_bottom || approaching_up) {
+                    let approaching_top = this.up && approaching.top && this.scrollY != 0
+                    if(approaching_bottom || approaching_top) {
                         this.touch.autoScrollDistance = 0
                         this.scrolling = true
                         // 自动滚动初始时的pageY
-                        this.start_pageY_atuo = e.touches[0].pageY
+                        this.start_pageY_auto = e.touches[0].pageY
                         // 自动滚动目标元素
                         const targetElement = approaching_bottom ? this.lastElement : this.firstElement
                         // 滚动时间
@@ -118,7 +119,7 @@
                         this.auto.isFirstMove = true
                         // 执行自动滚动函数
                         this.timer = setInterval(() => {
-                            this.automove()
+                            this.autoMove()
                             // scroll组件滚动到底了
                             if(!this.scrolling) {
                                 this.stopAutoScroll()
@@ -156,7 +157,7 @@
                     let roundMoveElStartTop = this.getRound(touch.moveElStartTop)
                     const curDirection = Math.sign(roundMoveElStartTop - curElTop)
                     if(curDirection * this.touch.direction === 1) {
-                        touch.moveElDiff = -touch.direction * ((Math.abs(touch.totalDiff) - (lineCount -1) * this.lineHeight))
+                        touch.moveElDiff = -touch.direction * ((Math.abs(touch.totalDiff) - (lineCount - 1) * this.lineHeight))
                     } else {
                         touch.moveElDiff = -touch.direction * ((Math.abs(touch.totalDiff) - lineCount * this.lineHeight))
                     }
@@ -195,7 +196,7 @@
                 // touch.direction是总体方向，当跨越很多行时，touch.direction并不能反映end时元素应该移动的方向，比如元素一直往下移动了很多行，结束时无论如何touch.direction都为1
                 // 这里需要用moveElDiff来计算方向
                 // curDirection = 1时，end时moveEl向上移动，curEl向下移动；curDirection = -1时，end时moveEl向下移动，curEl向上移动
-                const curDirection = Math.sign(-this.touich.moveElDiff)
+                const curDirection = Math.sign(-this.touch.moveElDiff)
                 // 当滑动距离超过一半就进行完整移动
                 if(Math.abs(this.touch.moveElDiff) > this.lineHeight / 2) {
                     if(this.touch.moveEl !== null) {
@@ -204,7 +205,7 @@
                     if(curDirection * this.touch.direction === 1) {
                         this.touch.curEl.style.top = this.circumscribe(this.touch.startTop + this.touch.direction * lineCount * this.lineHeight) + 'px'
                     } else {
-                        this.touch.curEl.style.top = this.circumscribe(this.touch.startTop + this.touch.direction * (lineCount -1) * this.lineHeight) + 'px'
+                        this.touch.curEl.style.top = this.circumscribe(this.touch.startTop + this.touch.direction * (lineCount - 1) * this.lineHeight) + 'px'
                     }
                 } else {
                     // 复位
@@ -212,7 +213,7 @@
                         this.touch.moveEl.style.top = this.circumscribe(this.touch.moveElStartTop) + 'px'
                     }
                     if(curDirection * this.touch.direction === 1) {
-                        this.touch.curEl.style.top = this.circumscribe(this.touch.startTop + this.touch.direction * (lineCount -1) * this.lineHeight) + 'px'
+                        this.touch.curEl.style.top = this.circumscribe(this.touch.startTop + this.touch.direction * (lineCount - 1) * this.lineHeight) + 'px'
                     } else {
                         this.touch.curEl.style.top = this.circumscribe(this.touch.startTop + this.touch.direction * lineCount * this.lineHeight) + 'px'
                     }
@@ -364,7 +365,7 @@
                         // 这个是要积累的, 比如第一次循环，区间内的行向上移动一行距离，在第二次循环中，就要算上之前移动造成的空缺
                         totalContinueCount = totalContinueCount + continueCount
                         // 将top值在[startTop, endTop]区间的行，向上移动totalContinueCount * lineHeight的距离
-                        this.lifeEl(startTop, endTop, totalContinueCount)
+                        this.liftEl(startTop, endTop, totalContinueCount)
                         // 移动位置，执行下次循环
                         pos = pos + continueCount
                     }
@@ -376,7 +377,7 @@
                 })
             },
             // 将top值在[startTop, endTop]区间的行，向上移动totalContinueCount * lineHeight的距离
-            lifeEl(startTop, endTop, count) {
+            liftEl(startTop, endTop, count) {
                 const lines = document.getElementsByClassName('line')
                 for(let i=0; i< lines.length; i++) {
                     const line = lines[i]
@@ -403,7 +404,7 @@
                 for(let i=0; i< len; i++) {
                     const line = this.getElementByIndex(i)
                     const itemId = parseInt(line.getAttribute('data-item-id'))
-                    const item = this.content.find(i => i.id === item.id)
+                    const item = this.content.find(i => i.id === itemId)
                     sortedList.push(item)
                 }
                 return sortedList
@@ -419,7 +420,7 @@
                 const lines = document.getElementsByClassName('line')
                 for(let i=0; i< lines.length; i++) {
                     const line = lines[i]
-                    line.style.top = roundTop - this.lineHeight * i + 'px'
+                    line.style.top = this.lineHeight * i + 'px'
                 }
             },
             // 设置高度
@@ -452,7 +453,7 @@
             // 设置高度
             this.setHeight()
             // 给line首次排列定位
-            this.arrage()
+            this.arrange()
             this.resort()
         }
     }

@@ -1,7 +1,7 @@
 <template>
     <div class='button' :style='computedStyle'>
         <IconSvg :icon-class='icon' :size='iconSize'></IconSvg>
-        <span class='text'></span>
+        <span class='text'>{{text}}</span>
     </div>
 </template>
 <script>
@@ -94,5 +94,5 @@
         align-items: center
         justify-content: center
         .text
-            padding: 0 30px
+            padding: 0 3px
 </style>
