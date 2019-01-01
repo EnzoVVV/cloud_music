@@ -75,26 +75,12 @@
             ]),
             getRecommend() {
                 getDailyRecommend().then(res => {
-
+                    this.songs = res
                 })
             }
         },
         created() {
-            // TODO， 需要登陆
             this.getRecommend()
-            for(let i=0;i<30;i++) {
-                const songData = {
-                    id: i,
-                    mid: i,
-                    songname: '翅膀',
-                    singer: [{name: '肆喜'}],
-                    album: 'TV WATCH TV',
-                    duration: 3,
-                    img: mockImg,
-                    url: ''
-                }
-                this.songs.push(createSong(songData))
-            }
         },
         mounted() {
 
@@ -109,7 +95,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 5000
+        z-index: 4000
         &.recommend-enter-active, &.recommend-leave-active
             transition: all 0.4s
         &.recommend-enter, &.recommend-leave-to

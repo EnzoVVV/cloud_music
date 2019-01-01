@@ -2,6 +2,7 @@ import jsonp from 'common/js/jsonp'
 import {commonParams, options, HOST } from './config'
 import { success } from './shared'
 import axios from 'axios'
+import { getSongs } from 'common/js/song'
 
 export function getBanner() {
 	if(window.useCloud) {
@@ -95,6 +96,10 @@ export function getRecommendList() {
 export function getDailyRecommend() {
 	const url = HOST + '/recommend/songs'
 	return axios.get(url).then(res => {
-		debugger
+		let result = []
+		if(success(res.status)) {
+			result = getSongs(res.data.recommend)
+		}
+		return result
 	})
 }

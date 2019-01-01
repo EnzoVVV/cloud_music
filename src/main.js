@@ -15,7 +15,8 @@ import IconSvg from 'base/IconSvg/IconSvg'
 import IconImg from 'base/IconImg/IconImg'
 import loading from 'base/loading/loading'
 import VueBus from 'vue-bus'
-import { UV_UDP_REUSEADDR } from 'constants';
+import axios from 'axios'
+axios.defaults.withCredentials = true
 
 fastclick.attach(document.body)
 

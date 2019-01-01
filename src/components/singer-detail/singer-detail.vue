@@ -1,6 +1,6 @@
 <template>
 	<transition name='slide'>
-		<musiclist :songs='songs' :albums='albums' :singer='singer' @goback='goback'></musiclist>
+		<musiclist :songs='songs' :albums='albums' :singer='singer' :brief='brief' @goback='goback'></musiclist>
 	</transition>
 </template>
 
@@ -25,7 +25,8 @@
 		data() {
 			return {
 				songs: [],
-				albums: []
+				albums: [],
+				brief: ''
 			};
 		},
 		computed: {
@@ -46,7 +47,6 @@
 				getSingerDetail(this.singer.id).then(({songs, brief}) => {
 				// getSingerDetail(this.singer.id).then(([{songs, brief}, albums]) => {
 					self.songs = songs
-					// self.albums = albums || []
 					self.brief = brief
 				})
 			}

@@ -3,7 +3,7 @@
         <scroll ref='scroll' class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' @scrollEnd='scrollEnd'>
             <ul ref='wrapper'>
                 <!-- data-def-index, 初始index; id, 当前排序的index -->
-                <li v-for='(item, index) in content' :key='item.id' :ref='item.id' :id='index' :data-def-index='index' :data-item-id='item.id' class='line'>
+                <li v-for='(item, index) in content' :key='item.id' :ref='item.id' :id='index' :data-def-index='index' :data-item-id='item.id' class='sort-list-line'>
                     <!-- TODO，item.singer不是通用的 -->
                     <liner :picUrl='item.picUrl' :main='item.name' :sub='item.singer' :sort='true' :showCheck='true' :itemId='item.id' @sortstart='touchstart' @sortmove='touchmove' @sortend='touchend' @check='check' ref='liner'></liner>
                 </li>
@@ -192,7 +192,7 @@
                     this.lineMoved = true
                 }
 
-                const lineCount = Math.ceil(Math.abs(touch.totalDiff) / this.lineHeight)
+                const lineCount = Math.ceil(Math.abs(this.touch.totalDiff) / this.lineHeight)
                 // touch.direction是总体方向，当跨越很多行时，touch.direction并不能反映end时元素应该移动的方向，比如元素一直往下移动了很多行，结束时无论如何touch.direction都为1
                 // 这里需要用moveElDiff来计算方向
                 // curDirection = 1时，end时moveEl向上移动，curEl向下移动；curDirection = -1时，end时moveEl向下移动，curEl向上移动
@@ -280,7 +280,7 @@
             },
             // 排序, 根据位置给line设置index，并保存到id中
             resort() {
-                const lines = document.getElementsByClassName('line')
+                const lines = document.getElementsByClassName('sort-list-line')
                 for(let i=0; i< lines.length; i++) {
                     const line = lines[i]
                     // 由于上面touchend计算的top值可能有小数，非整数，因此这里如果只用top值，会得到或大或小的index
@@ -327,6 +327,7 @@
                 if(this.checkList.length == 0) {
                     return
                 }
+                this.lineMoved = true
                 // 记录被删除的项id
                 this.deletedList = this.deletedList.concat(this.checkList)
                 // 被删除的元素的top值数组
@@ -378,7 +379,7 @@
             },
             // 将top值在[startTop, endTop]区间的行，向上移动totalContinueCount * lineHeight的距离
             liftEl(startTop, endTop, count) {
-                const lines = document.getElementsByClassName('line')
+                const lines = document.getElementsByClassName('sort-list-line')
                 for(let i=0; i< lines.length; i++) {
                     const line = lines[i]
                     // grossTop有可能是59.8,60.4这种非正好是60的倍数
@@ -417,7 +418,7 @@
             },
             // 给line首次排列定位
             arrange() {
-                const lines = document.getElementsByClassName('line')
+                const lines = document.getElementsByClassName('sort-list-line')
                 for(let i=0; i< lines.length; i++) {
                     const line = lines[i]
                     line.style.top = this.lineHeight * i + 'px'
@@ -445,7 +446,7 @@
         },
         mounted() {
             // 行高
-            this.lineHeight = document.getElementsByClassName('line')[0].offsetHeight
+            this.lineHeight = document.getElementsByClassName('sort-list-line')[0].offsetHeight
             const bounding = this.$el.getBoundingClientRect()
             // sortlist外边顶部高度
             this.listTop = bounding.top
@@ -473,7 +474,7 @@
             top: 0
             right: 0
             bottom: 0
-            .line
+            .sort-list-line
                 position: absolute
                 left: 0
                 right: 0

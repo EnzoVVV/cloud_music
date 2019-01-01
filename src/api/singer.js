@@ -106,3 +106,21 @@ export function getSingerAlbums(singerId) {
 		return result
 	})
 }
+
+
+export function getSimilarSingers(id) {
+	const url = HOST + `/simi/artist?id=${id}`
+	return axios.get(url).then(res => {
+		let result = []
+		if(success(res.status)) {
+			result = res.data.artists.map(item => {
+				return  {
+					id: item.id,
+					name: item.name,
+					picUrl: item.picUrl
+				}
+			})
+		}
+		return result
+	})
+}

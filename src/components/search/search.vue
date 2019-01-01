@@ -141,7 +141,7 @@
         left: 0
         right: 0
         background-color: $color-background
-        z-index: 1000
+        z-index: 4000
         .header
             width: 100%
             height: 44px

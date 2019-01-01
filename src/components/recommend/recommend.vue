@@ -13,17 +13,17 @@
                     </slider>
                 </div>
                 <div class='features'>
-                    <div class='feature fm'>
+                    <div class='feature fm' @click='showPersonalFM'>
                         <IconImg imgName='fm' size='80px'></IconImg>
                         <span class='title'>私人FM</span>
                     </div>
                     <div class='feature today' @click='showDailyRecommend'>
                         <span class='date'>{{day}}</span>
-                        <IconImg imgName='today' size='80px'></IconImg>
+                        <IconImg imgName='calendar' size='80px'></IconImg>
                         <span class='title'>每日推荐</span>
                     </div>
                     <div class='feature rankboard' @click='showRank'>
-                        <IconImg imgName='rankboard' size='80px'></IconImg>
+                        <IconImg imgName='rank' size='80px'></IconImg>
                         <span class='title'>排行榜</span>
                     </div>
                 </div>
@@ -42,6 +42,8 @@
     import discList from 'components/discList/discList'
     import scroll from 'base/scroll/scroll'
     import loading from 'base/loading/loading'
+    import { getPersonalFM } from 'api/fm'
+    import { mapActions } from 'vuex'
     export default {
         name: 'recommend',
         components: {
@@ -90,8 +92,20 @@
             },
             showDailyRecommend() {
                 this.$bus.emit('showDailyRecommend', true)
-            }
-
+            },
+            showPersonalFM() {
+                getPersonalFM().then(res => {
+                    if(res && res.length) {
+                        this.selectPlay({
+                            list: res,
+                            index: 0
+                        })
+                    }
+                })
+            },
+            ...mapActions([
+                'selectPlay',
+            ])
         },
         created() {
             this.getRecommends()
@@ -100,8 +114,8 @@
     }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
-    @import "~common/stylus/variable"
+<style scoped lang='stylus'>
+    @import '~common/stylus/variable'
     .recommend
         position: absolute
         width: 100%

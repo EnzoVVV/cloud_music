@@ -94,7 +94,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 2000
+        z-index: 4000
         background: $color-background
         &.rank-enter-active, &.rank-leave-active
             transition: all 0.4s

@@ -64,8 +64,8 @@
 
         },
         methods: {
-            showSingerDetail() {
-                this.singerDetailFlag = true
+            showSingerDetail(flag = true) {
+                this.singerDetailFlag = flag
             },
             showRank() {
                 this.rankFlag = true
