@@ -66,7 +66,7 @@ export function getSongs(list) {
             songname: item.name,
             singer: item.ar || item.artists,
             albumname: item.al ? item.al.name : item.album ? item.album.name : '',
-            picUrl: item.al ? item.al.picUrl : '',
+            picUrl: item.al ? item.al.picUrl : item.album ? item.album.picUrl : '',
             url: `https://music.163.com/song/media/outer/url?id=${item.id}.mp3`,
             albummid: item.al ? item.al.id : item.album ? item.album.id : ''
         }))

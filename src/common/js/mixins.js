@@ -98,13 +98,12 @@ export const playlistMixin = {
     },
     methods: {
         handlePlaylist(playlist) {
-            if(!playlist) return
+            if(!playlist || playlist.length === 0) return
             const scroll = this.$refs.scroll
             if(!scroll) {
                 throw new Error('scroll组件的ref要设为scroll')
-                return
             }
-            const bottom = playlist.length > 0 ? '60px' : ''
+            const bottom = playlist.length > 0 ? '45px' : ''
             scroll.$el.style.bottom = bottom
             scroll.refresh()
         }

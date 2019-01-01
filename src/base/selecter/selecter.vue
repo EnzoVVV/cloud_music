@@ -4,7 +4,7 @@
             <div class='selected'>{{selected}}</div>
             <div @click='toggle' class='icon'><IconSvg icon-class='down-arrow' size='18px'></IconSvg></div>
         </div>
-        <transition-group name='lists' tag='ul' class='list'>
+        <transition-group name='lists' tag='ul' class='lists'>
             <li class='list' v-for='option in options' :key='option' v-show='!fold' @click='select(option)'>
                 <div class='text'>{{option}}</div>
                 <IconSvg icon-class='bingo' size='18px' class='icon' v-if='option === selected'></IconSvg>

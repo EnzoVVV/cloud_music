@@ -172,16 +172,16 @@ export function saveSinger(singer) {
     if(!singers.find(i => i.id == singer.id)) {
         singers.push(singer)
     }
-    storage.set(SINGER_KEY, singer)
+    storage.set(SINGER_KEY, singers)
 }
 // 取消收藏歌手
 export function deleteSinger(singer) {
     let singers = getSingers()
     singers = singers.filter(i => i.id != singer.id)
-    storage.set(SINGER_KEY, singer)
+    storage.set(SINGER_KEY, singers)
 }
 // 获取storage中的歌手
-export function getSinger() {
+export function getSingers() {
     return storage.get(SINGER_KEY, [])
 }
 

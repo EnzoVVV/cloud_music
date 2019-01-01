@@ -56,7 +56,7 @@
                 type: Boolean,
                 default: false
             },
-            // 潜字体
+            // 浅字体
             light: {
                 type: Boolean,
                 default: false

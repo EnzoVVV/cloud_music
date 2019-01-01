@@ -4,7 +4,7 @@
             <li v-for='album in albumList' :key='album.id' class='item' @click='selectAlbum(album)'>
                 <img class='img' :src='album.picUrl'></img>
                 <div class='content'>
-                    <p class='name'>{{album.name}}</p>
+                    <div class='name'>{{album.name}}</div>
                     <p class='desc'>{{album.date}}</p>
                 </div>
             </li>
@@ -80,6 +80,9 @@
                 .name
                     margin-top: 8px
                     color: $color-text
+                    text-overflow: ellipsis 
+                    overflow: hidden
+                    white-space: nowrap
                 .desc
                     width: 80%
                     font-size: 12px

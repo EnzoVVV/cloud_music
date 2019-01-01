@@ -142,7 +142,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 3000
+        z-index: 8000
         overflow: hidden
         &.mini-list-enter-active, &.mini-list-leave-active
             transition: opacity 0.4s

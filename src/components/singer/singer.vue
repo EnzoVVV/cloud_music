@@ -82,7 +82,7 @@
             handlePlaylist(playlist) {
                 if(!playlist) return
                 const scroll = this.$refs.listview.$refs.listview
-                const bottom = playlist.length > 0 ? '60px' : ''
+                const bottom = playlist.length > 0 ? '45px' : ''
                 scroll.$el.style.bottom = bottom
                 scroll.refresh()
             }

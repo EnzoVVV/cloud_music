@@ -1,6 +1,6 @@
 <template>
     <div>
-        <minilist title='收藏的歌单' @hide='hide'>
+        <minilist title='收藏的歌单' @hide='hide' ref='minilist'>
             <ul slot='list'>
                 <li class='line' @click='showSort'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
@@ -36,8 +36,10 @@
         },
         methods: {
             finish(list) {
+                debugger
                 if(list !== null) {
                     this.$el.style.display = 'none'
+                    debugger
                     this.setFDiscs(list)
                 }
                 this.hide()

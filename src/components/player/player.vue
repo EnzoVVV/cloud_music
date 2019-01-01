@@ -493,7 +493,7 @@
             right: 0
             top: 0
             bottom: 0
-            z-index: 9999
+            z-index: 7000
             background: $color-background
             .background
                 position: absolute
@@ -660,11 +660,12 @@
             bottom: 0
             height: 44px
             width: 100%
-            z-index: 9000
+            z-index: 6000
             background: $color-background
             display: flex
             align-items: center
             padding-left: 5px
+            border-top: 1px solid $color-text-lighter
             .img
                 height: 34px
                 width: 34px

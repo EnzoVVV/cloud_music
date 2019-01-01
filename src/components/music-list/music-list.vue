@@ -8,13 +8,13 @@
         </div>
         <div class='bg-img' :style='bgStyle' ref='img'></div>
         <div class='info' ref='info'>
-            <div class='text'>
-                <div class='name'>{{singer.name}}</div>
+            <div class='name'>{{singer.name}}</div>
+            <div class='wrapper'>
                 <div class='other'>test</div>
+                <ibutton icon='person' text='个人主页'></ibutton>
+                <ibutton v-if='!singerFS' icon='add' text='收藏' :red='true' class='favorite' @click='favoriteSinger(singer, true)'></ibutton>
+                <ibutton v-else icon='bingo-light' text='已收藏' class='favorite' @click='favoriteSinger(singer, false)'></ibutton>
             </div>
-            <ibutton icon='person' text='个人主页'></ibutton>
-            <ibutton v-if='!singerFS' icon='add' text='收藏' :ref='true' class='favorite' @click='favoriteSinger(singer, true)'></ibutton>
-            <ibutton v-else icon='bingo-light' text='已收藏' class='favorite' @click='favoriteSinger(singer, false)'></ibutton>
         </div>
         <div class='fixed-tab' v-show='showFixedTab'>
             <div v-for='(tab,index) in tabs' :key='tab' class='fixed-tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
@@ -32,7 +32,7 @@
                 <albumlist :albums='albums' ref='albumlist' v-show='activeTab == 1'></albumlist>
                 <div v-show='activeTab == 2'>
                 </div>
-                <brief v-show='activeTab == 3' ref='brief'>
+                <brief v-show='activeTab == 3' ref='brief' :brief='brief' :singer='singer'>
                 </brief>
             </div>
         </scroll>
@@ -45,7 +45,7 @@
     import albumlist from 'components/album-list/album-list'
     import brief from 'components/brief/brief'
     import { transform, translate } from 'common/js/dom'
-    import { mapActions } from 'vuex'
+    import { mapGetters, mapActions } from 'vuex'
     import { getSongsUrl } from 'api/song'
     import { playlistMixin } from 'common/js/mixins'
     const radius = 10
@@ -69,6 +69,10 @@
             },
             singer: {
                 type: Object
+            },
+            brief: {
+                type: String,
+                default: ''
             }
         },
         data() {
@@ -141,15 +145,15 @@
                     //上滑
                     if(-scrollY <= this.imgHeight -radius - this.headerHeight) {
                         this.reachTop = false
-                        let distance = scrollY * 0.3
-                        let bright = (1 - (Math.abs(scrollY) / this.scrollDistance) * 0.7) * 100
+                        const distance = scrollY * 0.3
+                        const bright = (1 - (Math.abs(scrollY) / this.scrollDistance) * 0.7) * 100
                         translate(this.$refs.img, 0, distance)
                         Object.assign(this.$refs.img.style, {
                             'clip-path': 'none',
                             'filter': `brightness(${bright}%)`,
                             'z-index': -1
                         })
-                        let opacity = 1 - (Math.abs(scrollY) / this.scrollDistance)
+                        const opacity = 1 - (Math.abs(scrollY) / this.scrollDistance)
                         translate(this.$refs.info, 0, scrollY)
                         Object.assign(this.$refs.info.style, {
                             opacity: opacity
@@ -158,8 +162,8 @@
                     } else {
                         // 触顶
                         this.reachTop = true
-                        let distance = this.scrollDistance * 0.3
-                        let percent = Math.ceil((distance + 44 + radius) / this.imgHeight * 100)
+                        const distance = this.scrollDistance * 0.3
+                        const percent = Math.ceil((distance + 44 + radius) / this.imgHeight * 100)
                         Object.assign(this.$refs.img.style, {
                             'clip-path': `polygon(0% 0%, 100% 0%, 100% ${percent}%, 0% ${percent}%)`,
                             'z-index': 1
@@ -179,8 +183,9 @@
                         // 如果取的是element，那么直接$refs.name.style就行
                         let scrollTop = this.imgHeight - radius
                         this.$refs.scroll.$el.style.top = `${scrollTop}px`
-                        let infoTop = this.imgHeight - 80
+                        let infoTop = this.imgHeight - 95
                         this.$refs.info.style.top = `${infoTop}px`
+                        this.scrollDistance = this.imgHeight - radius - this.headerHeight
                     })
                 }
             },
@@ -232,7 +237,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 5000
+        z-index: 4000
         background: $color-background
         .header
             position: fixed
@@ -260,19 +265,22 @@
             width: 100%
             height: 30%
             overflow: hidden
+            transform-origin: top
+            background-size: cover
+            background-position: 0 30%
         .info
             position: absolute
             left: 15px
             right: 15px
-            display: flex
-            align-items: flex-end
-            .text
-                flex: 1
-                .name
-                    color: $color-text-a
-                    font-size: 32px
-                    padding-bottom: 5px
+            .name
+                color: $color-text-a
+                font-size: 32px
+                padding-bottom: 5px
+            .wrapper
+                display: flex
+                align-items: center
                 .other
+                    flex: 1
                     color: $color-text-ll
             .favorite
                 margin-left: 10px

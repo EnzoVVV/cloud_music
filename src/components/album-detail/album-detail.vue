@@ -51,7 +51,7 @@
                 })
             },
             checkFavoriteStatus() {
-                this.favoriteStatus = !!this.albums.find(i => i.id === this.album.id)
+                this.favoriteStatus = !!this.albums && !!this.albums.find(i => i.id === this.album.id)
             },
             goback() {
                 this.$emit('back')

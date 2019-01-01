@@ -75,5 +75,5 @@
     @import '~common/stylus/variable'
     .inputbox
         margin-left: 15px
-        width: calc(100% - 30px)
+        width: calc(100% - 30px) !important
 </style>

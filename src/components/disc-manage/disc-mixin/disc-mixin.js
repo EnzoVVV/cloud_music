@@ -15,6 +15,7 @@ export const discMixin = {
             this.$emit('hide')
         },
         showSort() {
+            this.$refs.minilist.$el.style.display = 'none'
             this.sortFlag = true
         }
     }

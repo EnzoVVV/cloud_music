@@ -5,7 +5,7 @@
         <div class='title'>相似歌手</div>
         <scroll class='similar' :scrollX='true' ref='slider'>
             <div class='wrapper' ref='wrapper'>
-                <div v-for='singer of similarSingers' :key='singer.id' class='singer'>
+                <div v-for='singer of similarSingers' :key='singer.id' class='singer' @click='handleClick(singer)'>
                     <img :src='singer.picUrl' class='img'></img>
                     <span class='text'>{{singer.name}}</span>
                 </div>
@@ -15,17 +15,24 @@
 </template>
 <script>
     import scroll from 'base/scroll/scroll'
+    import { getSimilarSingers } from 'api/singer'
+    import { mapMutations } from 'vuex'
     export default {
         name: 'brief',
         components: {
             scroll
         },
         props: {
-
+            brief: {
+                type: String,
+                default: ''
+            },
+            singer: {
+                type: Object
+            }
         },
         data() {
             return {
-                brief: '',
                 similarSingers: []
             }
         },
@@ -36,16 +43,33 @@
 
         },
         methods: {
-
+            getSimiSingers() {
+                getSimilarSingers(this.singer.id).then(res => {
+                    this.similarSingers = res
+                    // wrapper子元素是float,这里手动设置宽度
+                    this.$refs.wrapper.style.width = this.similarSingers.length * 100 + 'px'
+                    const self = this
+                    setTimeout(() => {
+                        self.$refs.slider.refresh()
+                    }, 3000)
+                })
+            },
+            handleClick(singer) {
+                this.setSinger(singer)
+                // 先把当前的singer-detail注销掉,再弹出新的歌手页
+                this.$bus.emit('showSingerDetail',false)
+                this.$nextTick(() => {
+                    this.$bus.emit('showSingerDetail',true)
+                })
+            },
+            ...mapMutations({
+                setSinger: 'SET_SINGER'
+            })
         },
         created() {
-
+            this.getSimiSingers()
         },
         mounted() {
-            this.$refs.wrapper.style.width = this.similarSingers.length * 100 + 'px'
-            setTimeout(() => {
-                this.$refs.slider.refresh()
-            }, 2000)
         }
     }
 </script>
