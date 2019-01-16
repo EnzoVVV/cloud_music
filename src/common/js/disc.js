@@ -27,7 +27,7 @@ export function createDisc(discData) {
         name: discData.name || '未命名歌单',
         songList: discData.songList || [],
         picUrl: discData.picUrl || defaultDiscImg,
-        creator: discData.creator || ''
+        creator: 'self'
     })
 }
 

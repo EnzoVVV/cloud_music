@@ -30,7 +30,10 @@
         },
         props: {
             song: {
-                type: Function
+                type: Object
+            },
+            songs: {
+                type: Array
             }
         },
         data() {
@@ -65,10 +68,22 @@
                 this.$emit('hide')
             },
             add(disc) {
-                this.addSongToDisc({
-                    song: this.song,
-                    disc: disc
-                })
+                if(this.song) {
+                    // 添加一首歌
+                    this.addSongToDisc({
+                        song: this.song,
+                        disc: disc
+                    })
+                }
+                if(this.songs) {
+                    this.songs.forEach(song => {
+                        this.addSongToDisc({
+                            song: song,
+                            disc: disc
+                        })
+                    })
+                }
+                
             },
             ...mapActions([
                 'addSongToDisc'

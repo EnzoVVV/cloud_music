@@ -5,16 +5,11 @@
                 <IconSvg :icon-class='icon' class='icon'></IconSvg>
                 <span class='title'>{{title}}</span>
                 <span class='count'>{{count}}</span>
-                <span class='favorite-status' @click.stop='toggleFS'>{{favoriteBtn}}</span> 
+                <span class='favorite-status' v-if='showFBtn' @click.stop='toggleFS'>{{favoriteBtn}}</span> 
             </div>
             <ul>
                 <li v-for='(song,index) in songs' :key='song.id' class='item' @click='handleClick(song,index)'>
-                    <div class='img-wrapper' v-if='!showIndex && showImg'><img v-lazy='song.picUrl' class='img'></img></div>
-                    <p class='index' v-if='showIndex'>{{index + 1}}</p>
-                    <div class='content'>
-                        <div class='name'>{{song.name}}</div>
-                        <p class='desc'>{{getDesc(song)}}</p>
-                    </div>
+                    <liner :showImg='showImg' :showIndex='showIndex' :picUrl='song.picUrl' :main='song.name' :sub='getDesc(song)' :index='index+1' :speaker='true' :itemId='song.id'></liner>
                 </li>
             </ul>
         </div>
@@ -25,10 +20,12 @@
     import { mapActions } from 'vuex'
     import confirm from 'base/confirm/confirm'
     import { getSongPicUrl } from 'common/js/song'
+    import liner from 'base/liner/liner'
     export default {
         name: 'songlist',
         components: {
-            confirm
+            confirm,
+            liner
         },
         props: {
             songs: {
@@ -40,7 +37,7 @@
             },
             showImg: {
                 type: Boolean,
-                default: true
+                default: false
             },
             showHeader: {
                 type: Boolean,
@@ -53,6 +50,11 @@
             icon: {
                 type: String,
                 default: 'start-play'
+            },
+            // 显示收藏按钮
+            showFBtn: {
+                type: Boolean,
+                default: true
             },
             favoriteStatus: {
                 type: Boolean,
@@ -144,39 +146,4 @@
             box-sizing: border-box
             height: 60px
             font-size: $font-size-medium
-            padding-left: 5px
-            .index
-                float: left 
-                width: 50px
-                height: 50px
-                display: flex
-                align-items: center
-                justify-content: center
-                color: $color-text-g
-            .img-wrapper
-                width: 50px
-                height: 50px
-                display: flex
-                align-items: center
-                justify-content: center
-                .img
-                    width: 40px
-                    height: 40px
-                    overflow: hidden
-            .content
-                line-height: 25px
-                width: 100%
-                position: relative
-                border-bottom: 1px solid $color-light
-                .name
-                    margin-top: 4px
-                    font-size: $font-size-medium-x
-                    color: $color-text
-                    text-overflow: ellipsis 
-                    overflow: hidden
-                    white-space: nowrap
-                .desc
-                    no-wrap()
-                    font-size: $font-size-small
-                    color: $color-text-g
 </style>

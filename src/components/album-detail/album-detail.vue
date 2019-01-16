@@ -1,9 +1,5 @@
 <template>
-    <detailboard headerTitle='专辑' :headerScrollTitle='album.name' :rollingTitle='true' :songs='songs' :favoriteStatus='favoriteStatus' :cover='album.picUrl' :showSearch='false' @toggleFS='toggleFS' @back='goback'>
-        <div slot='info'>
-            <img class='img' :src='album.picUrl'></img>
-            <div class='title'>{{album.name}}</div>
-        </div>
+    <detailboard headerTitle='专辑' :headerScrollTitle='album.name' :rollingTitle='true' :songs='songs' :favoriteStatus='favoriteStatus' :cover='album.picUrl' :showSearch='false' :showIndex='true' type='album' @toggleFS='toggleFS' @back='goback'>
     </detailboard>
 </template>
 <script>

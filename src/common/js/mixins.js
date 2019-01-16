@@ -67,8 +67,6 @@ export const resultMixin = {
     },
     data() {
         return {
-            probeType: 3,
-            listenScroll: true
         }
     },
     computed: {

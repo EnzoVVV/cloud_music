@@ -1,6 +1,6 @@
 <template>
     <div>
-        <singerdetail v-if='singerDetailFlag' :showSingerDetail.sync='singerDetailFlag'></singerdetail>
+        <singerdetail v-if='singerDetailFlag' :showSingerDetail.sync='singerDetailFlag' :zIndex='singerDetailZIndex'></singerdetail>
         <rank v-if='rankFlag' @back='rankFlag = false'></rank>
         <DailyRecommend v-if='dailyFlag' @back='dailyFlag = false'></DailyRecommend>
         <discmanage v-if='discManageFlag' :type='discManageType' @hide='discManageFlag = false'></discmanage>
@@ -129,6 +129,9 @@
                 self.modalCallerInstance = instance
                 self.modalCallerOnConfirm = onConfirm
                 self.modalCallerOnCancel = onCancel
+            }
+            Vue.prototype.back = function() {
+                this.$emit('back')
             }
         }
     }

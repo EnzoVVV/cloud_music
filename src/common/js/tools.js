@@ -207,3 +207,24 @@ export function formatTimestamp(timestamp) {
     const time = new Date(timestamp)
     return [time.getFullYear(), time.getMonth(), time.getDate()].join('.')
 }
+
+import storage from 'good-storage'
+export function mock(key) {
+    let result = storage.get(key, [])
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(result)
+        },1)
+    })
+}
+
+export function formatNumber(num) {
+    let s = num.toString()
+    if(s.length < 5) {
+        return s
+    } else if(s.length <= 8) {
+        return s.slice(0,8) + '万'
+    } else {
+        return s.slice(8) + '亿'
+    }
+}

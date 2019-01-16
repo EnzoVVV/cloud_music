@@ -53,6 +53,7 @@
             },
             cancel() {
                 this.modalFlag = false
+                this.hide()
             },
             hide() {
                 // 确定/取消后， 要一直上传到hub将flag置为false，不然discManage只能弹出一次

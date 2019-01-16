@@ -3,7 +3,7 @@ import { ERR_OK } from 'api/config'
 import { getLyric } from 'api/song'
 
 export class Song {
-    constructor({id, mid, name, singer, album, picUrl, url, albummid}) {
+    constructor({id, mid, name, singer, album, picUrl, url, albummid, singerInfo}) {
         this.id = id
         this.mid = mid
         this.name = name
@@ -13,6 +13,7 @@ export class Song {
         this.url = url
         this.favorite = false
         this.albummid = albummid
+        this.singerInfo = singerInfo
     }
     getLyric() {
         if(this.lyric) {
@@ -43,7 +44,14 @@ export function createSong(musicData) {
         album: musicData.albumname,
         picUrl: window.useCloud ? musicData.picUrl : `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
         url: musicData.url,
-        albummid: musicData.albummid
+        albummid: musicData.albummid,
+        singerInfo: musicData.singer.map(singer => {
+            return {
+                id: singer.id,
+                picUrl: singer.picUrl,
+                name: singer.name
+            }
+        })
     })
 }
   

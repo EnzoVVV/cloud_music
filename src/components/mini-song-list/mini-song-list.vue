@@ -1,19 +1,22 @@
 <template>
     <div>
         <minilist @hide='hide' :modifiedHeader='true' @headerClick='headerClick' ref='minilist'>
-            <div slot='header'>
+            <div slot='header' class='minilist-header'>
                 <div class='modeIcon'><IconSvg :icon-class='modeIcon'></IconSvg></div>
-                <p class='modeText'>{{modeText}}</p>
-                <IconSvg icon-class='clear' class='clear'></IconSvg>
+                <div class='modeText'>{{modeText}}</div>
+                <div class='clear'><IconSvg icon-class='clear'></IconSvg></div>
             </div>
-            <transition-group name='list' tag='ul' slot='list'>
-                <li v-for='item in mockList' :key='item.id' @click='select(item)' ref='item' class='item'>
-                    <span class='name' :class='{active: currentSong.id == item.id }'>{{item.name}}</span>  
-                    <span class='singer' :class='{active: currentSong.id == item.id }'>{{'- ' + item.singer}}</span>
+            <ul slot='list'>
+                <li v-for='item in sequenceList' :key='item.id' @click='select(item)' ref='item' class='minilist-item'>
+                    <div class='info' :class='{active: currentSong.id == item.id }'>
+                        <IconImg imgName='speaker' size='16px' v-if='currentSong.id == item.id' class='speaker'></IconImg>
+                        <div class='name'>{{item.name}}</div>  
+                        <div class='singer'>{{'- ' + item.singer}}</div>
+                    </div>
                     <div class='delete' @click.stop='deleteOne(item)'><IconSvg icon-class='delete'></IconSvg></div>
                     <div class='border'></div>
                 </li>
-            </transition-group>
+            </ul>
         </minilist>
         <confirm class='confirm' ref='confirm' text='是否清空播放列表' confirmBtnText='清空' @confirm='clear'></confirm>
     </div>
@@ -36,13 +39,6 @@
         },
         data() {
             return {
-                mockList: [],
-                probeType: 3,
-                listenScroll: true,
-                maxMoveDistance: 300,
-                headerTouch: {},
-                touch: {},
-                position: 0
             }
         },
         computed: {
@@ -57,13 +53,6 @@
         },
         watch: {
             currentSong(val) {
-                // const index = this.sequenceList.find(i => i.id === val.id)
-                // if(index > 3) {
-                //     const el = this.$refs.item[index - 3]
-                //     this.$refs.scroll.scrollToElement(el, 1000)
-                // } else {
-                //     this.$refs.scroll.scrollTo(0, 0, 1000)
-                // }
                 this.autoScroll()
             }
         },
@@ -76,7 +65,7 @@
                 }
             },
             autoScroll() {
-                const index = this.sequenceList.find(i => i.id === this.currentSong.id)
+                const index = this.sequenceList.findIndex(i => i.id === this.currentSong.id)
                 if(index > 3) {
                     const el = this.$refs.item[index - 3]
                     this.scroll.scrollToElement(el, 1000)
@@ -95,7 +84,7 @@
             deleteOne(item) {
                 this.deleteSong(item) 
                 // 没有歌了，隐藏列表
-                if(this.playList.length == 0) {
+                if(this.sequenceList.length == 0) {
                     this.hide()
                 }
             },
@@ -111,13 +100,6 @@
             }
         },
         created() {
-            for(let i=0;i<30;i++) {
-                this.mockList.push({
-                    id: i,
-                    name: '看不见的城市',
-                    singer: '惘闻'
-                })
-            }
         },
         mounted() {
             this.scroll = this.$refs.minilist.$refs.scroll
@@ -127,86 +109,42 @@
 </script>
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
-    .empty
-        position: fixed
-        top: 0
-        left: 0
-        right: 0
-        bottom: 0
-        background: $color-text
-        opacity: 0.5
-        z-index: 2900
-    .mini-list
-        position: fixed
-        top: 0
-        left: 0
-        right: 0
-        bottom: 0
-        z-index: 8000
-        overflow: hidden
-        &.mini-list-enter-active, &.mini-list-leave-active
-            transition: opacity 0.4s
-            .mini-list
-                transition: all 0.4s
-        &.mini-list-enter, &.mini-list-leave-to
-            opacity: 0
-            .mini-list
-                transform: translate3d(0, 100%, 0)
-        .decorate
-            position: absolute
-            top: 0
-            left: 0
-            right: 0
-            height: 300px
-        .header
-            position: absolute
-            top: 300px
-            left: 0
-            right: 0
-            height: 44px
-            padding-left: 10px
-            border-radius: 15px 15px 0 0
-            background: $color-background
+    .minilist-header
+        width: 100%
+        height: 100%
+        display: flex
+        align-items: center 
+        .modeIcon
+            width: 25px
+        .modeText
+            flex: 1
+        .clear
+            width: 40px
+    .minilist-item
+        height: 44px
+        line-height: 44px
+        margin-left: 10px
+        display: flex
+        align-items: center
+        border-bottom: 1px solid $color-light
+        .info
+            flex: 1
             display: flex
-            align-items: center 
-            .modeIcon
-                transform: scale(0.7)
-                transform-origin: 50% 50%
-            .clear
-                position: absolute
-                left: 90%
-        .scroll
-            position: absolute 
-            bottom: 0
-            max-height: calc(100% - 300px - 44px)
-            width: 100%
-            background: $color-background
+            align-items: center
             overflow: hidden
-            .item
-                height: 44px
-                line-height: 44px
-                padding-left: 10px
-                position: relative
-                &.list-enter-active, &.list-leave-active
-                    transition: all 0.1s
-                &.list-enter, &.list-leave-to
-                    height: 0
-                .name
-                    &.active
-                        color: $color-theme
-                .singer
-                    font-size: $font-size-small
-                    color: $color-text-g
-                    &.active
-                        color: $color-theme
-                .delete
-                    position: absolute
-                    left: 90%
-                    top: 20%
-                // 小于1px的边界
-                .border
-                    height: 1px
-                    transform: scaleY(0.3)
-                    transform-origin: 50% 100%
-                    background: $color-text-light
+            white-space: nowrap
+            &.active
+                color: $color-theme
+            .speaker
+                padding-right: 7px
+            .singer
+                padding-left: 5px
+                font-size: $font-size-small
+                color: $color-text-g
+        .delete
+            width: 40px
+            height: 100%
+            display: flex
+            align-items: center
+            padding-left: 30px
 </style>

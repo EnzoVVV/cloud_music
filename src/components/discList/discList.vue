@@ -1,16 +1,17 @@
 <template>
     <div class='discList'>
-        <h1 class='title'>推荐歌单</h1>
+        <h1 class='title' v-if='inPlaylist'>全部歌单</h1>
+        <h1 class='title' v-else @click='showPlaylist'>推荐歌单</h1>
         <!-- 需要给ul清除浮动才能滚动 -->
         <!-- li是浮动元素，脱离文档流，所以ul没有高度，外层的recommend也会没法scroll -->
         <ul class='items'>
             <li v-for='disc in discList' :key='disc.id' class='item' @click='selectDisc(disc)'>
                 <div class='cover'>
                     <div class='gradients'></div>
-                    <img v-lazy='disc.picUrl' class='img needsclick'></img>
+                    <img v-lazy='disc.picUrl' class='img needsclick' @load='imgLoad(disc.id)' :ref='disc.id'></img>
                     <p class='play-count'>
                         <IconSvg icon-class='yinle' class='play-count-icon'></IconSvg>
-                        <span class='play-count-text'>{{disc.playCount}}</span>
+                        <span class='play-count-text'>{{formatNumber(disc.playCount)}}</span>
                     </p>
                 </div>
                 <div class='text'>{{disc.name}}</div>
@@ -20,6 +21,7 @@
 </template>
 
 <script>
+    import { formatNumber } from 'common/js/tools'
     export default {
         name: 'discList',
         components: {
@@ -28,6 +30,10 @@
         props: {
             discList: {
                 type: Array
+            },
+            inPlaylist: {
+                type: Boolean,
+                default: false
             }
 
         },
@@ -45,6 +51,17 @@
         methods: {
             selectDisc(discInfo) {
                 this.$bus.emit('showDiscDetail', discInfo)
+            },
+            showPlaylist() {
+                this.$bus.emit('showPlaylist')
+            },
+            formatNumber(n) {
+                return formatNumber(n)
+            },
+            imgLoad(id) {
+                // 必须把img的高度设为与宽度相等, 一行三张图片，如果某一行高度大于宽度，会导致下面的行该位置空白
+                const img = this.$refs[id][0]
+                img.style.height = getComputedStyle(img).width
             }
         },
         created() {
@@ -116,9 +133,15 @@
                             font-size: $font-size-small-s
                             color: $color-text-l
                 .text
-                    padding-top: 10px
                     font-size: $font-size-small
                     text-overflow: ellipsis 
                     overflow: hidden
-                    white-space: nowrap
+                    // 第二行超出显示省略号
+                    display: -webkit-box
+                    -webkit-box-orient: vertical
+                    -webkit-line-clamp: 2
+                    // 有些文字一行有些两行，统一高度
+                    line-height: 12px
+                    height: 24px
+                    padding: 10px 0 5px 0
 </style>

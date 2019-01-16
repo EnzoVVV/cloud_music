@@ -1,35 +1,22 @@
 <template>
-    <transition name='recommend'>
-        <div class='recommend'>
-            <FunctionalHeader title='每日推荐' @back='goback'></FunctionalHeader>
-            <scroll class='scroll' ref='scroll'>
-                <div :style='bgStyle'>
-                    <div class='bg'>
-                        <div class='info'>
-                            <IconSvg icon-class='calendar' class='calendar' size='150px'></IconSvg>
-                            <span class='date'>{{day}}</span>
-                        </div>
-                    </div>
-                    <songlist :songs='songs' @click='selectSong' @clickHeader='playAll' class='songlist' :showHeader='true'></songlist>
-                </div>
-            </scroll>
+    <detailboard headerTitle='每日推荐' :blur='true' :songs='songs' :showImg='true' :cover='cover' :cusInfo='true' :showFunc='false' :showFBtn='false' :showSearch='false'>
+        <div class='bg' slot='info'>
+            <div class='info'>
+                <IconSvg icon-class='calendar' class='calendar' size='150px'></IconSvg>
+                <span class='date'>{{day}}</span>
+            </div>
         </div>
-    </transition>
+    </detailboard>
 </template>
 <script>
-    import scroll from 'base/scroll/scroll'
-    import FunctionalHeader from 'base/functional-header/functional-header'
-    import songlist from 'components/song-list/song-list'
     import { mapActions } from 'vuex'
     import { getDailyRecommend } from 'api/recommend'
-    import { mockImg } from 'common/js/config'
     import { createSong } from 'common/js/song'
+    import detailboard from 'components/detail-board/detail-board'
     export default {
         name: 'DailyRecommend',
         components: {
-            scroll,
-            FunctionalHeader,
-            songlist
+            detailboard
         },
         props: {
 
@@ -89,39 +76,19 @@
 </script>
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
-    .recommend
-        position: fixed
-        top: 0
-        left: 0
-        right: 0
-        bottom: 0
-        z-index: 4000
-        &.recommend-enter-active, &.recommend-leave-active
-            transition: all 0.4s
-        &.recommend-enter, &.recommend-leave-to
-            transform: translate3d(0, 100%, 0)
-        .scroll
-            overflow: hidden
+    .bg
+        position: relative 
+        width: 100%
+        height: 160px
+        overflow: hidden
+        .info
             position: absolute 
-            top: 44px
+            left: -20px
             bottom: 0
-            width: 100%
-            .bg
-                position: relative 
-                width: 100%
-                height: 160px
-                overflow: hidden
-                .info
-                    position: absolute 
-                    left: -20px
-                    bottom: 0
-                    .date
-                        position: absolute 
-                        left: 52px
-                        bottom: 45px
-                        font-size: $font-size-large-e
-                        color: $color-text-a
-            .songlist
-                width: 100%
-                height: 100%
+            .date
+                position: absolute 
+                left: 62px
+                bottom: 45px
+                font-size: $font-size-large-e
+                color: $color-text-a
 </style>

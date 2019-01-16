@@ -5,10 +5,9 @@
 </template>
 <script>
     import videolist from 'components/video-list/video-list'
-    import { getVideo } from 'api/video'
-    import { ERR_FREE } from 'api/config'
+    import { getVideo, getVideoArtistDetail } from 'api/video'
     export default {
-        name: 'radio',
+        name: 'videoviewer',
         components: {
             videolist
         },
@@ -28,10 +27,12 @@
         methods: {
             getVideo() {
                 getVideo(10).then(res => {
-                    if(res.data.code == ERR_FREE) {
-                        this.videolist = res.data.data
-                        console.log(this.videolist[0])
-                    }
+                    this.videolist = res
+                    this.videolist.forEach(video => {
+                        getVideoArtistDetail(video.artists[0].id).then(res => {
+                            video.avatar = res
+                        })
+                    })
                 })
             }
         },

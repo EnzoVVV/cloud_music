@@ -26,8 +26,9 @@ export const selectPlay = function ({commit, state}, {list, index}) {
 // 歌单中插入一首歌，并播放这首歌
 export const insertSong = function ({commit, state}, song) {
     // 不能直接修改state下的数据，复制一份
-    let playlist = deepCopy(state.playlist)
-    let sequenceList = deepCopy(state.sequenceList)
+    // 这里不能用deepCopy,deepCopy将song class复制成object了, 用slice可以保留class
+    let playlist = state.playlist.slice()
+    let sequenceList = state.sequenceList.slice()
     let currentIndex = state.currentIndex
 
     // 如果已经有这首歌，找到已有的index
@@ -69,8 +70,8 @@ export const insertSong = function ({commit, state}, song) {
 
 // 在歌曲列表中删掉一项
 export const deleteSong = function ({commit, state}, song) {
-    let playlist = deepCopy(state.playlist)
-    let sequenceList = deepCopy(state.sequenceList)
+    let playlist = state.playlist.slice()
+    let sequenceList = state.sequenceList.slice()
     let currentIndex = state.currentIndex
     let pIndex = findIndex(playlist, song)
     playlist.splice(pIndex, 1)
@@ -111,7 +112,7 @@ export const restoreSearchHistory = function ({commit}) {
     commit(types.SET_SEARCH_HISTORY, restoreSearch())
 }
 
-import { addToDisc, getDiscs, saveDisc, deleteDisc as deleteADisc, deleteSongFromDisc as deleteSongFromADisc, toggleSongFS } from 'common/js/cache'
+import { addToDisc, getDiscs, saveDisc, deleteDisc as deleteADisc, deleteSongFromDisc as deleteSongFromADisc, toggleSongFS as toggleTheSongFS } from 'common/js/cache'
 import { createDisc as createADisc } from 'common/js/disc'
 
 // 将歌曲添加到歌单, 入参为类的实例
@@ -176,8 +177,8 @@ export const favoriteDisc = function ({commit}, {disc, status}) {
 }
 
 // 添加/移除歌曲到“我喜欢的音乐”歌单
-export const toggleFS = function ({commit}, song) {
-    toggleSongFS(song)
+export const toggleSongFS = function ({commit}, song) {
+    toggleTheSongFS(song)
     commit(types.SET_DISCS, getDiscs(0))
 }
 

@@ -42,7 +42,11 @@ const matutaions = {
   },
   [types.SET_FAVORITE_SINGERS](state, singers) {
     state.fsingers = singers
-  }
+  },
+  // 记录FM是否开启的状态到vuex
+  [types.SET_FM_SWITCH](state, status) {
+    state.FMSwitch = status
+  },
 }
 
 export default matutaions

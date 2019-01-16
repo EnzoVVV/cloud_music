@@ -2,20 +2,22 @@
     <transition name='comment'>
         <div class='comment'>
             <FunctionalHeader title='评论' @back='back'></FunctionalHeader>
-            <!-- TODO, :data='' -->
             <scroll class='scroll' :pullup='true' @scrollToEnd='loadMore'>
                 <div>
-                    <div class='song' @click='selectSong'>
-                        <liner :picUrl='song.picUrl' :main='song.name' :sub='song.singer' height='80px' :hasBorder='false'></liner>
+                    <div class='info' @click='selectInfo'>
+                        <liner :picUrl='info.picUrl' :main='info.name' :sub='info.sub' height='80px' :hasBorder='false'></liner>
                     </div>
                     <div class='header'>精彩评论</div>
-                    <cline></cline>
+                    <cline v-for='(comment, index) in hotComments' :key='index' :comment='comment'></cline>
+                    <div v-if='allHotComments.length > 10' class='all' @click='cviewerFlag = true'>全部精彩评论 ></div>
                     <div class='header'>最新评论</div>
-                    <cline></cline>
+                    <cline v-for='(comment, index) in comments' :key='index' :comment='comment' @showReply='showReply'></cline>
                     <!-- 如果还有数据, 则拉到最底时显示loading，加载完数据后，内容增多，loading组件被推到下面了 -->
                     <loading v-show='hasMore'></loading>
                 </div>
             </scroll>
+            <reply v-if='replyFlag' :comment='repliedComment' @back='replyFlag = false'></reply>
+            <cviewer v-if='cviewerFlag' :comment='allHotComments' @back='cviewerFlag = false'></cviewer>
         </div>
     </transition>
 </template>
@@ -24,7 +26,10 @@
     import scroll from 'base/scroll/scroll'
     import liner from 'base/liner/liner'
     import cline from './sub-components/cline'
+    const reply = () => import('./sub-components/reply')
+    const cviewer = () => import('./sub-components/cviewer')
     import loading from 'base/loading/loading'
+    import { getComment, getHotComment } from 'api/comment'
     export default {
         name: 'comment',
         components: {
@@ -32,18 +37,34 @@
             scroll,
             liner,
             cline,
-            loading
+            loading,
+            reply,
+            cviewer
         },
         props: {
-            song: {
-                type: Object
+            type: {
+                type: String,
+                default: 'song',
+                validator: (value) => {
+                    return ['song', 'album', 'disc'].indexOf(value) > -1
+                }
+            },
+            subject: {
+                type: Object,
+                default: () => {}
             }
         },
         data() {
             return {
-                curPage: 1,
-                hasMore: false,
-                comments: []
+                curPage: 0,
+                hasMore: true,
+                comments: [],
+                hotComments: [],
+                allHotComments: [],
+                replyFlag: false,
+                repliedComment: null,
+                cviewerFlag: false,
+                info: {}
             }
         },
         computed: {
@@ -58,23 +79,42 @@
                     return
                 }
                 this.curPage++
-                getComments(this.curPage).then(res => {
-                    this.comments = this.comments.concat(res)
-                    this.checkMore()
+                getComments(this.subject.id, this.curPage, this.type).then(res => {
+                    this.comments = this.comments.concat(res.comments)
+                    this.total = res.total
+                    this.hasMore = res.hasMore
                 })
             },
-            checkMore() {
-
+            getHotComments() {
+                getHotComment(this.subject.id, this.type).then(res => {
+                    this.hotComments = this.comments.slice(0, 10)
+                    this.allHotComments = res.comments
+                })
             },
-            selectSong() {
-
+            showReply(comment) {
+                this.replyFlag = true
+                this.repliedComment = comment
+            },
+            selectInfo() {
+                if(this.type === 'song') {
+                    // 是song则触发播放
+                    this.$bus.emit('requestPlayFromComment')
+                } else {
+                    this.back()
+                }
             },
             back() {
                 this.$emit('back')
             }
         },
         created() {
-
+            this.loadMore()
+            this.getHotComments()
+            this.info = {
+                picUrl: this.subject.picUrl,
+                main: this.subject.name,
+                sub: this.subject.singer || this.subject.creator || ''
+            }
         },
         mounted() {
 
@@ -109,4 +149,10 @@
                 align-items: center
                 background: $color-text-lighter
                 font-size: $font-size-small
+            .all
+                height: 60px
+                display: flex
+                justify-content: center
+                align-items: center
+                color: $color-text-light
 </style>
