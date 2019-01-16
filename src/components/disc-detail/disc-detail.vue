@@ -1,9 +1,5 @@
 <template>
-    <detailboard headerTitle='歌单' :headerScrollTitle='title' :rollingTitle='true' :songs='songs' :favoriteStatus='favoriteStatus' :cover='cover' @toggleFS='toggleFS' @back='goback'>
-        <div slot='info'>
-            <img class='img' :src='cover'></img>
-            <div class='title'>{{title}}</div>
-        </div>
+    <detailboard headerTitle='歌单' :subject='discInfo' :headerScrollTitle='title' :rollingTitle='true' :songs='songs' :showFBtn='showFBtn' :favoriteStatus='favoriteStatus' :cover='cover' :showIndex='true' @toggleFS='toggleFS' @back='goback'>
     </detailboard>
 </template>
 <script>
@@ -26,7 +22,8 @@
                 songs: [],
                 title: '',
                 cover: '',
-                favoriteStatus: false
+                favoriteStatus: false,
+                showFBtn: true
             }
         },
         computed: {
@@ -52,12 +49,21 @@
                 'favoriteDisc'
             ]),
             getDiscDetails() {
-                getDiscDetail(this.discInfo.id).then(res => {
-                    this.disc = res
-                    this.songs = this.disc.songList
-                    this.title = this.disc.name
-                    this.cover = this.disc.picUrl
-                })
+                // 是我创建的歌单
+                if(this.discInfo.creator == 'self') {
+                    this.showFBtn = false
+                    this.disc = this.discInfo
+                    this.songs = this.discInfo.songList
+                    this.title = this.discInfo.name
+                    this.cover = this.discInfo.picUrl
+                } else {
+                    getDiscDetail(this.discInfo.id).then(res => {
+                        this.disc = res
+                        this.songs = this.disc.songList
+                        this.title = this.disc.name
+                        this.cover = this.disc.picUrl
+                    })
+                }
             },
             goback() {
                 this.$emit('back')
@@ -81,6 +87,7 @@
         position: absolute 
         left: 20px
         top: 60px
+        border-radius: 5px
     .title
         position: absolute 
         left: 140px

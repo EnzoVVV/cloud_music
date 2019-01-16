@@ -54,13 +54,15 @@ export function translate(el, x = 0, y = 0, options) {
     const defaultOptions = {
         useTransfrom: true,
         // transitionTimingFunction: 'cubic-bezier(0.165, 0.84, 0.44, 1)',
-        transitionDuration: '0s'
+		transitionDuration: '0s',
+		percent: false
     }
     if(options) {
       	Object.assign(defaultOptions,options)
     }
     if (defaultOptions.useTransfrom) {
-        el.style[transform] = `translate3d(${x}px,${y}px,0)`
+		const unit = defaultOptions.percent ? '%' : 'px'
+        el.style[transform] = `translate3d(${x}${unit},${y}${unit},0)`
         // el.style.transitionProperty = 'transform'
         // el.style.transitionTimingFunction = defaultOptions.transitionTimingFunction
         el.style[transitionDuration] = defaultOptions.transitionDuration

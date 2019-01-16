@@ -1,8 +1,8 @@
 <template>
     <scroll class='scroll'>
         <ul>
-            <li v-for='album in curAlbums' :key='album.id'>
-                <liner :picUrl='album.picUrl' :main='album.name' :sub='album.singer'></liner>
+            <li v-for='singer in curSingers' :key='singer.id'>
+                <liner :picUrl='singer.picUrl' :main='singer.name' sub='todo'></liner>
             </li>
         </ul>
     </scroll>
@@ -11,8 +11,7 @@
     import { mapGetters } from 'vuex'
     import { collectionMixin } from 'common/js/mixins'
     export default {
-        // TODO
-        name: 'albumCollection',
+        name: 'singerCollection',
         mixins: [collectionMixin],
         components: {
 
@@ -22,12 +21,12 @@
         },
         data() {
             return {
-                curAlbums: []
+                curSingers: []
             }
         },
         computed: {
             ...mapGetters([
-                'albums'
+                'fsinger'
             ])
         },
         watch: {
@@ -35,11 +34,11 @@
         },
         methods: {
             search(query) {
-                this.curAlbums = this.albums.filter(i => i.name.indexOf(query) > -1)
+                this.curSingers = this.fsinger.filter(i => i.name.indexOf(query) > -1)
             }
         },
         created() {
-            this.curAlbums = this.albums
+            this.curSingers = this.fsinger
         },
         mounted() {
 

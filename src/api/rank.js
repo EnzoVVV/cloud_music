@@ -4,18 +4,41 @@ import { ERR_OK } from 'api/config'
 import axios from 'axios'
 import { success } from './shared'
 
+import { getSongs } from 'common/js/song'
+function getRankData(item) {
+	return {
+		id: item.id,
+		name: item.name,
+		picUrl: item.coverImgUrl,
+		updateFrequency: item.updateFrequency,
+		creator: item.creator,
+		tracks: item.tracks.map(track => {
+			return {
+				name: track.first,
+				singer: track.second
+			}
+		})
+	}
+}
+
 export function getTopList() {
 	if(window.useCloud) {
 		const url = HOST + '/toplist/detail'
 		return axios.get(url).then(res => {
-			let result = []
+			let result = {
+				official: [],
+				recommend: [],
+				more: []
+			}
 			if(success(res.status)) {
-				result = res.data.list.map(item => {
-					return  {
-						id: item.id,
-						name: item.name,
-						picUrl: item.coverImgUrl,
-						updateFrequency: item.updateFrequency
+				res.data.list.forEach(item => {
+					const rankData = getRankData(item)
+					if(item.tracks && item.tracks.length) {
+						result.official.push(rankData)
+					} else if(result.recommend.length < 6) {
+						result.recommend.push(rankData)
+					} else {
+						result.more.push(rankData)
 					}
 				})
 			}
@@ -64,4 +87,24 @@ export function getMusicList(topid) {
 	})
 
 	return jsonp(url, data, options)
+}
+
+
+export function getRankDetail(idx) {
+	const url = HOST + `/top/list?idx=${idx}`
+	return axios.get(url).then(res => {
+		let result = {
+			official: [],
+			recommend: [],
+			more: []
+		}
+		if(success(res.status)) {
+			const playlist = res.data.playlist
+			let result = {}
+			result.picUrl = playlist.coverImgUrl
+			result.songs = getSongs(playlist.tracks)
+			result.creator = playlist.creator.nickname || ''
+		}
+		return result
+	})
 }

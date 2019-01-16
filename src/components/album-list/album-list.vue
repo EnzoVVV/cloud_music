@@ -1,23 +1,18 @@
 <template>
-    <div class='album-list'>
-        <ul>
-            <li v-for='album in albumList' :key='album.id' class='item' @click='selectAlbum(album)'>
-                <img class='img' :src='album.picUrl'></img>
-                <div class='content'>
-                    <div class='name'>{{album.name}}</div>
-                    <p class='desc'>{{album.date}}</p>
-                </div>
-            </li>
-        </ul>
-    </div>
+    <ul>
+        <li v-for='album in albumList' :key='album.id' class='item' @click='selectAlbum(album)'>
+            <liner :showImg='true' :cd='true' :picUrl='album.picUrl' :main='album.name' :sub='album.date'></liner>
+        </li>
+    </ul>
 </template>
 <script>
     import { mapGetters } from 'vuex'
     import { getSingerAlbums } from 'api/singer'
+    import liner from 'base/liner/liner'
     export default {
         name: 'albumlist',
         components: {
-
+            liner
         },
         props: {
             albums: {
@@ -55,36 +50,3 @@
         }
     }
 </script>
-<style lang='stylus' scoped>
-    @import '~common/stylus/variable'
-    .album-list
-        .item
-            position: relative
-            display: flex
-            align-items: center
-            box-sizing: border-box
-            height: 60px
-            font-size: $font-size-medium
-            padding-left: 5px
-            .img
-                float: left
-                width: 50px
-                height: 50px
-                border-radius: 10%
-            .content
-                flex: 1
-                height: 60px
-                line-height: 24px
-                margin-left: 20px
-                border-bottom: 1px solid rgb(228, 228, 228)
-                .name
-                    margin-top: 8px
-                    color: $color-text
-                    text-overflow: ellipsis 
-                    overflow: hidden
-                    white-space: nowrap
-                .desc
-                    width: 80%
-                    font-size: 12px
-                    color: $color-text-g
-</style>

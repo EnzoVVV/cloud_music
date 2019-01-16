@@ -62,6 +62,8 @@ export function getSingerDetail(singerId) {
 		return axios.get(url).then(res => {
 			let result = {}
 			if(success(res.status)) {
+				result.name = res.data.artist.name
+				result.picUrl = res.data.artist.picUrl
 				result.songs = getSongs(res.data.hotSongs)
 				result.brief = res.data.artist.briefDesc
 			}

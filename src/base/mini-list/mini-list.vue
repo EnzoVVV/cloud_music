@@ -1,26 +1,25 @@
 <template>
-    <transition name='list'>
-        <div class='mini-list' v-show='flag'>
-            <div class='decorate' @click='hide'>
-            </div>
-            <div class='wrapper'>
-                <div class='header' @touchstart='headerTouchStart' @touchmove='headerTouchMove' @touchend='headerTouchEnd' ref='header'>
-                    <slot name='header' v-if='modifiedHeader'></slot>
-                    <div class='title' v-else>{{title}}</div>
-                </div>
-                <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
-                    <slot name='list'></slot>
-                </scroll>
-            </div>
+    <div class='mini-list'>
+        <div class='decorate' @click='hide' ref='decorate'>
         </div>
-    </transition>
+        <div class='wrapper' ref='wrapper'>
+            <div class='header' @touchstart='headerTouchStart' @touchmove='headerTouchMove' @touchend='headerTouchEnd' ref='header'>
+                <slot name='header' v-if='modifiedHeader'></slot>
+                <div class='title' v-else>{{title}}</div>
+            </div>
+            <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
+                <slot name='list'></slot>
+            </scroll>
+        </div>
+    </div>
 </template>
 <script>
     import scroll from 'base/scroll/scroll'
-    import { translate } from 'common/js/dom'
+    import { translate, changeOpacity } from 'common/js/dom'
     const duration = 200
     // transition动画时间
     const AnimationDuration = 200
+    const transitionDuration = AnimationDuration / 1000 + 's'
     export default {
         name: 'minilist',
         components: {
@@ -44,8 +43,7 @@
                 maxMoveDistance: 300,
                 headerTouch: {},
                 touch: {},
-                position: 0,
-                flag: false
+                position: 0
             }
         },
         computed: {
@@ -163,12 +161,15 @@
         created() {
         },
         mounted() {
-            this.flag = true
-            setTimeout(() => {
-                this.scrollEl = this.$refs.scroll.$el
-                this.headerEl = this.$refs.header
-                this.maxMoveDistance = this.scrollEl.offsetHeight
-            }, AnimationDuration) 
+            this.scrollEl = this.$refs.scroll.$el
+            this.headerEl = this.$refs.header
+            this.maxMoveDistance = this.scrollEl.offsetHeight
+            // 由于scroll采用绝对定位, 没法撑开这个高度，需要手动设置高度
+            this.$refs.wrapper.style.height = parseInt(getComputedStyle(this.scrollEl.firstElementChild).height) + parseInt(getComputedStyle(this.headerEl).height) + 'px'
+            translate(this.$refs.wrapper, 0, 0, {
+                transitionDuration: transitionDuration
+            })
+            changeOpacity(this.$refs.decorate, 0.5, AnimationDuration)
         }
     }
 </script>
@@ -182,16 +183,6 @@
         bottom: 0
         z-index: 8000
         overflow: hidden
-        &.mini-list-enter-active, &.mini-list-leave-active
-            transition: all 4s
-            .mini-list
-                transition: all 4s
-        &.mini-list-enter, &.mini-list-leave-to
-            opacity: 0
-            transform: translate3d(0, 100%, 0)
-            .mini-list
-                opacity: 0
-                transform: translate3d(0, 100%, 0)
         .decorate
             position: absolute
             top: 0
@@ -199,17 +190,18 @@
             right: 0
             height: 100%
             background: $color-text
-            opacity: 0.5
+            opacity: 0
         .wrapper
             position: absolute
             left: 0
             right: 0
             bottom: 0
-            max-height: 40%
+            max-height: 50%
+            transform: translate3d(0, 100, 0)
             .header
                 height: 44px
-                padding-left: 10px
-                border-radius: 15px 15px 0 0
+                padding-left: 5px
+                border-radius: 10px 10px 0 0
                 background: $color-background
                 display: flex
                 align-items: center 
@@ -223,4 +215,7 @@
                 width: 100%
                 background: $color-background
                 overflow: hidden
+                position: absolute
+                top: 44px
+                bottom: 0
 </style>

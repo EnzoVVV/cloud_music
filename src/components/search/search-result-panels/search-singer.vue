@@ -1,16 +1,18 @@
 <template>
     <div class='singer'>
-        <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list'>
-            <ul v-if='singers.length'>
-                <li v-for='singer in singers' :key='singer.name' class='line' @click='selectSinger(singer)'>
-                    <div class='img-wrapper'><img v-lazy='singer.picUrl' class='img'></img></div>
-                    <div class='info'>
-                        <span class='name'>{{singer.name}}</span>
-                        <span class='alias' v-if='singer.alias'>({{singer.alias}})</span>
-                    </div>
-                </li>
-            </ul>
-            <loading v-else class='loading'></loading>
+        <scroll class='list'>
+            <div>
+                <ul v-if='singers.length'>
+                    <li v-for='singer in singers' :key='singer.name' class='line' @click='selectSinger(singer)'>
+                        <div class='img-wrapper'><img v-lazy='singer.picUrl' class='img'></img></div>
+                        <div class='info'>
+                            <span class='name'>{{singer.name}}</span>
+                            <span class='alias' v-if='singer.alias'>({{singer.alias}})</span>
+                        </div>
+                    </li>
+                </ul>
+                <loading v-else class='loading'></loading>
+            </div>
         </scroll>
     </div>
 </template>
@@ -63,35 +65,37 @@
 </script>
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
-    .line
-        height: 44px
-        display: flex
-        align-items: center
-        padding-left: 5px
-        .img-wrapper
-            .img
-                width: 38px
-                height: 38px
-                border-radius: 3px
-        .info
-            width: 100%
-            height: 44px
-            line-height: 44px
-            position: relative
-            &:after
-                content: ''
-                position: absolute 
-                left: 2%
-                bottom: 0
-                right: 0
-                height: 1px
-                background: $color-light
-            .name
-                padding-left: 10px
-            .alias
-                padding-left: 2px
-                color: $color-text-light
-    .loading
-        position: fixed
-        top: 50%
+    .singer
+        width: 100%
+        height: 100%
+        overflow: hidden
+        .list
+            position: absolute
+            left: 0
+            top: 0
+            right: 0
+            bottom: 60px
+            .line
+                height: 60px
+                display: flex
+                align-items: center
+                padding-left: 5px
+                .img-wrapper
+                    .img
+                        width: 50px
+                        height: 50px
+                        border-radius: 5px
+                .info
+                    width: 100%
+                    height: 100%
+                    display: flex
+                    align-items: center
+                    border-bottom: 1px solid $color-light
+                    margin-left: 10px
+                    .alias
+                        padding-left: 2px
+                        color: $color-text-light
+            .loading
+                position: fixed
+                top: 50%
 </style>

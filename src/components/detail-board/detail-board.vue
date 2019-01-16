@@ -18,9 +18,31 @@
                         <img :src='cover' class='bg-img' :class='{"blur": blur}'></img>
                     </div>
                     <div class='info' ref='info'>
-                        <slot name='info'></slot>
+                        <slot v-if='cusInfo' name='info'></slot>
+                        <div v-else>
+                            <img class='info-img' :src='cover'></img>
+                            <div class='info-title-wrapper'>
+                                <div class='info-main-title'>{{headerScrollTitle}}</div>
+                                <div class='info-sub-title' v-if='subTitle.length'>{{subTitle}}</div>
+                            </div>
+                        </div>
                     </div>
-                    <songlist :songs='songs' @click='selectSong' @clickHeader='playAll' :showHeader='showHeader' :showIndex='showIndex' :favoriteStatus='favoriteStatus' @toggleFS='toggleFS' ref='songlist' class='songlist'></songlist>
+                    <div class='func' v-if='showFunc'>
+                        <div class='btn'>
+                            <IconImg imgName='comment' @click='showComment'></IconImg>
+                            <div class='text'>评论</div>
+                        </div>
+                        <div class='btn'>
+                            <IconImg imgName='uj'></IconImg>
+                            <div class='text'>分享</div>
+                        </div>
+                        <div class='btn'>
+                            <IconImg imgName='uj'></IconImg>
+                            <div class='text'>多选</div>
+                        </div>
+                    </div>
+                    <songlist v-if='!cusList' :songs='songs' @click='selectSong' @clickHeader='playAll' :showHeader='showHeader' :showIndex='showIndex' :showImg='showImg' :showFBtn='showFBtn' :favoriteStatus='favoriteStatus' @toggleFS='toggleFS' ref='songlist' class='songlist'></songlist>
+                    <div v-else ref='slot'><slot name='list'></slot></div>
                 </div>
             </scroll>
             <div class='fixed-background' v-show='showFixedBG' ref='fbg'>
@@ -74,7 +96,11 @@
             },
             showIndex: {
                 type: Boolean,
-                default: true
+                default: false
+            },
+            showImg: {
+                type: Boolean,
+                default: false
             },
             // header的搜索
             showSearch: {
@@ -86,10 +112,45 @@
                 type: Boolean,
                 default: true
             },
+            // 显示收藏按钮
+            showFBtn: {
+                type: Boolean,
+                default: true
+            },
             // 歌单收藏状态
             favoriteStatus: {
                 type: Boolean,
                 default: false
+            },
+            // 自定义list
+            cusList: {
+                type: Boolean,
+                default: false
+            },
+            // 自定义info
+            cusInfo: {
+                type: Boolean,
+                default: false
+            },
+            // info区次标题
+            subTitle: {
+                type: String,
+                default: ''
+            },
+            // 显示评论分享等功能按钮
+            showFunc: {
+                type: Boolean,
+                default: true
+            },
+            type: {
+                type: String,
+                default: 'disc',
+                validator: (value) => {
+                    return ['song', 'album', 'disc'].indexOf(value) > -1
+                }
+            },
+            subject: {
+                type: Object
             }
         },
         data() {
@@ -173,6 +234,9 @@
             },
             getDesc(song) {
                 return song.album ? `${song.singer} - ${song.album}` : `${song.singer} - ${song.name}`
+            },
+            showComment() {
+                this.showComponent('comment', this.type, this.subject)
             }
         },
         created() {
@@ -181,7 +245,8 @@
         mounted() {
             // 等transition结束后计算, 所以用setTimeout
             setTimeout(() => {
-                this.diff = this.$refs.songlist.$el.getBoundingClientRect().top - this.$refs.header.$el.offsetHeight
+                const el = this.cusList ? this.$refs.slot : this.$refs.songlist.$el
+                this.diff = el.getBoundingClientRect().top - this.$refs.header.$el.offsetHeight
                 this.$refs.scroll.refresh()
             }, 500)
         }
@@ -260,9 +325,11 @@
                 top: 0
                 width: 100%
                 // 3. 多出10px，为了下面的组件设置border-radius后能显示出来
-                height: 210px
+                height: 280px
                 z-index: -10
                 overflow: hidden
+                // 设置一个背景色, 背景图片失效时自动换成背景色
+                background-color: $color-background
                 .bg-img
                     width: 100%
                     height: 210px
@@ -271,8 +338,42 @@
                         filter: blur(80px) brightness(50%)
             .info
                 width: 100%
-                height: 200px
+                height: 180px
                 position: relative
+                &-img
+                    width: 100px
+                    height: 100px
+                    overflow: hidden
+                    position: absolute 
+                    left: 20px
+                    top: 60px
+                    border-radius: 5px
+                &-title-wrapper
+                    position: absolute 
+                    left: 140px
+                    top: 70px
+                    .info-main-title
+                        font-size: $font-size-medium-x
+                        font-weight: bold
+                        color: $color-text-a
+                    .info-sub-title
+                        padding-top: 10px
+                        font-size: $font-size-small
+                        color: $color-light
+            .func
+                height: 60px
+                margin-top: -10px
+                display: flex
+                align-items: center
+                .btn
+                    flex: 1
+                    display: flex
+                    flex-direction: column
+                    align-items: center 
+                    .text
+                        color: $color-text-ll
+                        font-size: $font-size-small
+                        padding-top: 5px
             .songlist
                 width: 100%
                 height: 100%
@@ -287,6 +388,7 @@
             background: $color-background
             z-index: 6000
             // 图片裁剪，显示底部的10px
+            // TODO，改成clip-path
             clip: rect(156px auto 200px auto)
             overflow: hidden
             .bg-img

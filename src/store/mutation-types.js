@@ -26,4 +26,5 @@ export const SET_ALBUMS = 'SET_ALBUMS'
 
 export const SET_FAVORITE_SINGERS = 'SET_FAVORITE_SINGERS'
 
+export const SET_FM_SWITCH = 'SET_FM_SWITCH'
 

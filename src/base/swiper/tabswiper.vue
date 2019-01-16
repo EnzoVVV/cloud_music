@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class='tabswiper'>
         <tabs :content='tabContent' :defaultIndex='defaultIndex' :showMarker='showMarker' ref='tabs' class='tabs' @click='clickTab'></tabs>
         <swiper :componentList='componentList' :defaultIndex='defaultIndex' :height='swiperHeight' ref='swiper'></swiper>
     </div>
@@ -74,6 +74,8 @@
 </script>
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
-    .tabs
-        background: $color-theme
+    .tabswiper
+        margin-top: -1px
+        .tabs
+            background: $color-theme
 </style>

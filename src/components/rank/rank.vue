@@ -10,16 +10,30 @@
                     <div>
                         <div class='title'>官方榜</div>
                         <ul>
-                            <li class='item' v-for='item in topList' :key='item.id' @click='selectRank(item)'>
+                            <li class='item' v-for='item in officialList' :key='item.id' @click='selectRank(item)'>
                                 <div class='icon'>
                                     <img v-lazy='item.picUrl' width='100' height='100'>
                                 </div>
                                 <ul class='songlist'>
-                                    <li class='song' v-for='(song, index) in item.songList' :key='song.id || index'>
-                                        <div class='index'>{{index + 1}}</div>
+                                    <li class='song' v-for='(song, index) in item.tracks' :key='song.id || index'>
+                                        <div class='index'>{{index + 1}}.</div>
                                         <div class='text'>{{song.name}} - {{song.singer}}</div>
                                     </li>
                                 </ul>
+                            </li>
+                        </ul>
+                        <div class='title'>推荐榜</div>
+                        <ul class='list'>
+                            <li class='list-item' v-for='item in recommendList' :key='item.id' @click='selectRank(item)'>
+                                <img v-lazy='item.picUrl' class='list-item-img'>
+                                <div class='list-item-title'>{{item.name}}</div>
+                            </li>
+                        </ul>
+                        <div class='title'>更多榜单</div>
+                        <ul class='list'>
+                            <li class='list-item' v-for='item in moreList' :key='item.id' @click='selectRank(item)'>
+                                <img v-lazy='item.picUrl' class='list-item-img'>
+                                <div class='list-item-title'>{{item.name}}</div>
                             </li>
                         </ul>
                     </div>
@@ -47,7 +61,9 @@
         },
         data() {
             return {
-                topList: [],
+                officialList: [],
+                recommendList: [],
+                moreList: [],
                 showRankDetail: false,
                 rankinfo: null
             }
@@ -65,7 +81,9 @@
             },
             getTopLists() {
                 getTopList().then(res => {
-                    this.topList = res
+                    this.officialList = res.official
+                    this.recommendList = res.recommend
+                    this.moreList = res.more
                 })
             },
             goback() {
@@ -73,7 +91,7 @@
             },
             handlePlaylist(playlist) {
                 if(!playlist) return
-                const bottom = playlist.length > 0 ? '60px' : ''
+                const bottom = playlist.length > 0 ? '45px' : ''
                 this.$refs.rank.style.bottom = bottom
                 this.$refs.scroll.refresh()
             }
@@ -129,15 +147,6 @@
                 margin: 0 10px
                 padding: 3px 0 
                 height: 100px
-                position: relative
-                &:after
-                    content: ''
-                    position: absolute 
-                    left: 30%
-                    bottom: 0
-                    right: 0
-                    height: 1px
-                    background: $color-light
                 &:last-child
                     padding-bottom: 20px
                 .icon
@@ -145,27 +154,54 @@
                     width: 100px
                     height: 100px
                     img 
-                        border-radius: 3px
+                        border-radius: 5px
                 .songlist
                     flex: 1
                     display: flex
                     flex-direction: column
                     justify-content: center
-                    padding: 0 20px
+                    margin-left: 20px
                     height: 100px
                     overflow: hidden
                     color: $color-text
                     font-size: $font-size-small-s
+                    border-bottom: 1px solid $color-light
                     .song
-                        @include no-wrap()
                         line-height: 30px
+                        font-size: $font-size-medium
                         .index
-                            float: left 
+                            float: left
                         .text
                             // 文字超出部分显示省略号
                             // text-overflow使用注意点: 用于块级元素, 需要配合overflow和white-space
                             text-overflow: ellipsis 
                             overflow: hidden
                             white-space: nowrap
-
+            .list
+                // 清除浮动 
+                &:after 
+                    clear:both
+                    content:'.'
+                    display:block
+                    width: 0
+                    height: 0
+                    visibility:hidden
+                &-item
+                    float: left
+                    width: 33%
+                    display: inline-block
+                    box-sizing: border-box
+                    padding: 0 1%
+                    &-img
+                        width: 100%
+                        height: 100%
+                        display: block
+                        border-radius: 5px
+                    &-title
+                        font-size: $font-size-medium
+                        display: flex
+                        justify-content: center
+                        line-height: 14px
+                        height: 28px
+                        padding: 10px 0 5px 0
 </style>

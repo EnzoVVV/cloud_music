@@ -1,8 +1,10 @@
 <template>
     <div class='album'>
-        <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list'>
-            <albumlist :albums='albums' v-if='albums.length'></albumlist>
-            <loading v-else class='loading'></loading>
+        <scroll class='list'>
+            <div>
+                <albumlist :albums='albums' v-if='albums.length'></albumlist>
+                <loading v-else class='loading'></loading>
+            </div>
         </scroll>
     </div>
 </template>

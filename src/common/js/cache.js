@@ -104,13 +104,13 @@ export function toggleSongFS(song) {
     // 切换song实例里的状态
     song.toggleFavoriteStatus()
     let discs = getDiscs()
-    let favoriteDisc = discs.find(i = i.id === 1)
+    let favoriteDisc = discs.find(i => i.id === 1)
     if(song.favorite) {
         // 添加
-        favoriteDisc.push(song)
+        favoriteDisc.songList.push(song)
     } else {
         // 移除
-        favoriteDisc = favoriteDisc.filter(i => i.id != song.id)
+        favoriteDisc = favoriteDisc.songList.filter(i => i.id != song.id)
     }
     storage.set(DISC_KEY, discs)
 }

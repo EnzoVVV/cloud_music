@@ -6,8 +6,8 @@
         </div>
         <scroll ref='scroll' class='scroll'>
             <ul>
-                <li v-for='disc in discs' :key='item.id' :ref='item.id'>
-                    <liner :picUrl='disc.picUrl' :main='disc.name' :sub='disc.singer' showCheck='true' :itemId='disc.id' :circleCheck='true' @check='check'></liner>
+                <li v-for='disc in discs' :key='disc.id' :ref='disc.id'>
+                    <liner :picUrl='disc.picUrl' :main='disc.name' :sub='disc.singer' :showCheck='true' :itemId='disc.id' :circleCheck='true' @check='check'></liner>
                 </li>
             </ul>
         </scroll>

@@ -15,7 +15,9 @@ const state = {
   discardDiscs: [],
   albums: [],
   fsingers: [],
-  discardDiscs: []
+  discardDiscs: [],
+  // 记录FM是否开启的状态到vuex
+  FMSwitch: false
 }
 
 export default state

@@ -1,12 +1,9 @@
 <template>
     <div>
-        <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='info.user.picUrl' :main='info.user.name' :sub='info.time' height='40px'></liner>
+        <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='comment.user.picUrl' :main='comment.user.name' :sub='comment.time' height='40px'></liner>
         <div class='content'>
-            <div class='comment'>{{content}}</div>
-            <div class='reply' v-if='info.reply'>
-                <span class='author'>{{info.reply.user.name}}: </span>
-                <span>{{info.reply.content}}</span>
-            </div>
+            <div class='comment'>{{comment.content}}</div>
+            <span class='reply' v-if='!hideReply && comment.reply && comment.reply.length' @click='showReply(comment)'>{{comment.reply.length}}条回复 ></span>
         </div>
     </div>
 </template>
@@ -18,18 +15,18 @@
             liner
         },
         props: {
-            content: {
+            comment: {
                 type: String,
                 default: ''
             },
-            info: {
-                type: Object,
-                default: () => {}
+            hideReply: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
             return {
-
+                replyFlag: false
             }
         },
         computed: {
@@ -39,7 +36,9 @@
 
         },
         methods: {
-
+            showReply(comment) {
+                this.$emit('showReply', comment)
+            }
         },
         created() {
 
@@ -53,16 +52,14 @@
     @import '~common/stylus/variable'
     .content
         margin-left: 45px
-        padding: 10px 0
+        padding: 5px 5px 10px 0
         display: flex
         flex-direction: column
         border-bottom: 1px solid $color-light
+        .comment
+            line-height: 25px
         .reply
-            width: 85%
-            padding: 10px
             margin-top: 10px
-            border: 1px solid $color-light
-            border-radius: 3px
-            .author
-                color: $color-text-h
+            color: $color-text-h
+            font-size: $font-size-small
 </style>

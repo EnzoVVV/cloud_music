@@ -25,7 +25,7 @@
                             <IconImg imgName='mine' class='icon'></IconImg>
                             <div class='text'>我的电台</div>
                         </li>
-                        <li class='item'>
+                        <li class='item' @click.stop='showCollection'>
                             <IconImg imgName='mine' class='icon'></IconImg>
                             <div class='text'>我的收藏</div>
                         </li>
@@ -39,7 +39,7 @@
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
                         <li class='list' v-for='disc in discs' :key='disc.name' v-show='!clistFold' @click='showDiscDetail(disc)'>
-                            <img class='img' v-lazy='disc.picUrl'></img>
+                            <img class='img' :src='disc.picUrl'></img>
                             <div class='text'>
                                 <div class='name'>{{disc.name}}</div>
                                 <p class='info'>{{clistInfo(disc)}}</p>
@@ -58,7 +58,7 @@
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
                         <li class='list' v-for='disc in fdiscs' :key='disc.name' v-show='!flistFold' @click='showDiscDetail(disc)'>
-                            <img class='img' v-lazy='disc.picUrl'></img>
+                            <img class='img' :src='disc.picUrl'></img>
                             <div class='text'>
                                 <div class='name'>{{disc.name}}</div>
                                 <p class='info'>{{flistInfo(disc)}}</p>
@@ -183,6 +183,9 @@
             },
             showDiscDetail(disc) {
                 this.$bus.emit('showDiscDetail', disc)
+            },
+            showCollection() {
+                this.$bus.emit('showCollection')
             },
             ...mapActions([
                 'deleteDisc'

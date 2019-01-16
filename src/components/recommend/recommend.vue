@@ -14,16 +14,20 @@
                 </div>
                 <div class='features'>
                     <div class='feature fm' @click='showPersonalFM'>
-                        <IconImg imgName='fm' size='80px'></IconImg>
+                        <IconImg imgName='fm' size='60px' class='img'></IconImg>
                         <span class='title'>私人FM</span>
                     </div>
                     <div class='feature today' @click='showDailyRecommend'>
                         <span class='date'>{{day}}</span>
-                        <IconImg imgName='calendar' size='80px'></IconImg>
+                        <IconImg imgName='calendar' size='60px' class='img'></IconImg>
                         <span class='title'>每日推荐</span>
                     </div>
+                    <div class='feature playlist' @click='showPlaylist'>
+                        <IconImg imgName='playlist' size='60px' class='img'></IconImg>
+                        <span class='title'>歌单</span>
+                    </div>
                     <div class='feature rankboard' @click='showRank'>
-                        <IconImg imgName='rank' size='80px'></IconImg>
+                        <IconImg imgName='rank' size='60px' class='img'></IconImg>
                         <span class='title'>排行榜</span>
                     </div>
                 </div>
@@ -43,7 +47,6 @@
     import scroll from 'base/scroll/scroll'
     import loading from 'base/loading/loading'
     import { getPersonalFM } from 'api/fm'
-    import { mapActions } from 'vuex'
     export default {
         name: 'recommend',
         components: {
@@ -88,24 +91,17 @@
                 }
             },
             showRank() {
-                this.$bus.emit('showRank', true)
+                this.showComponent('rank')
             },
             showDailyRecommend() {
                 this.$bus.emit('showDailyRecommend', true)
             },
-            showPersonalFM() {
-                getPersonalFM().then(res => {
-                    if(res && res.length) {
-                        this.selectPlay({
-                            list: res,
-                            index: 0
-                        })
-                    }
-                })
+            showPlaylist() {
+                this.$bus.emit('showPlaylist')
             },
-            ...mapActions([
-                'selectPlay',
-            ])
+            showPersonalFM() {
+                this.showComponent('FM')
+            }
         },
         created() {
             this.getRecommends()
@@ -136,6 +132,8 @@
                 vertical-align: inherit
             .slider-content
                 padding: 0 5px
+                img
+                    border-radius: 5px
             .features
                 display: flex
                 align-items: center
@@ -146,17 +144,24 @@
                 .feature
                     flex: 1
                     display: flex
-                    justify-content: center
+                    align-items: center
                     position: relative
+                    height: 80px
+                    margin-top: 10px
+                    .img
+                        background: $color-theme
+                        border-radius: 50%
                     .title
                         position: absolute
                         bottom: 0
-                        font-size: $font-size-small-s
+                        font-size: $font-size-small
                 .today
                     position: relative
                     .date
                         position: absolute 
-                        top: 36px
+                        top: 29px
+                        font-size: $font-size-small
+                        color: $color-text-a
             .border
                 height: 1px
                 transform: scaleY(0.3)

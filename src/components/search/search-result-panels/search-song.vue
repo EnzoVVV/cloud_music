@@ -1,8 +1,10 @@
 <template>
     <div class='song'>
-        <scroll :listen-scroll='listenScroll' :probe-type='probeType' class='list'>
-            <songlist :songs='songs' @click='selectSong' v-if='songs.length' :showImg='false'></songlist>
-            <loading v-else class='loading'></loading>
+        <scroll class='list'>
+            <div>
+                <songlist :songs='songs' @click='selectSong' v-if='songs.length'></songlist>
+                <loading v-else class='loading'></loading>
+            </div>
         </scroll>
     </div>
 </template>
@@ -75,7 +77,7 @@
             left: 0
             top: 0
             right: 0
-            bottom: 0
+            bottom: 60px
             .loading
                 position: fixed
                 top: 50%

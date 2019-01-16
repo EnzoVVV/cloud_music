@@ -74,7 +74,7 @@
             },
             handleClick(singer) {
                 this.setSinger(singer)
-                this.$bus.emit('showSingerDetail',true)
+                this.showComponent('singerdetail', true)
             },
             ...mapMutations({
                 setSinger: 'SET_SINGER'

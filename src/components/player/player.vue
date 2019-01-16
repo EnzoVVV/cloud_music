@@ -10,8 +10,7 @@
                     <div class='header-info'>
                         <div class='header-info-title'>{{switchedSong && switchedSong.name || ''}}</div>
                         <div class='header-info-singer'>
-                            <div class='header-info-singer-name'>{{switchedSong && switchedSong.singer || ''}}</div>
-                            <IconSvg class='header-info-singer-back' icon-class='arrow-right'></IconSvg>
+                            <div class='header-info-singer-name' @click='showSingerDetail'>{{switchedSong && switchedSong.singer || ''}} ></div>
                         </div>
                     </div>
                 </div>
@@ -48,6 +47,11 @@
                     </scroll>
                 </div>
                 <div class='bottom'>
+                    <div class='func' v-if='showFunc'>
+                        <div class='btn' @click='toggleFS'><IconImg imgName='like'></IconImg></div>
+                        <div class='btn' @click='showComment'><IconImg imgName='comment'></IconImg></div>
+                        <div class='btn' @click='infoListFlag = true'><IconImg imgName='uj'></IconImg></div>
+                    </div>
                     <div class='progress'>
                         <span class='time time-left'>{{formatTime(currentTime)}}</span>
                         <div class='progressbar'>
@@ -61,13 +65,13 @@
                             <IconSvg :icon-class='modeIcon'></IconSvg>
                         </div>
                         <div class='operator-icon pre' @click='playPre'>
-                            <IconSvg icon-class='pre'></IconSvg>
+                            <IconImg imgName='pre' size='45px'></IconImg>
                         </div>
                         <div class='operator-icon play' @click='togglePlay'>
-                            <IconSvg :icon-class='playBtnIcon'></IconSvg>
+                            <IconImg :imgName='playBtnIcon' size='60px'></IconImg>
                         </div>
                         <div class='operator-icon next' @click='playNext'>
-                            <IconSvg icon-class='next'></IconSvg>
+                            <IconImg imgName='next' size='45px'></IconImg>
                         </div>
                         <div class='operator-icon list' @click='showPlayList'>
                             <IconSvg icon-class='play-history'></IconSvg>
@@ -78,7 +82,10 @@
         </transition>
         <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen'>
             <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'></img></div>
-            <div class='name'>{{currentSong.name}}</div>
+            <div class='info'>
+                <div class='name'>{{currentSong.name}}</div>
+                <div class='lyric' v-if='currentLyricText.length'>{{currentLyricText}}</div>
+            </div>
             <progresscircle :radius='radius' :percent='percent' class='play'>
                 <div @click.stop='togglePlay' class='circle-button'>
                     <IconSvg :icon-class='miniPlayBtnIcon'></IconSvg>
@@ -88,22 +95,28 @@
                 <IconSvg icon-class='play-history'></IconSvg>
             </div>
         </div>
-        <minisonglist :list='sequenceList' v-show='miniListFlag'></minisonglist>
         <audio ref='audio' @playing='audioReady' @timeupdate='timeupdate' @ended='ended' @pause='paused'></audio>
+        <minisonglist v-if='miniListFlag' @hide='miniListFlag = false'></minisonglist>
+        <!-- 选择查看的歌手 -->
+        <modal v-if='selectSingerList.length' title='请选择要查看的歌手' :hideBtn='true' @hide='hideModal'>
+            <liner v-for='singer in selectSingerList' :key='singer.id' :showImg='true' :picUrl='singer.picUrl' :main='singer.name' :selectable='true' @select='selectSinger'></liner>
+        </modal>
+        <!-- 歌曲信息 -->
+        <infolist v-if='infoListFlag' :song='currentSong' @hide='infoListFlag = false'></infolist>
     </div>
 </template>
 
 <script>
     import { mapGetters, mapMutations } from 'vuex'
-    import minisonglist from 'components/mini-song-list/mini-song-list'
     import progressbar from 'base/progress-bar/progress-bar'
     import Lyric from 'lyric-parser'
     import scroll from 'base/scroll/scroll'
-    import slider from 'base/slider/slider'
     import progresscircle from 'base/progress-circle/progress-circle'
     import { transform, transitionDuration,translate } from 'common/js/dom'
     import { playerMixin } from 'common/js/mixins'
-
+    const minisonglist = () => import('components/mini-song-list/mini-song-list')
+    const modal = () => import('base/modal/modal')
+    const infolist = () => import('components/info-list/info-list')
     // 切歌动画transitionDuration(ms)
     const duration = 300
     const translateOption = {
@@ -116,8 +129,9 @@
             minisonglist,
             progressbar,
             scroll,
-            slider,
-            progresscircle
+            progresscircle,
+            modal,
+            infolist
         },
         props: {
 
@@ -141,7 +155,11 @@
                 radius: 32,
                 clientWidth: window.innerWidth,
                 // 音频时长
-                audioDuration: 0
+                audioDuration: 0,
+                selectSingerList: [],
+                FS: false,
+                currentLyricText: '',
+                infoListFlag: false
             }
         },
         computed: {
@@ -149,7 +167,9 @@
                 'fullScreen',
                 'playlist',
                 'playing',
-                'currentIndex'
+                'currentIndex',
+                'favoriteSongs',
+                'FMSwitch'
             ]),
             playBtnIcon() {
                 return this.playing ? 'pause' : 'play'
@@ -172,12 +192,19 @@
             },
             percent() {
                 return this.audioDuration != 0 ? this.currentTime / this.audioDuration : 0
+            },
+            infoListTitle() {
+                return `歌曲: ${this.currentSong.name}`
             }
         },
         watch: {
             currentSong(newSong, oldSong) {
                 if (!newSong.id || !newSong.url || newSong.id === oldSong.id) {
                     return
+                }
+                // 先杀掉FM
+                if(this.FMSwitch) {
+                    this.showComponent('FM', false)
                 }
                 this.songReady = false
                 // 停止歌词
@@ -198,6 +225,7 @@
                 // 如果是滑动cd图片来切歌，那将cdWrapper复位
                 this.$refs.cdWrapper.style[transitionDuration] = '0s'
                 this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
+                this.checkFS()
             },
             playing(val) {
                 if(!this.songReady) {
@@ -210,10 +238,24 @@
             }
         },
         methods: {
+            showComment() {
+                this.$bus.emti('showComment', 'song', this.currentSong)
+            },
+            checkFS() {
+                this.FS = !!this.favoriteSongs.find(i => i.id === this.currentSong.id)
+            },
+            toggleFS() {
+                this.toggleSongFS(this.currentSong)
+                this.FS = !this.FS
+            },
             ...mapMutations({
                 setFullScreen: 'SET_FULL_SCREEN',
-                setPlayingState: 'SET_PLAYING_STATE'
+                setPlayingState: 'SET_PLAYING_STATE',
+                setSinger: 'SET_SINGER'
             }),
+            ...mapActions([
+                'toggleSongFS'
+            ]),
             togglePlay() {
                 if (!this.songReady) {
                     return
@@ -457,6 +499,7 @@
                     return
                 }
                 this.currentLineNum = lineNum
+                this.currentLyricText = txt
                 if(lineNum > 5) {
                     let lineEl = this.$refs.lyricLine[lineNum - 5]
                     this.$refs.lyricWrapper.scrollToElement(lineEl,1000)
@@ -478,7 +521,38 @@
                     this.$refs.lyricWrapper.$el.style.visibility = 'hidden'
                     this.showLyric = false
                 }
+            },
+            // 选择要查看的歌手
+            showSingerDetail() {
+                let singerInfo = this.currentSong.singerInfo
+                if(singerInfo.length == 1) {
+                    // 只有一个歌手
+                    this.triggerSingerDetailPage(singerInfo[0])
+                } else {
+                    // 多个歌手, 触发弹窗选择歌手
+                    this.selectSingerList = singerInfo.slice()
+                }
+            },
+            selectSinger(singerId) {
+                const singer = this.selectSingerList.find(i => i.id === singerId)
+                this.selectSingerList = []
+                this.triggerSingerDetailPage(singer)
+            },
+            hideModal() {
+                this.selectSingerList = []
+            },
+            triggerSingerDetailPage(singer) {
+                this.setSinger(singer)
+                this.$bus.emit('showSingerDetail', true, 7500)
             }
+        },
+        mounted() {
+            // 点击评论页里的顶部，继续播放
+            this.$bus.on('requestPlayFromComment', () => {
+                if(!this.playing) {
+                    this.togglePlay()
+                }
+            })
         }
     }
 </script>
@@ -617,6 +691,13 @@
                 position: fixed
                 bottom: 10px
                 width: 100%
+                .func
+                    display: flex
+                    align-items: center
+                    .btn
+                        flex: 1
+                        display: flex
+                        justify-content: center
                 .progress
                     display: flex
                     align-items: center
@@ -641,7 +722,6 @@
                     display: flex
                     flex-direction: row
                     align-items: center
-                    line-height: 50px
                     &-icon
                         flex: 1
                         text-align: center
@@ -660,7 +740,7 @@
             bottom: 0
             height: 44px
             width: 100%
-            z-index: 6000
+            z-index: 7000
             background: $color-background
             display: flex
             align-items: center
@@ -670,11 +750,21 @@
                 height: 34px
                 width: 34px
                 border-radius: 20%
-                float: left
-            .name
-                width: calc(100% - 40px - 80px)
+            .info
+                flex-direction: column
+                display: flex
+                justify-content: center
+                flex: 1
                 padding-left: 5px
-                float: left
+                .name
+                    font-size: $font-size-medium-x
+                    color: $color-text
+                    text-overflow: ellipsis 
+                    overflow: hidden
+                    white-space: nowrap
+                .lyric
+                    font-size: $font-size-small
+                    color: $color-text-g
             .play
                 margin: 0 15px
                 position: relative
