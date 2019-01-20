@@ -79,10 +79,9 @@
             ...mapMutations({
                 setSinger: 'SET_SINGER'
             }),
-            handlePlaylist(playlist) {
-                if(!playlist) return
+            handlePlaylist(flag) {
                 const scroll = this.$refs.listview.$refs.listview
-                const bottom = playlist.length > 0 ? '45px' : ''
+                const bottom = flag ? '45px' : ''
                 scroll.$el.style.bottom = bottom
                 scroll.refresh()
             }

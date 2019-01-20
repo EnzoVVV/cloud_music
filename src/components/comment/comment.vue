@@ -5,7 +5,7 @@
             <scroll class='scroll' :pullup='true' @scrollToEnd='loadMore'>
                 <div>
                     <div class='info' @click='selectInfo'>
-                        <liner :picUrl='info.picUrl' :main='info.name' :sub='info.sub' height='80px' :hasBorder='false'></liner>
+                        <liner :picUrl='info.picUrl' :main='info.main' :sub='info.sub' height='80px' :hasBorder='false' :showImg='true'></liner>
                     </div>
                     <div class='header'>精彩评论</div>
                     <cline v-for='(comment, index) in hotComments' :key='index' :comment='comment'></cline>
@@ -17,7 +17,7 @@
                 </div>
             </scroll>
             <reply v-if='replyFlag' :comment='repliedComment' @back='replyFlag = false'></reply>
-            <cviewer v-if='cviewerFlag' :comment='allHotComments' @back='cviewerFlag = false'></cviewer>
+            <cviewer v-if='cviewerFlag' :comments='allHotComments' @back='cviewerFlag = false'></cviewer>
         </div>
     </transition>
 </template>
@@ -79,7 +79,7 @@
                     return
                 }
                 this.curPage++
-                getComments(this.subject.id, this.curPage, this.type).then(res => {
+                getComment(this.subject.id, this.curPage, this.type).then(res => {
                     this.comments = this.comments.concat(res.comments)
                     this.total = res.total
                     this.hasMore = res.hasMore
@@ -87,6 +87,7 @@
             },
             getHotComments() {
                 getHotComment(this.subject.id, this.type).then(res => {
+                    debugger
                     this.hotComments = this.comments.slice(0, 10)
                     this.allHotComments = res.comments
                 })

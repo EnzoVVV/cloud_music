@@ -21,11 +21,11 @@
         components: {
             FunctionalHeader,
             scroll,
-            cline,
+            cline
         },
         props: {
-            comments: {
-                type: Array
+            comment: {
+                type: Object
             }
         },
         data() {
@@ -44,13 +44,6 @@
             }
         },
         created() {
-            this.loadMore()
-            this.getHotComments()
-            this.info = {
-                picUrl: this.subject.picUrl,
-                main: this.subject.name,
-                sub: this.subject.singer || this.subject.creator || ''
-            }
         },
         mounted() {
 

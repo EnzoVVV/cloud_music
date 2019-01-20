@@ -23,19 +23,13 @@
         },
         data() {
             return {
-                songs: []
+                songs: [],
+                cover: ''
             }
         },
         computed: {
             day() {
                 return (new Date()).getDate()
-            },
-            bgStyle() {
-                return {
-                    'background-image': `url(${this.bgImg}`,
-                    // 设置一个背景色, 背景图片失效时自动换成背景色
-                    'background-color': '#F2F3F4'
-                }
             }
         },
         watch: {

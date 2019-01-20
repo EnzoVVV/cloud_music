@@ -185,7 +185,7 @@
                 this.$bus.emit('showDiscDetail', disc)
             },
             showCollection() {
-                this.$bus.emit('showCollection')
+                this.showComponent('collection')
             },
             ...mapActions([
                 'deleteDisc'

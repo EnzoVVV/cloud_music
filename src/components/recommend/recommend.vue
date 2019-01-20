@@ -97,7 +97,7 @@
                 this.$bus.emit('showDailyRecommend', true)
             },
             showPlaylist() {
-                this.$bus.emit('showPlaylist')
+                this.showComponent('playlist')
             },
             showPersonalFM() {
                 this.showComponent('FM')
@@ -144,7 +144,7 @@
                 .feature
                     flex: 1
                     display: flex
-                    align-items: center
+                    justify-content: center
                     position: relative
                     height: 80px
                     margin-top: 10px

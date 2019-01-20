@@ -14,8 +14,8 @@
 <script>
     import FunctionalHeader from 'base/functional-header/functional-header'
     import scroll from 'base/scroll/scroll'
-    import cline from './sub-components/cline'
-    const reply = () => import('./sub-components/reply')
+    import cline from './cline'
+    const reply = () => import('./reply')
     export default {
         name: 'cviewer',
         components: {

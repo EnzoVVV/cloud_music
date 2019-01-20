@@ -52,7 +52,11 @@
         },
         methods: {
             hide() {
-                this.flag = false
+                translate(this.$refs.wrapper, 0, 100, {
+                    transitionDuration: transitionDuration,
+                    percent: true
+                })
+                changeOpacity(this.$refs.decorate, 0, AnimationDuration)
                 // 需要transition动画结束后再emit hide事件
                 // 原因：emit hide事件后父组件会终结此实例，就来不及完成动画了
                 setTimeout(() => {
@@ -197,7 +201,7 @@
             right: 0
             bottom: 0
             max-height: 50%
-            transform: translate3d(0, 100, 0)
+            transform: translate3d(0, 100%, 0)
             .header
                 height: 44px
                 padding-left: 5px

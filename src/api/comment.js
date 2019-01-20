@@ -6,7 +6,7 @@ import { formatTimestamp } from 'common/js/tools'
 
 function getCommentUserData(user) {
     return {
-        userName: user.nickName,
+        userName: user.nickname,
         userId: user.userId,
         picUrl: user.avatarUrl
     }

@@ -1,5 +1,5 @@
 <template>
-    <ul>
+    <ul class='album-list'>
         <li v-for='album in albumList' :key='album.id' class='item' @click='selectAlbum(album)'>
             <liner :showImg='true' :cd='true' :picUrl='album.picUrl' :main='album.name' :sub='album.date'></liner>
         </li>
@@ -50,3 +50,8 @@
         }
     }
 </script>
+<style lang='stylus' scoped>
+    @import '~common/stylus/variable'
+    .album-list
+        background: $color-background
+</style>

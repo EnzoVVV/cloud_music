@@ -220,11 +220,11 @@ export function mock(key) {
 
 export function formatNumber(num) {
     let s = num.toString()
-    if(s.length < 5) {
+    if(s.length <= 5) {
         return s
     } else if(s.length <= 8) {
-        return s.slice(0,8) + '万'
+        return s.slice(0, s.length - 4) + '万'
     } else {
-        return s.slice(8) + '亿'
+        return s.slice(0, s.length - 8) + '亿'
     }
 }

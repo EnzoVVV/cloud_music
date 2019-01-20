@@ -47,7 +47,7 @@
                     </scroll>
                 </div>
                 <div class='bottom'>
-                    <div class='func' v-if='showFunc'>
+                    <div class='func'>
                         <div class='btn' @click='toggleFS'><IconImg imgName='like'></IconImg></div>
                         <div class='btn' @click='showComment'><IconImg imgName='comment'></IconImg></div>
                         <div class='btn' @click='infoListFlag = true'><IconImg imgName='uj'></IconImg></div>
@@ -107,7 +107,7 @@
 </template>
 
 <script>
-    import { mapGetters, mapMutations } from 'vuex'
+    import { mapGetters, mapMutations, mapActions } from 'vuex'
     import progressbar from 'base/progress-bar/progress-bar'
     import Lyric from 'lyric-parser'
     import scroll from 'base/scroll/scroll'
@@ -239,7 +239,7 @@
         },
         methods: {
             showComment() {
-                this.$bus.emti('showComment', 'song', this.currentSong)
+                this.$bus.emit('showComment', 'song', this.currentSong)
             },
             checkFS() {
                 this.FS = !!this.favoriteSongs.find(i => i.id === this.currentSong.id)
@@ -606,7 +606,7 @@
             .middle
                 position: fixed
                 top: 44px
-                bottom: 100px
+                bottom: 160px
                 z-index: 9999
                 width: 100%
                 display: flex
@@ -759,6 +759,7 @@
                 .name
                     font-size: $font-size-medium-x
                     color: $color-text
+                    padding-bottom: 5px
                     text-overflow: ellipsis 
                     overflow: hidden
                     white-space: nowrap

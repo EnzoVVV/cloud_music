@@ -1,5 +1,5 @@
 <template>
-    <detailboard headerTitle='歌单' :headerScrollTitle='headerScrollTitle' :subTitle='updateTime' :rollingTitle='true' :blur='false' :songs='songs' :showIndex='true' :cover='cover' :favoriteStatus='favoriteStatus' @toggleFS='toggleFS'>
+    <detailboard headerTitle='歌单' :headerScrollTitle='headerScrollTitle' :subTitle='updateTime' :rollingTitle='true' :blur='true' :songs='songs' :subject='subject' :showIndex='true' :cover='cover' :favoriteStatus='favoriteStatus' @toggleFS='toggleFS' @back='back'>
     </detailboard>
 </template>
 <script>
@@ -25,7 +25,8 @@
             return {
                 songs: [],
                 favoriteStatus: false,
-                cover: ''
+                cover: '',
+                subject: {}
             }
         },
         computed: {
@@ -71,7 +72,7 @@
                 })
                 return ret
             },
-            goback() {
+            back() {
                 this.$emit('back')
             },
             getDetail() {
@@ -79,6 +80,12 @@
                 getRankDetail(idx).then(res => {
                     this.songs = res.songs
                     this.cover = res.picUrl
+                    Object.assign(this.subject, {
+                        id: res.id,
+                        picUrl: res.picUrl,
+                        name: res.name,
+                        creator: res.creator
+                    })
                 })
             },
             checkFS() {

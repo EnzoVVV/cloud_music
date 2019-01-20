@@ -28,12 +28,12 @@
                         </div>
                     </div>
                     <div class='func' v-if='showFunc'>
-                        <div class='btn'>
-                            <IconImg imgName='comment' @click='showComment'></IconImg>
+                        <div class='btn' @click='showComment'>
+                            <IconImg imgName='comment' ></IconImg>
                             <div class='text'>评论</div>
                         </div>
                         <div class='btn'>
-                            <IconImg imgName='uj'></IconImg>
+                            <IconImg imgName='share'></IconImg>
                             <div class='text'>分享</div>
                         </div>
                         <div class='btn'>
@@ -155,7 +155,6 @@
         },
         data() {
             return {
-                mockImg: mockImg,
                 showFixedBG: false,
                 // 当前标题 (默认标题/滑动标题)
                 curTitle: this.headerTitle,

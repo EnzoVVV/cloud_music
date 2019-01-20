@@ -47,7 +47,6 @@
         },
         created() {
             this.playerOptions.sources[0].src = this.videoUrl
-            debugger
         },
         mounted() {
 
