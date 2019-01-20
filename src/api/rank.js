@@ -93,14 +93,11 @@ export function getMusicList(topid) {
 export function getRankDetail(idx) {
 	const url = HOST + `/top/list?idx=${idx}`
 	return axios.get(url).then(res => {
-		let result = {
-			official: [],
-			recommend: [],
-			more: []
-		}
+		let result = {}
 		if(success(res.status)) {
 			const playlist = res.data.playlist
-			let result = {}
+			result.id = playlist.id
+			result.name = playlist.name
 			result.picUrl = playlist.coverImgUrl
 			result.songs = getSongs(playlist.tracks)
 			result.creator = playlist.creator.nickname || ''

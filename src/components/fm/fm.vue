@@ -14,7 +14,7 @@
                     <div class='cd-wrapper' ref='cdWrapper'>
                         <img :src='currentSong.picUrl' class='img' @click='toggleLyric(true)'></img>
                         <div class='name'>{{currentSong.name}}</div>
-                        <div class='singer'>{{currentSong.singer}}</div>
+                        <div class='singer'>{{currentSong.singer}} ></div>
                     </div>
                     <scroll class='lyric-wrapper' ref='lyricWrapper'>
                         <div class='lyric' @click='toggleLyric(false)'>
@@ -31,11 +31,6 @@
                     </scroll>
                 </div>
                 <div class='bottom'>
-                    <div class='func' v-if='showFunc'>
-                        <div class='btn' @click='toggleFS'><IconImg imgName='like'></IconImg></div>
-                        <div class='btn' @click='showComment'><IconImg imgName='comment'></IconImg></div>
-                        <div class='btn' @click='infoListFlag = true'><IconImg imgName='uj'></IconImg></div>
-                    </div>
                     <div class='progress'>
                         <span class='time time-left'>{{formatTime(currentTime)}}</span>
                         <div class='progressbar'>
@@ -45,7 +40,7 @@
                     </div>
                     <div class='operator'>
                         <div class='operator-icon delete' @click='deleteOne'>
-                            <IconSvg icon-class='clear'></IconSvg>
+                            <IconSvg icon-class='clear' size='38px'></IconSvg>
                         </div>
                         <div class='operator-icon favorite' @click='toggleFavorite'>
                             <IconImg :imgName='favoriteIcon'></IconImg>
@@ -75,7 +70,7 @@
                 </div>
             </progresscircle>
             <div class='favorite' @click='toggleFavorite'>
-                <IconImg :imgName='favoriteIcon'></IconImg>
+                <IconSvg :icon-class='favoriteIcon'></IconSvg>
             </div>
         </div>
         <audio ref='audio' @playing='audioReady' @timeupdate='timeupdate' @ended='ended' @pause='paused'></audio>
@@ -115,9 +110,10 @@
                 // 音频时长
                 audioDuration: 0,
                 songs: [],
+                currentLyricText: '',
                 songsBuffer: [],
                 currentIndex: null,
-                currentSongs: {},
+                currentSong: {},
                 playing: false,
                 fullScreen: true,
                 favoriteFS: false
@@ -153,9 +149,11 @@
                 if(this.currentLyric) {
                     this.currentLyric.stop()
                 }
-                this.$refs.audio.src = newSong.url
+                this.$refs.audio.src = curSong.url
                 this.$refs.audio.play()
-
+                if(!this.playing) {
+                    this.playing = true
+                }
                 // 若歌曲 5s 未播放，则认为超时，修改状态确保可以切换歌曲
                 this.clearTimer()
                 this.timer = setTimeout(() => {
@@ -180,8 +178,17 @@
                     }
                 })
             },
+            getMore() {
+                getPersonalFM().then(res => {
+                    this.songsBuffer = res
+                    // console.log('getMore',res)
+                    // res.forEach(i => {
+                    //     console.log('name is ', i.name)
+                    // })
+                })
+            },
             showComment() {
-                this.$bus.emti('showComment', 'song', this.currentSong)
+                this.showComponent('comment', 'song', this.currentSong)
             },
             togglePlay() {
                 if (!this.songReady) {
@@ -311,6 +318,7 @@
                     return
                 }
                 this.currentLineNum = lineNum
+                this.currentLyricText = txt
                 if(lineNum > 5) {
                     let lineEl = this.$refs.lyricLine[lineNum - 5]
                     this.$refs.lyricWrapper.scrollToElement(lineEl,1000)
@@ -444,13 +452,6 @@
                 position: fixed
                 bottom: 10px
                 width: 100%
-                .func
-                    display: flex
-                    align-items: center
-                    .btn
-                        flex: 1
-                        display: flex
-                        justify-content: center
                 .progress
                     display: flex
                     align-items: center
@@ -489,7 +490,7 @@
             bottom: 0
             height: 44px
             width: 100%
-            z-index: 7000
+            z-index: 6000
             background: $color-background
             display: flex
             align-items: center
@@ -508,6 +509,7 @@
                 .name
                     font-size: $font-size-medium-x
                     color: $color-text
+                    padding-bottom: 5px
                     text-overflow: ellipsis 
                     overflow: hidden
                     white-space: nowrap

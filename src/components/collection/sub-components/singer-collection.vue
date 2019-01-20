@@ -26,7 +26,7 @@
         },
         computed: {
             ...mapGetters([
-                'fsinger'
+                'fsingers'
             ])
         },
         watch: {
@@ -34,11 +34,11 @@
         },
         methods: {
             search(query) {
-                this.curSingers = this.fsinger.filter(i => i.name.indexOf(query) > -1)
+                this.curSingers = this.fsingers.filter(i => i.name.indexOf(query) > -1)
             }
         },
         created() {
-            this.curSingers = this.fsinger
+            this.curSingers = this.fsingers
         },
         mounted() {
 

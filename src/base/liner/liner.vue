@@ -1,11 +1,11 @@
 <template>
-    <div class='liner' :style='computedStyle' @click.stop.prevent='handleSelect'>
+    <div class='liner' :style='computedStyle' @click='handleSelect'>
         <check v-if='showCheck && !showSpeaker' :circle='circleCheck' @check='check' class='check' ref='check'></check>
         <div class='img-wrapper' v-if='showImg && !showSpeaker' :style='imgWrapperStyle'>
             <img :src='picUrl' class='img' :style='imgStyle'></img>
             <IconImg imgName='cd-decorate' class='cd' v-if='cd'></IconImg>
         </div>
-        <div class='index' v-if='showIndex'>{{index}}</div>
+        <div class='index' v-if='showIndex && !showSpeaker'>{{index}}</div>
         <div class='speaker' v-if='showSpeaker'><IconImg imgName='speaker'></IconImg></div>
         <div class='content-wrapper' :style='contentStyle'>
             <div class='content'>
@@ -209,6 +209,7 @@
         .index
             float: left 
             width: 50px
+            min-width: 50px
             height: 50px
             display: flex
             align-items: center
@@ -231,13 +232,15 @@
             margin-left: 10px
             display: flex
             height: 100%
-            width: calc(100% - 50px)
+            width: calc(100% - 10px)
             .content
                 flex-direction: column
                 display: flex
                 justify-content: center
                 flex: 1
+                width: 100%
                 div
+                    width: 100%
                     text-overflow: ellipsis 
                     overflow: hidden
                     white-space: nowrap

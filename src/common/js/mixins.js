@@ -80,7 +80,8 @@ export const resultMixin = {
 export const playlistMixin = {
     computed: {
         ...mapGetters([
-            'playlist'
+            'playlist',
+            'FMSwitch'
         ])
     },
     mounted() {
@@ -91,17 +92,21 @@ export const playlistMixin = {
     },
     watch: {
         playlist(val) {
+            if(!val || val.length === 0) return
+            const flag = val.length > 0
+            this.handlePlaylist(flag)
+        },
+        FMSwitch(val) {
             this.handlePlaylist(val)
         }
     },
     methods: {
-        handlePlaylist(playlist) {
-            if(!playlist || playlist.length === 0) return
+        handlePlaylist(flag) {
             const scroll = this.$refs.scroll
             if(!scroll) {
                 throw new Error('scroll组件的ref要设为scroll')
             }
-            const bottom = playlist.length > 0 ? '45px' : ''
+            const bottom = flag ? '45px' : ''
             scroll.$el.style.bottom = bottom
             scroll.refresh()
         }

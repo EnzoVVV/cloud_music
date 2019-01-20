@@ -1,6 +1,6 @@
 <template>
     <div>
-        <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='comment.user.picUrl' :main='comment.user.name' :sub='comment.time' height='40px'></liner>
+        <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='comment.user.picUrl' :main='comment.user.userName' :sub='comment.time' height='40px' :showImg='true'></liner>
         <div class='content'>
             <div class='comment'>{{comment.content}}</div>
             <span class='reply' v-if='!hideReply && comment.reply && comment.reply.length' @click='showReply(comment)'>{{comment.reply.length}}条回复 ></span>
@@ -16,8 +16,8 @@
         },
         props: {
             comment: {
-                type: String,
-                default: ''
+                type: Object,
+                default: () => {}
             },
             hideReply: {
                 type: Boolean,

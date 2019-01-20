@@ -6,7 +6,7 @@
         <scroll class='similar' :scrollX='true' ref='slider'>
             <div class='wrapper' ref='wrapper'>
                 <div v-for='singer of similarSingers' :key='singer.id' class='singer' @click='handleClick(singer)'>
-                    <img :src='singer.picUrl' class='img'></img>
+                    <img v-lazy='singer.picUrl' class='img'></img>
                     <span class='text'>{{singer.name}}</span>
                 </div>
             </div>
@@ -48,10 +48,9 @@
                     this.similarSingers = res
                     // wrapper子元素是float,这里手动设置宽度
                     this.$refs.wrapper.style.width = this.similarSingers.length * 100 + 'px'
-                    const self = this
-                    setTimeout(() => {
-                        self.$refs.slider.refresh()
-                    }, 3000)
+                    this.$nextTick(() => {
+                        this.$refs.slider.refresh()
+                    })
                 })
             },
             handleClick(singer) {

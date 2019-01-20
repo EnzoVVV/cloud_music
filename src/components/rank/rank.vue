@@ -160,7 +160,7 @@
                     display: flex
                     flex-direction: column
                     justify-content: center
-                    margin-left: 20px
+                    margin-left: 15px
                     height: 100px
                     overflow: hidden
                     color: $color-text

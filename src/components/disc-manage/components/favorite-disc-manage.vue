@@ -36,10 +36,8 @@
         },
         methods: {
             finish(list) {
-                debugger
                 if(list !== null) {
                     this.$el.style.display = 'none'
-                    debugger
                     this.setFDiscs(list)
                 }
                 this.hide()

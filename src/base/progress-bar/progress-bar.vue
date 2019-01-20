@@ -75,9 +75,12 @@
       },
       setProgressOffset(percent) {
         if (percent >= 0 && !this.touch.initiated) {
+          // fm调用时, fm不设置vuex的currentSong，这里计算progessWidth
+          if(this.progressWidth == 0) {
+            this.barWidth = this.$refs.progressBar.clientWidth
+            this.progressWidth = this.barWidth - progressBtnWidth
+          }
           const offsetWidth = percent * this.progressWidth
-          // const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
-          // const offsetWidth = percent * barWidth
           this._offset(offsetWidth)
         }
       },
@@ -89,9 +92,6 @@
         this.$refs.progressBtn.style[transform] = `translate3d(${offsetWidth}px,0,0)`
       },
       _getPercent() {
-        console.log('this.$refs.progress.clientWidth is ',this.$refs.progress.clientWidth)
-        console.log('this.progressWidth is ',this.progressWidth)
-        console.log('percent is ',this.$refs.progress.clientWidth / this.progressWidth)
         // const barWidth = this.$refs.progressBar.clientWidth - progressBtnWidth
         return this.$refs.progress.clientWidth / this.progressWidth
       }
