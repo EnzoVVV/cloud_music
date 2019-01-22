@@ -2,8 +2,11 @@
     <div>
         <minilist @hide='hide' :modifiedHeader='true' @headerClick='headerClick' ref='minilist'>
             <div slot='header' class='minilist-header'>
-                <div class='modeIcon'><IconSvg :icon-class='modeIcon'></IconSvg></div>
-                <div class='modeText'>{{modeText}}</div>
+                <div class='mode-wrapper' @click='toggleMode'>
+                    <div class='modeIcon'><IconSvg :icon-class='modeIcon' size='15px'></IconSvg></div>
+                    <div class='modeText'>{{modeText}}</div>
+                </div>
+                <div class='empty'></div>
                 <div class='clear'><IconSvg icon-class='clear'></IconSvg></div>
             </div>
             <ul slot='list'>
@@ -113,10 +116,15 @@
         width: 100%
         height: 100%
         display: flex
-        align-items: center 
-        .modeIcon
-            width: 25px
-        .modeText
+        align-items: center
+        .mode-wrapper
+            display: flex
+            align-items: center
+            padding-left: 5px
+            position: relative
+            .modeText
+                padding-left: 5px
+        .empty
             flex: 1
         .clear
             width: 40px

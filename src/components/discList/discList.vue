@@ -143,5 +143,5 @@
                     // 有些文字一行有些两行，统一高度
                     line-height: 12px
                     height: 24px
-                    padding: 10px 0 5px 0
+                    padding-top: 10px
 </style>

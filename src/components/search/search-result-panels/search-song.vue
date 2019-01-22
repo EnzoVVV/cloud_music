@@ -14,7 +14,7 @@
     import { searchSong } from 'api/search'
     import { resultMixin } from 'common/js/mixins'
     import { getAlbumPicUrl } from 'api/album'
-    import { Song } from 'common/js/song'
+    import Song from 'common/js/song'
     export default {
         name: 'searchSong',
         mixins: [resultMixin],

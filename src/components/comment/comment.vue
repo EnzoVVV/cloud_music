@@ -8,10 +8,10 @@
                         <liner :picUrl='info.picUrl' :main='info.main' :sub='info.sub' height='80px' :hasBorder='false' :showImg='true'></liner>
                     </div>
                     <div class='header'>精彩评论</div>
-                    <cline v-for='(comment, index) in hotComments' :key='index' :comment='comment'></cline>
+                    <cline v-for='(comment, index) in hotComments' :key='index + "hot"' :comment='comment'></cline>
                     <div v-if='allHotComments.length > 10' class='all' @click='cviewerFlag = true'>全部精彩评论 ></div>
                     <div class='header'>最新评论</div>
-                    <cline v-for='(comment, index) in comments' :key='index' :comment='comment' @showReply='showReply'></cline>
+                    <cline v-for='(comment, index) in comments' :key='index + "common"' :comment='comment' @showReply='showReply'></cline>
                     <!-- 如果还有数据, 则拉到最底时显示loading，加载完数据后，内容增多，loading组件被推到下面了 -->
                     <loading v-show='hasMore'></loading>
                 </div>
@@ -87,8 +87,7 @@
             },
             getHotComments() {
                 getHotComment(this.subject.id, this.type).then(res => {
-                    debugger
-                    this.hotComments = this.comments.slice(0, 10)
+                    this.hotComments = res.comments.slice(0, 10)
                     this.allHotComments = res.comments
                 })
             },
@@ -100,9 +99,8 @@
                 if(this.type === 'song') {
                     // 是song则触发播放
                     this.$bus.emit('requestPlayFromComment')
-                } else {
-                    this.back()
                 }
+                this.back()
             },
             back() {
                 this.$emit('back')

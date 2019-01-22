@@ -3,8 +3,8 @@ import jsonp from 'common/js/jsonp'
 import { HOST } from 'api/config'
 import { success } from './shared'
 import { getSongs } from 'common/js/song'
+import { getAlbums } from 'common/js/album'
 import Singer from 'common/js/singer'
-import { getAlbumPicUrl } from 'api/album'
 
 export function searchSuggest(query) {
     const url = HOST + `/search/suggest?keywords=${query}`
@@ -35,6 +35,16 @@ export function searchSinger(query) {
                     alias: item.alias && item.alias.length ? item.alias[0] : '',
                 })
             })
+        }
+        return result
+    })
+}
+
+export function searchAlbum(query) {
+    return search(query, 10).then(res => {
+        let result = []
+        if(success(res.status)) {
+            result = getAlbums(res.data.result.albums)
         }
         return result
     })

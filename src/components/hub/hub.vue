@@ -12,7 +12,7 @@
         <comment v-if='flags.comment' :type='comment.type' :subject='comment.subject' @back='flags.comment = false'></comment>
         <fm v-if='flags.FM'></fm>
         <collection v-if='flags.collection' @back='flags.collection = false'></collection>
-        <songselect v-if='flags.songselect' :songs='songselect.songs'></songselect>
+        <songselect v-if='flags.songselect' :songs='songselect.songs' @back='flags.songselect = false'></songselect>
     </div>
 </template>
 <script>
@@ -148,10 +148,15 @@ import { mapMutations } from 'vuex';
                     type: type,
                     subject: subject,
                 })
+                debugger
                 this.flags.comment = true
             },
             showCollection() {
                 this.flags.collection = true
+            },
+            showSongSelect(songs) {
+                this.flags.songselect = true
+                this.songselect.songs = songs
             },
             ...mapMutations({
                 'setFMSwitch': 'SET_FM_SWITCH'
@@ -173,7 +178,8 @@ import { mapMutations } from 'vuex';
                 FM: this.showFM,
                 comment: this.showComment,
                 collection: this.showCollection,
-                playlist: this.showPlaylist
+                playlist: this.showPlaylist,
+                songselect: this.showSongSelect
             }
         },
         mounted() {
