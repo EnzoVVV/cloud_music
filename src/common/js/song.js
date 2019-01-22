@@ -2,7 +2,7 @@ import { getSongsUrl } from 'api/song'
 import { ERR_OK } from 'api/config'
 import { getLyric } from 'api/song'
 
-export class Song {
+export default class Song {
     constructor({id, mid, name, singer, album, picUrl, url, albummid, singerInfo}) {
         this.id = id
         this.mid = mid

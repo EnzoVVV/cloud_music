@@ -1,4 +1,4 @@
-export class Disc {
+export default class Disc {
     constructor({id, name, songList, picUrl, creator}) {
         this.id = id
         this.name = name
@@ -8,7 +8,9 @@ export class Disc {
         this.count = songList.length
     }
     addSong(song) {
-        this.songList.push(song)
+        if(!this.songList.find(i => i.id === song.id)) {
+            this.songList.push(song)
+        }
     }
     setName(name) {
         this.name = name
