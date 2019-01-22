@@ -114,6 +114,7 @@
     import progresscircle from 'base/progress-circle/progress-circle'
     import { transform, transitionDuration,translate } from 'common/js/dom'
     import { playerMixin } from 'common/js/mixins'
+    import { playMode } from 'common/js/config'
     const minisonglist = () => import('components/mini-song-list/mini-song-list')
     const modal = () => import('base/modal/modal')
     const infolist = () => import('components/info-list/info-list')
@@ -239,7 +240,7 @@
         },
         methods: {
             showComment() {
-                this.$bus.emit('showComment', 'song', this.currentSong)
+                this.showComponent('comment', 'song', this.currentSong)
             },
             checkFS() {
                 this.FS = !!this.favoriteSongs.find(i => i.id === this.currentSong.id)
@@ -312,12 +313,19 @@
                 }
                 this.songReady = false
             },
+            loop() {
+                this.currentTime = this.$refs.audio.currentTime = 0
+                this.$refs.audio.play()
+                this.setPlayingState(true)
+                if(this.currentLyric) {
+                    this.currentLyric.seek(0)
+                }
+            },
             ended() {
-                if(this.playlist.length > 1) {
-                    this.setCurrentIndex((this.currentIndex+1) % this.playlist.length)
-                    this.songReady = false
-                } else if(this.playlist.length == 1) {
-                    this.currentTime = this.$refs.audio.currentTime = 0
+                if(this.mode === playMode.singleCycle) {
+                    this.loop()
+                } else {
+                    this.playNext()
                 }
             },
             showPlayList() {
