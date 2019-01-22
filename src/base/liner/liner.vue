@@ -157,6 +157,9 @@
         },
         methods: {
             checkCurrentSong() {
+                if(!this.speaker) {
+                    return
+                }
                 if(this.currentSong && this.currentSong.id === this.itemId) {
                     this.showSpeaker = true
                 } else {

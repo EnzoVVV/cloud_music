@@ -16,7 +16,7 @@
                 </li>
             </ul>
         </minilist>
-        <SaveToDisc v-if='modalFlag' @hide='hide'></SaveToDisc>
+        <SaveToDisc v-if='modalFlag' :song='song' @hide='hide'></SaveToDisc>
     </div>
 </template>
 <script>
@@ -55,12 +55,14 @@
         methods: {
             popUpCreateDisc() {
                 this.isHideCallBack = true
+                // 执行mini list的hide函数，包含了动画的时间，动画完成后minilist触发hide事件，触发此vm的hide函数，防callback并将modal的modalFlag更改
                 this.$refs.minilist.hide()
-                this.modalFlag = true
             },
             hide() {
                 if(this.isHideCallBack) {
                     this.isHideCallBack = false
+                    // minilist的隐藏动画执行完成后，再将modalFlag改变
+                    this.modalFlag = true
                     return
                 }
                 this.$emit('hide')

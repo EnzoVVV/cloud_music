@@ -6,11 +6,11 @@
                     <IconImg class='img' imgName='add'></IconImg>
                     <div class='text'>新建歌单</div>
                 </li>
-                <li class='list' v-for='list in discs' :key='list.name' @click='add(list)'>
-                    <img class='img' v-lazy='list.picUrl'></img>
+                <li class='list' v-for='disc in discs' :key='disc.name' @click='add(disc)'>
+                    <img class='img' v-lazy='disc.picUrl'></img>
                     <div class='text'>
-                        <p class='name'>{{list.name}}</p>
-                        <p class='info'>{{clistInfo(list)}}></p>
+                        <p class='name'>{{disc.name}}</p>
+                        <p class='info'>{{clistInfo(disc)}}></p>
                     </div>
                 </li>
             </ul>
@@ -50,8 +50,8 @@
 
         },
         methods: {
-            clistInfo(list) {
-                return `${list.count}首`
+            clistInfo(disc) {
+                return `${disc.count}首`
             },
             // 隐藏CreateDisc
             hideCreateDisc() {
@@ -83,7 +83,7 @@
                         })
                     })
                 }
-                
+                this.hide()
             },
             ...mapActions([
                 'addSongToDisc'

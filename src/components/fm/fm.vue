@@ -70,7 +70,7 @@
                 </div>
             </progresscircle>
             <div class='favorite' @click='toggleFavorite'>
-                <IconSvg :icon-class='favoriteIcon'></IconSvg>
+                <IconImg :imgName='favoriteIcon'></IconImg>
             </div>
         </div>
         <audio ref='audio' @playing='audioReady' @timeupdate='timeupdate' @ended='ended' @pause='paused'></audio>
@@ -130,7 +130,7 @@
                 return this.audioDuration != 0 ? this.currentTime / this.audioDuration : 0
             },
             favoriteIcon() {
-                return this.favoriteFS ? 'liked' : 'like'
+                return this.favoriteFS ? 'mini-liked' : 'mini-like'
             },
             ...mapGetters([
                 'favoriteSongs'
@@ -392,8 +392,8 @@
                     padding-right: 10px
             .middle
                 position: fixed
-                top: 44px
-                bottom: 100px
+                top: 60px
+                bottom: 120px
                 z-index: 9999
                 width: 100%
                 display: flex

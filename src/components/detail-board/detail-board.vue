@@ -36,7 +36,7 @@
                             <IconImg imgName='share'></IconImg>
                             <div class='text'>分享</div>
                         </div>
-                        <div class='btn'>
+                        <div class='btn' @click='showSongSelect'>
                             <IconImg imgName='uj'></IconImg>
                             <div class='text'>多选</div>
                         </div>
@@ -236,6 +236,9 @@
             },
             showComment() {
                 this.showComponent('comment', this.type, this.subject)
+            },
+            showSongSelect() {
+                this.showComponent('songselect', this.songs)
             }
         },
         created() {

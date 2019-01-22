@@ -33,8 +33,17 @@
 
         },
         methods: {
+            searchAlbums() {
+                if(this.query === undefined || this.query === null || this.query === '') {
+                    return
+                }
+                searchAlbum(this.query).then(res => {
+                    this.albums = res
+                })
+            }
         },
         created() {
+            this.searchAlbums()
         },
         mounted() {
 
@@ -43,7 +52,17 @@
 </script>
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
-    .loading
-        position: fixed
-        top: 50%
+    .album
+        width: 100%
+        height: 100%
+        overflow hidden
+        .list
+            position: absolute
+            left: 0
+            top: 0
+            right: 0
+            bottom: 60px
+            .loading
+                position: fixed
+                top: 50%
 </style>
