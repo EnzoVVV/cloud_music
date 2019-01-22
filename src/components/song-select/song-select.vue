@@ -12,11 +12,11 @@
             </ul>
         </scroll>
         <div class='bottom'>
-            <div @click='handleClick(0)'>
+            <div @click='handleClick(0)' class='bottom-btn'>
                 <IconSvg icon-class='restore' size='30px'></IconSvg>
                 <div class='text'>下一首播放</div>
             </div>
-            <div @click='handleClick(1)'>
+            <div @click='handleClick(1)' class='bottom-btn'>
                 <IconSvg icon-class='restore' size='30px'></IconSvg>
                 <div class='text'>添加到歌单</div>
             </div>
@@ -73,7 +73,7 @@
                 this.$emit('back')
             },
             ...mapActions([
-                'insertSongToPlayNext'
+                'insertSongsToPlayNext'
             ]),
             addToDisc() {
                 this.stdFlag = true
@@ -119,7 +119,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 5000
+        z-index: 7100
         background: $color-background
         .header
             position: absolute
@@ -148,11 +148,14 @@
             height: 60px
             width: 100%
             display: flex
-            flex-direction: column
             align-items: center
-            justify-content: center
             background: $color-background
             border-top: 1px solid $color-light
+            &-btn
+                flex: 1
+                display: flex
+                flex-direction: column
+                align-items: center
             .text
                 padding-top: 2px
                 color: $color-text-ii

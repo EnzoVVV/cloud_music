@@ -31,6 +31,34 @@ export const insertSong = function ({commit, state}, song) {
     let sequenceList = state.sequenceList.slice()
     let currentIndex = state.currentIndex
 
+    let insert = createInsertFunction(playlist, sequenceList, currentIndex)
+    insert(song)
+    insert = null
+
+    commit(types.SET_PLAYLIST, playlist)
+    commit(types.SET_SEQUENCE_LIST, sequenceList)
+    commit(types.SET_CURRENT_INDEX, currentIndex)
+    commit(types.SET_FULL_SCREEN, true)
+    commit(types.SET_PLAYING_STATE, true)
+}
+
+// 插入歌曲到下一首的位置
+export const insertSongsToPlayNext = function ({commit, state}, songs) {
+    let playlist = state.playlist.slice()
+    let sequenceList = state.sequenceList.slice()
+    let currentIndex = state.currentIndex
+
+    let insert = createInsertFunction(playlist, sequenceList, currentIndex)
+    songs.forEach(song => {
+        insert(song)
+    })
+    insert = null
+
+    commit(types.SET_PLAYLIST, playlist)
+    commit(types.SET_SEQUENCE_LIST, sequenceList)
+}
+
+const createInsertFunction = function(playlist, sequenceList, currentIndex) {
     // 如果已经有这首歌，找到已有的index
     let fpIndex = findIndex(playlist, song)
     // 在当前位置下一位插入新歌
@@ -55,17 +83,11 @@ export const insertSong = function ({commit, state}, song) {
 
     if (fsIndex > -1) {
         if (curSIndex < fsIndex) {
-            playlist.splice(fsIndex + 1, 1)
+            sequenceList.splice(fsIndex + 1, 1)
         } else {
-            playlist.splice(fsIndex, 1)
+            sequenceList.splice(fsIndex, 1)
         }
     }
-
-    commit(types.SET_PLAYLIST, playlist)
-    commit(types.SET_SEQUENCE_LIST, sequenceList)
-    commit(types.SET_CURRENT_INDEX, currentIndex)
-    commit(types.SET_FULL_SCREEN, true)
-    commit(types.SET_PLAYING_STATE, true)
 }
 
 // 在歌曲列表中删掉一项
@@ -114,10 +136,12 @@ export const restoreSearchHistory = function ({commit}) {
 
 import { addToDisc, getDiscs, saveDisc, deleteDisc as deleteADisc, deleteSongFromDisc as deleteSongFromADisc, toggleSongFS as toggleTheSongFS } from 'common/js/cache'
 import { createDisc as createADisc } from 'common/js/disc'
+import Disc from 'common/js/disc'
 
 // 将歌曲添加到歌单, 入参为类的实例
 export const addSongToDisc = function ({commit}, {song, disc}) {
-    addToDisc(song, disc)
+    const copyDisc = new Disc(deepCopy(disc))
+    addToDisc(song, copyDisc)
     commit(types.SET_DISCS, getDiscs(0))
 }
 

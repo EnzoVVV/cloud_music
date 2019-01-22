@@ -27,6 +27,9 @@ function deleteFromArray(array, compare) {
   }
 }
 
+
+// ----------------------搜索历史---------------------------
+
 // 将query添加到storage的搜索历史中， 并返回最新的搜索历史
 export function saveSearch(query) {
     let searches = storage.get(SEARCH_KEY, [])
@@ -59,35 +62,40 @@ export function restoreSearch() {
     return searches
 }
 
+// ---------------歌单-------------------------------
 const DISC_KEY = '__disc__'
 const DISC_F_KEY = '__favorite_disc__'
 import { defaultDiscs } from 'common/js/disc'
+
 // 获取storage中所有歌单
 export function getDiscs(type = 0) {
-    if(!checkDiscType(type)) {
-        return
-    }
+    let discs = null
     if(type === 0) {
         // 当storage中没有DISC_KEY时，才返回defaultDiscs
         // 如果DISC_KEY对应值为空数组时，也算有值，不返回defaultDiscs
-        let discs = storage.get(DISC_KEY, defaultDiscs)
+        discs = storage.get(DISC_KEY, defaultDiscs)
         if(discs && discs.length == 0) {
             discs = defaultDiscs
         }
-        return discs
     } else if(type === 1) {
-        return storage.get(DISC_F_KEY, [])
+        discs = storage.get(DISC_F_KEY, [])
     }
+    return discs
 }
 
 
 // 将disc实例保存到storage, type 0 创建的歌单 type 1 收藏的歌单
 export function saveDisc(disc, type = 0) {
-    if(!checkDiscType(type)) {
-        return
-    }
     let discs = getDiscs(type)
-    discs.push(disc)
+    let index = discs.findIndex(i => i.id === disc.id)
+    if(index != null && index != undefined) {
+        // 已存在, 则替换(添加歌曲到歌单)
+        discs.splice(index, 1, disc)
+    } else {
+        // 不存在，则添加(新建歌单)
+        discs.push(disc)
+        
+    }
     const discKey = getDiscKey(type)
     storage.set(discKey, discs)
 }
@@ -117,9 +125,6 @@ export function toggleSongFS(song) {
 
 // 删除歌单
 export function deleteDisc(disc, type = 0) {
-    if(!checkDiscType(type)) {
-        return
-    }
     let discs = getDiscs(type)
     let newDiscs = discs.filter(i => i.id != disc.id)
     const discKey = getDiscKey(type)
@@ -138,14 +143,8 @@ function getDiscKey(type = 0) {
     return type === 0 ? DISC_KEY : DISC_F_KEY
 }
 
-function checkDiscType(type) {
-    if(type != undefined && type !=0 && type != 1) {
-        console.error('type应为0或1')
-        return false
-    }
-    return true
-}
 
+// -------------------专辑-----------------------
 const ALBUM_KEY = '__album__'
 // 收藏专辑
 export function saveAlbum(album) {
@@ -165,6 +164,8 @@ export function getAlbums() {
     return storage.get(ALBUM_KEY, [])
 }
 
+
+// ------------------歌手---------------------------
 const SINGER_KEY = '__singer__'
 // 收藏歌手
 export function saveSinger(singer) {
@@ -185,6 +186,7 @@ export function getSingers() {
     return storage.get(SINGER_KEY, [])
 }
 
+// --------------已删除的歌单-------------------
 const DISCARD_DISC = '__discard_disc__'
 // 暂存删除的自建歌单
 export function saveDiscardDisc(disc) {
