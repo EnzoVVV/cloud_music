@@ -40,10 +40,8 @@ export const playerMixin = {
             let list = null
             if(nextMode === playMode.random) {
                 list = generateRandomList(this.sequenceList)
-            } else if(nextMode == playMode.listCycle) {
+            } else {
                 list = this.sequenceList
-            } else if(nextMode == playMode.singleCycle) {
-                list = [this.currentSong]
             }
             // 切换list时，确保currentIndex不变
             this.resetCurrentIndex(list)
