@@ -13,16 +13,16 @@
                         <div class='header-info-singer'>
                             <div class='header-info-singer-name' @click='showSingerDetail'>{{switchedSong && switchedSong.singer || ''}} ></div>
                         </div>
-                        <div class='header-share'><IconSvg icon-class='share' size='23px'></IconSvg></div>
                     </div>
+                    <div class='header-share'><IconSvg icon-class='share' size='23px'></IconSvg></div>
                 </div>
                 <div class='middle' ref='middle'>
                     <IconImg imgName='stylus' ref='stylus' class='stylus'></IconImg>
                     <!-- 切换歌词页面的click事件替换成在touchend中处理了 -->
                     <!-- 移动端，touch事件之后是click事件，为了click所以此处不能touchstart.prevent，如必须，则可以在touch处理函数中e.preventDefault -->
                     <div class='cd-wrapper' ref='cdWrapper' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
-                        <div class='cd' :class='cdStatus'>
-                            <img :src='currentSong.picUrl' class='cd-img'></img>
+                        <div class='cd' :class='cdStatus' ref='cd'>
+                            <img :src='currentSong.picUrl' class='cd-img' ref='cdImg'></img>
                         </div>
                     </div>
                     <div class='next-cd-wrapper' ref='nextCdWrapper' v-if='nextSong'>
@@ -115,18 +115,24 @@
     import Lyric from 'lyric-parser'
     import scroll from 'base/scroll/scroll'
     import progresscircle from 'base/progress-circle/progress-circle'
-    import { transform, transitionDuration,translate } from 'common/js/dom'
+    import { transform, transitionDuration,translate, rotate } from 'common/js/dom'
     import { playerMixin } from 'common/js/mixins'
     import { playMode } from 'common/js/config'
     const minisonglist = () => import('components/mini-song-list/mini-song-list')
     const modal = () => import('base/modal/modal')
     const infolist = () => import('components/info-list/info-list')
     const roller = () => import('base/roller/roller')
+    const liner = () => import('base/liner/liner')
     // 切歌动画transitionDuration(ms)
     const duration = 300
     const translateOption = {
         transitionDuration: duration + 'ms'
     }
+
+    // 黑胶针图片宽305高555, radius为旋转中心点到图片边缘的距离
+    const stylus_radius_width_ratio = 50 / 305
+    const stylus_radius_height_ratio = 50 / 555
+    const stylus_width_height_ratio = 305 / 555
     export default {
         name: 'player',
         mixins: [playerMixin],
@@ -137,7 +143,8 @@
             progresscircle,
             modal,
             infolist,
-            roller
+            roller,
+            liner
         },
         props: {
 
@@ -202,6 +209,11 @@
             },
             infoListTitle() {
                 return `歌曲: ${this.currentSong.name}`
+            },
+            headerTitle() {
+                const title = this.switchedSong && this.switchedSong.name || ''
+                this.longTitle = title.length * 14 > window.innerWidth - 25 - 10
+                return title
             }
         },
         watch: {
@@ -242,11 +254,6 @@
                 this.$nextTick(() => {
                     val ? audio.play() : audio.pause()
                 })
-            },
-            headerTitle() {
-                const title = this.switchedSong && this.switchedSong.name || ''
-                this.longTitle = title.length * 14 > window.innerWidth - 25 - 10
-                return title
             }
         },
         methods: {
@@ -272,6 +279,7 @@
                 if (!this.songReady) {
                     return
                 }
+                this.shiftStylus(this.playing)
                 this.setPlayingState(!this.playing)
                 // 暂停/播放歌词
                 if(this.currentLyric) {
@@ -286,8 +294,12 @@
                     // 点击按钮切歌
                     translate(this.$refs.nextCdWrapper, 0, 0, translateOption)
                     translate(this.$refs.cdWrapper, -this.clientWidth, 0, translateOption)
+                    // 切歌过程中先移开黑胶针
+                    this.shiftStylus(true)
                     setTimeout(() => {
                         this.doPlayNext()
+                        // 切歌完成，黑胶针复位
+                        this.shiftStylus(false)
                     },duration)
                 } else {
                     // 滑动cd触发切歌
@@ -309,8 +321,10 @@
                     // 点击按钮切歌
                     translate(this.$refs.preCdWrapper, 0, 0, translateOption)
                     translate(this.$refs.cdWrapper, this.clientWidth, 0, translateOption)
+                    this.shiftStylus(true)
                     setTimeout(() => {
                         this.doPlayPre()
+                        this.shiftStylus(false)
                     },duration)
                 } else {
                     // 滑动cd触发切歌
@@ -416,6 +430,10 @@
                     // 判断为非横滑
                     // return
                 }
+                // 挪动cd的过程中，移开黑胶针
+                if(!this.stylusShifted) {
+                    this.shiftStylus(true)
+                }
                 let offsetWidth = 0
                 this.touch.percent = deltaX / this.clientWidth
                 if(deltaX < 0) {
@@ -446,6 +464,8 @@
                 if(!this.touch.initiated) {
                     return
                 }
+                // 复位黑胶针
+                this.shiftStylus(false)
                 this.touch.initiated = false
                 // 元素同时有touch事件和click事件，click事件的触发会守影响(延迟，被touch事件处理函数preventDefault或return而阻拦等)，所以用touchend检测click
                 // percent是undefined，说明没有touchmove，是click
@@ -485,6 +505,51 @@
                         translate(this.$refs.cdWrapper, 0, 0, translateOption)
                     }
                 }
+            },
+            // cdImg加载完成后，将cd高度设置为和宽度相等，解决黑胶出现缝隙的问题
+            edgeEqualiser(flag) {
+                const cdImg = this.$refs.cdImg
+                const cd = this.$refs.cd
+                const equalise = () => {
+                    cd.style.height = getComputedStyle(cd).width
+                    // 一次性的
+                    cdImg.removeEventListener('load', equalise)
+                }
+                cdImg.addEventListener('load', equalise)
+            },
+            // 移动黑胶针
+            shiftStylus(flag) {
+                // flag: true 移开；flag：false 复位
+                const angle = flag ? -20 : 0
+                rotate(this.$refs.stylus.$el, angle)
+                this.stylusShifted = flag
+            },
+            // 设置黑胶针高度与位置
+            setStylusPosition() {
+                // header高度44，bottom高度100
+                const middle_height = window.innerHeight - 44 - 100
+                const middle_width = window.innerWidth
+                // cd区占总宽度70%, 黑胶是border的45px宽度
+                const cd_radius = (middle_width * 0.7 - 45 * 2) / 2
+                // 0.8是让黑胶针往下一点
+                // 黑胶针高度
+                const stylus_height = middle_height / 2 - cd_radius * 0.8
+                // 黑胶针宽度
+                const stylus_width = stylus_height * stylus_width_height_ratio
+                // 设置黑胶针转子的中心到屏幕正中
+                const stylus_left = middle_width / 2 - stylus_radius_width_ratio * stylus_width
+                const stylus_top = -stylus_radius_height_ratio * stylus_height
+                // 设置旋转中心点为黑胶针转子的中心
+                const transformOriginX = stylus_radius_width_ratio * stylus_width
+                const transformOriginY = stylus_radius_height_ratio * stylus_height
+                debugger
+                Object.assign(this.$refs.stylus.$el.style, {
+                    height: stylus_height + 'px',
+                    width: stylus_width + 'px',
+                    top: stylus_top + 'px',
+                    left: stylus_left + 'px',
+                    'transform-origin': `${transformOriginX}px ${transformOriginY}px`
+                })
             },
             // 加载前后歌曲信息，并设置位置
             getSideSong() {
@@ -566,6 +631,8 @@
             }
         },
         mounted() {
+            this.setStylusPosition()
+            this.edgeEqualiser()
             // 点击评论页里的顶部，继续播放
             this.$bus.on('requestPlayFromComment', () => {
                 if(!this.playing) {
@@ -618,6 +685,7 @@
                         color: $color-text-a
                         height: 16px
                     &-singer
+                        color: $color-text-i
                         display: flex
                         align-items: center
                         transform: scale(0.7)
@@ -633,14 +701,19 @@
                 width: 100%
                 display: flex
                 align-items: center
+                overflow: hidden
+                .stylus
+                    position: absolute
+                    top: 0
+                    left: 50%
+                    z-index: 1
                 .cd-wrapper
                     position: absolute
                     left: 15%
                     // 不能占满，设置width为75%后在左侧起始了(内部元素依然相对wrapper水平居中，但是相对窗口看着不居中了)
                     width: 70%
-                    text-align: center
                     .cd
-                        border: 45px solid $color-background-d
+                        border: 45px solid rgb(0,0,0)
                         border-radius: 50%
                         // cd旋转动画，对应cdStatus
                         &.play
@@ -658,7 +731,7 @@
                     text-align: center
                     transform: translate(500px,0)
                     .next-cd
-                        border: 45px solid $color-background-d
+                        border: 45px solid rgb(0,0,0)
                         border-radius: 50%
                         .next-cd-img
                             height: 100%
@@ -671,7 +744,7 @@
                     text-align: center
                     transform: translate(-500px,0)
                     .pre-cd
-                        border: 45px solid $color-background-d
+                        border: 45px solid rgb(0,0,0)
                         border-radius: 50%
                         .pre-cd-img
                             height: 100%
