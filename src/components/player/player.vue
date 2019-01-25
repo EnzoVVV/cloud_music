@@ -116,7 +116,10 @@
     import scroll from 'base/scroll/scroll'
     import progresscircle from 'base/progress-circle/progress-circle'
     import { transform, transitionDuration,translate, rotate } from 'common/js/dom'
+    import { checkSong } from 'api/song'
+    import { qsearch } from 'api/search'
     import { playerMixin } from 'common/js/mixins'
+    import { deepCopy } from 'common/js/tools'
     import { playMode } from 'common/js/config'
     const minisonglist = () => import('components/mini-song-list/mini-song-list')
     const modal = () => import('base/modal/modal')
@@ -225,26 +228,24 @@
                 if(this.FMSwitch) {
                     this.showComponent('FM', false)
                 }
-                this.songReady = false
-                // 停止歌词
-                if(this.currentLyric) {
-                    this.currentLyric.stop()
-                }
-                this.$refs.audio.src = newSong.url
-                this.$refs.audio.play()
-
-                // 若歌曲 5s 未播放，则认为超时，修改状态确保可以切换歌曲
-                this.clearTimer()
-                this.timer = setTimeout(() => {
-                    this.songReady = true
-                }, 5000)
-                this.getLyric()
-                this.getSideSong()
-                this.switchedSong = newSong
-                // 如果是滑动cd图片来切歌，那将cdWrapper复位
-                this.$refs.cdWrapper.style[transitionDuration] = '0s'
-                this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
-                this.checkFS()
+                debugger
+                checkSong(newSong.id).then(res => {
+                    debugger
+                    if(res.success) {
+                        this.loadSong(newSong)
+                    } else {
+                        this.$message('网易云暂无此歌版权, 正在搜索QQ曲库')
+                        qsearch(newSong.name, newSong.singer).then(result => {
+                            if(result) {
+                                const copySong = deepCopy(newSong)
+                                copySong.url = result
+                                this.loadSong(copySong)
+                            } else {
+                                this.$message('oops, 歌曲暂无版权')
+                            }
+                        })
+                    }
+                })
             },
             playing(val) {
                 if(!this.songReady) {
@@ -275,6 +276,28 @@
             ...mapActions([
                 'toggleSongFS'
             ]),
+            loadSong(song) {
+                this.songReady = false
+                // 停止歌词
+                if(this.currentLyric) {
+                    this.currentLyric.stop()
+                }
+                this.$refs.audio.src = song.url
+                this.$refs.audio.play()
+
+                // 若歌曲 5s 未播放，则认为超时，修改状态确保可以切换歌曲
+                this.clearTimer()
+                this.timer = setTimeout(() => {
+                    this.songReady = true
+                }, 5000)
+                this.getLyric()
+                this.getSideSong()
+                this.switchedSong = song
+                // 如果是滑动cd图片来切歌，那将cdWrapper复位
+                this.$refs.cdWrapper.style[transitionDuration] = '0s'
+                this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
+                this.checkFS()
+            },
             togglePlay() {
                 if (!this.songReady) {
                     return
@@ -542,7 +565,7 @@
                 // 设置旋转中心点为黑胶针转子的中心
                 const transformOriginX = stylus_radius_width_ratio * stylus_width
                 const transformOriginY = stylus_radius_height_ratio * stylus_height
-                debugger
+                
                 Object.assign(this.$refs.stylus.$el.style, {
                     height: stylus_height + 'px',
                     width: stylus_width + 'px',

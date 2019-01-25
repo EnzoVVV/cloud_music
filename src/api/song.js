@@ -38,21 +38,32 @@ export function getLyric(mid) {
 	})
 }
 
+// 检查歌曲是否可播放
+export function checkSong(id) {
+	const url = HOST + `/check/music?id=${id}`
+	return axios.get(url).then(res => {
+		return {
+			success: res.data.success
+		}
+	}).catch(() => {
+		return {
+			success: false
+		}
+	})
+}
 
+// 获取QQ音乐的歌曲url
+export function getSongUrl(song) {
+	return getSongsUrl([song]).then(res => {
+		if(res && Array.isArray(res)) {
+			return res[0]
+		}
+		return null
+	})
+}
+
+// 获取QQ音乐的歌曲数组的url
 export function getSongsUrl(songs) {
-	if(window.useCloud) {
-		const url = HOST + `/song/url?id=&{songs.id}`
-		return axios.get(url).then(res => {
-			let result = []
-			if(success(res.status)) {
-				result = res.data.result.map(item => {
-					return  {}
-				})
-			}
-			return result
-		})
-	}
-
 	const url = '/api/getPurlUrl'
 
 	let mids = []
@@ -77,27 +88,28 @@ export function getSongsUrl(songs) {
 		let tryTime = 3
 
 		function request() {
-		return axios.post(url, {
-			comm: data,
-			url_mid: urlMid
-		}).then((response) => {
-			const res = response.data
-			if (res.code === ERR_OK) {
-			let urlMid = res.url_mid
-			if (urlMid && urlMid.code === ERR_OK) {
-				const info = urlMid.data.midurlinfo[0]
-				if (info && info.purl) {
-				resolve(res)
+			return axios.post(url, {
+				comm: data,
+				url_mid: urlMid
+			}).then((response) => {
+				const res = response.data
+				if (res.code === ERR_OK) {
+				let urlMid = res.url_mid
+				if (urlMid && urlMid.code === ERR_OK) {
+					const info = urlMid.data.midurlinfo[0]
+					if (info && info.purl) {
+						const urls = urlMid.data.midurlinfo.map(i => i.purl)
+						resolve(urls)
+					} else {
+						retry()
+					}
 				} else {
-				retry()
+					retry()
 				}
-			} else {
-				retry()
-			}
-			} else {
-			retry()
-			}
-		})
+				} else {
+					retry()
+				}
+			})
 		}
 
 		function retry() {
