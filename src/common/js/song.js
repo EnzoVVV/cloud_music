@@ -69,35 +69,49 @@ export function getSongs(list) {
         return []
     }
     if(window.useCloud) {
-        return list.map(item => createSong({
-            songid: item.id,
-            songname: item.name,
-            singer: item.ar || item.artists,
-            albumname: item.al ? item.al.name : item.album ? item.album.name : '',
-            picUrl: item.al ? item.al.picUrl : item.album ? item.album.picUrl : '',
-            url: `https://music.163.com/song/media/outer/url?id=${item.id}.mp3`,
-            albummid: item.al ? item.al.id : item.album ? item.album.id : ''
-        }))
+        return list.map(item => createSong(getCreateSongData(item)))
     } else {
         return list.map(item => createSong(item.musicData))
     }
 }
 
+export function getSong(item) {
+    if(!item) {
+        return {}
+    }
+    if(window.useCloud) {
+        return createSong(getCreateSongData(item))
+    } else {
+        return createSong(item.musicData)
+    }
+}
+
+function getCreateSongData(item) {
+    return {
+        songid: item.id,
+        songname: item.name,
+        singer: item.ar || item.artists,
+        albumname: item.al ? item.al.name : item.album ? item.album.name : '',
+        picUrl: item.al ? item.al.picUrl : item.album ? item.album.picUrl : '',
+        url: `https://music.163.com/song/media/outer/url?id=${item.id}.mp3`,
+        albummid: item.al ? item.al.id : item.album ? item.album.id : ''
+    }
+}
 
 // qq接口，获取歌曲url
 export function processSongsUrl(songs) {
     if (!songs.length) {
-      return Promise.resolve(songs)
+        return Promise.resolve(songs)
     }
-    return getSongsUrl(songs).then((res) => {
-      if (res.code === ERR_OK) {
-        let midUrlInfo = res.url_mid.data.midurlinfo
-        midUrlInfo.forEach((info, index) => {
-          let song = songs[index]
-          song.url = `http://dl.stream.qqmusic.qq.com/${info.purl}`
-        })
-      }
-      return songs
+    return getSongsUrl(songs).then(res => {
+        if (res && Array.isArray(res)) {
+            res.forEach((url, index) => {
+                const song = songs[index]
+                song.url = info.purl
+                // song.url = `http://dl.stream.qqmusic.qq.com/${info.purl}`
+            })
+        }
+        return songs
     })
 }
 
