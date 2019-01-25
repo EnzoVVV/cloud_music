@@ -1,20 +1,23 @@
 <template>
     <div class='player' v-show='playlist.length'>
         <transition name='normal'>
-            <div class='normal-player' v-show='fullScreen'>
+            <div class='normal-player' v-show='fullScreen' ref='player'>
                 <div class='background'>
                     <img :src='currentSong.picUrl' class='background-img'></img>
                 </div>
                 <div class='header' ref='header'>
-                    <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
+                    <div @click='goBack' class='header-back'><IconSvg icon-class='back'></IconSvg></div>
                     <div class='header-info'>
-                        <div class='header-info-title'>{{switchedSong && switchedSong.name || ''}}</div>
+                        <div class='header-info-title' v-if='!longTitle'>{{headerTitle}}</div>
+                        <roller class='header-info-title' v-else :content='headerTitle' :fontSize='14' :height='16'></roller>
                         <div class='header-info-singer'>
                             <div class='header-info-singer-name' @click='showSingerDetail'>{{switchedSong && switchedSong.singer || ''}} ></div>
                         </div>
+                        <div class='header-share'><IconSvg icon-class='share' size='23px'></IconSvg></div>
                     </div>
                 </div>
                 <div class='middle' ref='middle'>
+                    <IconImg imgName='stylus' ref='stylus' class='stylus'></IconImg>
                     <!-- 切换歌词页面的click事件替换成在touchend中处理了 -->
                     <!-- 移动端，touch事件之后是click事件，为了click所以此处不能touchstart.prevent，如必须，则可以在touch处理函数中e.preventDefault -->
                     <div class='cd-wrapper' ref='cdWrapper' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
@@ -74,7 +77,7 @@
                             <IconImg imgName='next' size='45px'></IconImg>
                         </div>
                         <div class='operator-icon list' @click='showPlayList'>
-                            <IconSvg icon-class='play-history'></IconSvg>
+                            <IconImg imgName='list' size='40px'></IconImg>
                         </div>
                     </div>
                 </div>
@@ -118,6 +121,7 @@
     const minisonglist = () => import('components/mini-song-list/mini-song-list')
     const modal = () => import('base/modal/modal')
     const infolist = () => import('components/info-list/info-list')
+    const roller = () => import('base/roller/roller')
     // 切歌动画transitionDuration(ms)
     const duration = 300
     const translateOption = {
@@ -132,7 +136,8 @@
             scroll,
             progresscircle,
             modal,
-            infolist
+            infolist,
+            roller
         },
         props: {
 
@@ -160,7 +165,8 @@
                 selectSingerList: [],
                 FS: false,
                 currentLyricText: '',
-                infoListFlag: false
+                infoListFlag: false,
+                longTitle: false
             }
         },
         computed: {
@@ -236,6 +242,11 @@
                 this.$nextTick(() => {
                     val ? audio.play() : audio.pause()
                 })
+            },
+            headerTitle() {
+                const title = this.switchedSong && this.switchedSong.name || ''
+                this.longTitle = title.length * 14 > window.innerWidth - 25 - 10
+                return title
             }
         },
         methods: {
@@ -597,20 +608,23 @@
                 height: 44px
                 display: flex
                 align-items: center
-                &-back
-                    float: left
                 &-info
+                    flex: 1
                     padding-left: 10px
-                    padding-top: 15px
+                    padding-top: 10px
                     &-title
                         font-weight: bold
+                        font-size: $font-size-medium
+                        color: $color-text-a
+                        height: 16px
                     &-singer
-                        float: left
                         display: flex
                         align-items: center
                         transform: scale(0.7)
                         // scale记得和origin一起用
-                        transform-origin: left 
+                        transform-origin: left
+                &-share
+                    padding: 0 10px
             .middle
                 position: fixed
                 top: 44px
