@@ -103,5 +103,10 @@ export function changeOpacity(el, value, duration = 200) {
 	setTimeout(() => {
 		el.style[transitionDuration] = 0
 	}, duration)
+}
 
+// 获取去掉px后的数字
+export function getPxValue(s) {
+	// parseInt('0.3px') 结果是0，不精确
+	return Number(s.split('px')[0])
 }

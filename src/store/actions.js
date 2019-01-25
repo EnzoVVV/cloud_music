@@ -3,6 +3,7 @@ import { playMode } from 'common/js/config'
 import { generateRandomList, deepCopy } from 'common/js/tools'
 import { saveSearch, deleteSearch, clearSearch, restoreSearch } from 'common/js/cache'
 
+// ---------------------歌曲播放列表------------------------------------
 function findIndex(list, song) {
     return list.findIndex((item) => {
         return item.id === song.id
@@ -117,7 +118,9 @@ export const deleteSongList = function ({commit}) {
     commit(types.SET_SEQUENCE_LIST, [])
     commit(types.SET_PLAYING_STATE, false)
 }
-  
+
+
+// ---------------------搜索历史------------------------------------
 export const saveSearchHistory = function ({commit}, query) {
     commit(types.SET_SEARCH_HISTORY, saveSearch(query))
 }
@@ -134,12 +137,15 @@ export const restoreSearchHistory = function ({commit}) {
     commit(types.SET_SEARCH_HISTORY, restoreSearch())
 }
 
+
+// ---------------------收藏歌单------------------------------------
 import { addToDisc, getDiscs, saveDisc, deleteDisc as deleteADisc, deleteSongFromDisc as deleteSongFromADisc, toggleSongFS as toggleTheSongFS } from 'common/js/cache'
 import { createDisc as createADisc } from 'common/js/disc'
 import Disc from 'common/js/disc'
 
 // 将歌曲添加到歌单, 入参为类的实例
 export const addSongToDisc = function ({commit}, {song, disc}) {
+    // disc class下的songList是数组，所以这里要deepCopy
     const copyDisc = new Disc(deepCopy(disc))
     addToDisc(song, copyDisc)
     commit(types.SET_DISCS, getDiscs(0))
@@ -206,6 +212,8 @@ export const toggleSongFS = function ({commit}, song) {
     commit(types.SET_DISCS, getDiscs(0))
 }
 
+
+// ---------------------收藏专辑------------------------------------
 import { saveAlbum as saveAnAlbum, deleteAlbum as deleteAnAlbum, getAlbums } from 'common/js/cache'
 
 // 收藏/取消收藏 专辑
@@ -223,6 +231,8 @@ export const restoreAlbums = function ({commit}) {
     commit(types.SET_ALBUMS, getAlbums())
 }
 
+
+// ---------------------收藏歌手------------------------------------
 import { saveSinger, deleteSinger, getSingers } from 'common/js/cache'
 // 收藏/取消收藏 歌手
 export const favoriteSinger = function ({commit}, {singer, status}) {
@@ -239,6 +249,9 @@ export const restoreSingers = function ({commit}) {
     commit(types.SET_FAVORITE_SINGERS, getSingers())
 }
 
+
+
+// ---------------------恢复歌单------------------------------------
 import { getDiscardDiscs, saveDiscardDisc, deleteDiscardDisc } from 'common/js/cache'
 
 // 从storage中恢复删除的歌单
