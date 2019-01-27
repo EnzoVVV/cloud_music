@@ -1,6 +1,6 @@
 <template>
     <div>
-        <minilist @hide='hide' :modifiedHeader='true' @headerClick='headerClick' ref='minilist'>
+        <minilist @hide='hide' :modifiedHeader='true' @headerClick='headerClick' @listClick='select' ref='minilist'>
             <div slot='header' class='minilist-header'>
                 <div class='mode-wrapper' @click='toggleMode'>
                     <div class='modeIcon'><IconSvg :icon-class='modeIcon' size='15px'></IconSvg></div>
@@ -10,13 +10,13 @@
                 <div class='clear'><IconSvg icon-class='clear'></IconSvg></div>
             </div>
             <ul slot='list'>
-                <li v-for='item in sequenceList' :key='item.id' @click='select(item)' ref='item' class='minilist-item'>
-                    <div class='info' :class='{active: currentSong.id == item.id }'>
-                        <IconImg imgName='speaker' size='16px' v-if='currentSong.id == item.id' class='speaker'></IconImg>
-                        <div class='name'>{{item.name}}</div>  
-                        <div class='singer'>{{'- ' + item.singer}}</div>
+                <li v-for='item in sequenceList' :key='item.id' ref='item' class='minilist-item' @click='select(item)'>
+                    <div class='info' :class='{active: currentSong.id == item.id }' @click='select(item)'>
+                        <IconImg imgName='speaker' size='20px' v-if='currentSong.id == item.id' class='speaker'></IconImg>
+                        <span class='name'>{{item.name}}</span>  
+                        <span class='singer'>{{'- ' + item.singer}}</span>
                     </div>
-                    <div class='delete' @click.stop='deleteOne(item)'><IconSvg icon-class='delete'></IconSvg></div>
+                    <div class='delete' @click.stop='deleteOne(item)'><IconSvg icon-class='delete' size='18px'></IconSvg></div>
                     <div class='border'></div>
                 </li>
             </ul>
@@ -77,12 +77,16 @@
                 }
             },
             ...mapActions([
-                'selectPlay',
+                'playSongInList',
                 'deleteSong',
                 'deleteSongList'
             ]),
             select(item) {
-                this.selectPlay(item)
+                if(!this.$refs.minilist.listClicked) {
+                    // 如果是minilist的touchend后的click，则return掉
+                    return
+                }
+                this.playSongInList(item)
             },
             deleteOne(item) {
                 this.deleteSong(item) 
@@ -106,7 +110,9 @@
         },
         mounted() {
             this.scroll = this.$refs.minilist.$refs.scroll
-            this.autoScroll()
+            setTimeout(() => {
+                this.autoScroll()
+            }, 30)
         }
     }
 </script>
@@ -123,6 +129,7 @@
             padding-left: 5px
             position: relative
             .modeText
+                color: $color-text-dark
                 padding-left: 5px
         .empty
             flex: 1
@@ -141,13 +148,18 @@
             align-items: center
             overflow: hidden
             white-space: nowrap
+            span 
+                color: $color-text-dark
             &.active
-                color: $color-theme
+                span
+                    color: $color-theme
             .speaker
-                padding-right: 7px
+                padding-right: 5px
+            .name
+                font-size: $font-size-medium
             .singer
                 padding-left: 5px
-                font-size: $font-size-small
+                font-size: $font-size-small-s
                 color: $color-text-g
         .delete
             width: 40px
