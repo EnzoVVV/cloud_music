@@ -4,7 +4,7 @@
             <div class='search' v-show='showSearch'>
                 <div class='header'>
                     <div @click='goback'><IconSvg class='back' icon-class='back'></IconSvg></div>
-                    <inputbox v-model='inputValue' ref='searchbar' :inputStyle='searchbarStyle'></inputbox>
+                    <inputbox v-model='inputValue' ref='searchbar' :inputStyle='searchbarStyle' @enter='search(inputValue)'></inputbox>
                 </div>
                 <result v-if='showResult' class='result'></result>
                 <suggest v-if='inputValue' v-show='showSuggest' :query='inputValue' @select='search' class='suggest'></suggest>
@@ -98,6 +98,13 @@
             search(item) {
                 this.inputValue = item
                 this.setQuery(this.inputValue)
+                if(!showResult) {
+                    // 初始页搜索
+                    this.showResult = true
+                } else {
+                    // 在result页搜索
+                    this.$bus.emit('research')
+                }
                 this.showResult = true
                 this.$nextTick(() => {
                     this.showSuggest = false

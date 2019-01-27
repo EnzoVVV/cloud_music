@@ -1,6 +1,6 @@
 <template>
     <div class='input-box'>
-        <input class='input-box-input' ref='input' v-model='inputValue' :style='inputStyle' :placeholder='placeholder'></input>
+        <input class='input-box-input' ref='input' v-model='inputValue' :style='inputStyle' :placeholder='placeholder' @keyup.enter='handleEnter'></input>
         <div v-show='inputValue' @click='clear' class='input-box-clear'><IconSvg icon-class='delete-bright' size='20px'></IconSvg></div>
     </div>
 </template>
@@ -40,6 +40,10 @@
             }
         },
         methods: {
+            handleEnter() {
+                this.handleInput()
+                this.$emit('enter')
+            },
             handleInput() {
                 this.$emit('change', this.inputValue)
                 this.$emit('input', this.inputValue)

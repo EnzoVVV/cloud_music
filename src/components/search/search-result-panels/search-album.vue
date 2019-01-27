@@ -46,7 +46,7 @@
             this.searchAlbums()
         },
         mounted() {
-
+            this.$bus.on('research', this.searchAlbums)
         }
     }
 </script>
