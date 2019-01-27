@@ -7,7 +7,7 @@
                 <slot name='header' v-if='modifiedHeader'></slot>
                 <div class='title' v-else>{{title}}</div>
             </div>
-            <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend'>
+            <scroll class='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll' ref='scroll'>
                 <slot name='list'></slot>
             </scroll>
         </div>
@@ -56,13 +56,15 @@
                     transitionDuration: transitionDuration,
                     percent: true
                 })
+                this.finish()
+            },
+            finish() {
                 changeOpacity(this.$refs.decorate, 0, AnimationDuration)
                 // 需要transition动画结束后再emit hide事件
                 // 原因：emit hide事件后父组件会终结此实例，就来不及完成动画了
                 setTimeout(() => {
                     this.$emit('hide')
                 }, AnimationDuration)
-                
             },
             handleScroll(pos) {
                 this.position = pos.y
@@ -94,6 +96,14 @@
                 if(!this.touch.initiated) {
                     return 
                 }
+                // 是click事件
+                if(this.touch.totalDiff === undefined) {
+                    this.listClicked = true
+                    this.touch = {}
+                    return   
+                }
+                // 给外界区分是click还是touch, touchend后还会触发e.target的click事件
+                this.listClicked = false
                 if(this.touch.totalDiff > 0) {
                     let moveDistance = 0
                     if(this.touch.totalDiff > this.maxMoveDistance / 2) {
@@ -108,9 +118,7 @@
                         transitionDuration: duration + 'ms'
                     })
                     if(moveDistance > 0) {
-                        setTimeout(() => {
-                            this.hide()
-                        }, duration)
+                        this.finish()
                     }
                 }
                 this.touch = {}
@@ -131,7 +139,7 @@
                 translate(this.scrollEl, 0, this.headerTouch.totalDiff)
                 translate(this.headerEl, 0, this.headerTouch.totalDiff)
             },
-            headerTouchEnd(e) {
+            headerTouchEnd(e) {[]
                 if(!this.headerTouch.initiated) {
                     return 
                 }
@@ -155,11 +163,20 @@
                     transitionDuration: duration + 'ms'
                 })
                 if(moveDistance > 0) {
-                    setTimeout(() => {
-                        this.hide()
-                    }, duration)
+                    this.finish()
                 }
                 this.headerTouch = {}
+            },
+            // 动画结束后执行
+            animationCompleted() {
+                this.maxMoveDistance = this.scrollEl.offsetHeight
+                // this.$slots.list是vnode数组, vnode取dom是vnode.elm
+                const list = this.$slots.list[0].elm
+                if(list) {
+                    list.addEventListener('touchstart', this.touchstart)
+                    list.addEventListener('touchmove', this.touchmove)
+                    list.addEventListener('touchend', this.touchend)
+                }
             }
         },
         created() {
@@ -167,13 +184,16 @@
         mounted() {
             this.scrollEl = this.$refs.scroll.$el
             this.headerEl = this.$refs.header
-            this.maxMoveDistance = this.scrollEl.offsetHeight
             // 由于scroll采用绝对定位, 没法撑开这个高度，需要手动设置高度
             this.$refs.wrapper.style.height = parseInt(getComputedStyle(this.scrollEl.firstElementChild).height) + parseInt(getComputedStyle(this.headerEl).height) + 'px'
             translate(this.$refs.wrapper, 0, 0, {
                 transitionDuration: transitionDuration
             })
             changeOpacity(this.$refs.decorate, 0.5, AnimationDuration)
+            // 调用动画结束钩子
+            setTimeout(() => {
+                this.animationCompleted()
+            }, AnimationDuration)
         }
     }
 </script>
