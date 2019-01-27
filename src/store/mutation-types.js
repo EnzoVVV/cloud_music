@@ -28,3 +28,7 @@ export const SET_FAVORITE_SINGERS = 'SET_FAVORITE_SINGERS'
 
 export const SET_FM_SWITCH = 'SET_FM_SWITCH'
 
+export const SET_HOMEPAGE = 'SET_HOMEPAGE'
+
+export const SET_LOGIN_USER = 'SET_LOGIN_USER'
+

@@ -47,6 +47,12 @@ const matutaions = {
   [types.SET_FM_SWITCH](state, status) {
     state.FMSwitch = status
   },
+  [types.SET_HOMEPAGE](state, homepage) {
+    state.homepage = homepage
+  },
+  [types.SET_LOGIN_USER](state, loginUser) {
+    state.loginUser = loginUser
+  }
 }
 
 export default matutaions

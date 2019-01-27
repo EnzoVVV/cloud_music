@@ -13,6 +13,8 @@
         <fm v-if='flags.FM'></fm>
         <collection v-if='flags.collection' @back='flags.collection = false'></collection>
         <songselect v-if='flags.songselect' :songs='songselect.songs' @back='flags.songselect = false'></songselect>
+        <homepage v-if='flags.homepage' :userId='homepage.id' :self='homepage.self' @back='flags.homepage = false'></homepage>
+        <follow v-if='flags.follow' :title='follow.title'></follow>
     </div>
 </template>
 <script>
@@ -30,6 +32,8 @@
     const comment = () => import('components/comment/comment')
     const collection = () => import('components/collection/collection')
     const songselect = () => import('components/song-select/song-select')
+    const homepage = () => import('components/homepage/homepage')
+    const follow = () => import('components/homepage/sub/follow/follow')
     
 import { mapMutations } from 'vuex';
     export default {
@@ -47,7 +51,9 @@ import { mapMutations } from 'vuex';
             fm,
             comment,
             collection,
-            songselect
+            songselect,
+            homepage,
+            follow
         },
         props: {
 
@@ -77,7 +83,9 @@ import { mapMutations } from 'vuex';
                     FM: false,
                     comment: false,
                     collection: false,
-                    songselect: false
+                    songselect: false,
+                    homepage: false,
+                    follow: false
                 },
                 comment: {
                     type: '',
@@ -85,6 +93,13 @@ import { mapMutations } from 'vuex';
                 },
                 songselect: {
                     songs: []
+                },
+                homepage: {
+                    id: null,
+                    self: false
+                },
+                follow: {
+                    title: 'TA的好友'
                 }
 
             }
@@ -129,12 +144,6 @@ import { mapMutations } from 'vuex';
                     })
                 }
             },
-            showUnrevealedMessage() {
-                this.showMessage('暂未开放此功能')
-            },
-            modalConfirm() {
-                this.modalCallerInstance[this.modalCallerOnConfirm]()
-            },
             showPlaylist() {
                 this.flags.playlist = true
             },
@@ -157,9 +166,15 @@ import { mapMutations } from 'vuex';
                 this.flags.songselect = true
                 this.songselect.songs = songs
             },
-            ...mapMutations({
-                'setFMSwitch': 'SET_FM_SWITCH'
-            }),
+            showHomepage(id, self = false) {
+                this.flags.homepage = true
+                this.homepage.id = id
+                this.homepage.self = self
+            },
+            showFollow(title) {
+                this.flags.follow = true
+                this.follow.title = title
+            },
             showComponent() {
                 let eventName = arguments[0]
                 let payload = []
@@ -168,7 +183,16 @@ import { mapMutations } from 'vuex';
                 }
                 let func = this.map[eventName]
                 func.apply(this, payload)
-            }
+            },
+            showUnrevealedMessage() {
+                this.showMessage('暂未开放此功能')
+            },
+            modalConfirm() {
+                this.modalCallerInstance[this.modalCallerOnConfirm]()
+            },
+            ...mapMutations({
+                'setFMSwitch': 'SET_FM_SWITCH'
+            }),
         },
         created() {
             this.map = {
@@ -178,7 +202,10 @@ import { mapMutations } from 'vuex';
                 comment: this.showComment,
                 collection: this.showCollection,
                 playlist: this.showPlaylist,
-                songselect: this.showSongSelect
+                songselect: this.showSongSelect,
+                discdetail: this.showDiscDetail,
+                homepage: this.showHomepage,
+                follow: this.showFollow
             }
         },
         mounted() {
@@ -198,9 +225,6 @@ import { mapMutations } from 'vuex';
             }
             Vue.prototype.$unrevealed = function() {
                 self.$bus.emit('unrevealed')
-            }
-            Vue.prototype.back = function() {
-                this.$emit('back')
             }
             Vue.prototype.$message = function(content) {
                 self.$bus.emit('showMessage', content)
