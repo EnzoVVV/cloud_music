@@ -18,7 +18,7 @@ export function getAlbums(list) {
             picUrl: item.picUrl,
             date: formatTimestamp(item.publishTime),
             type: item.subType,
-            singer: item.singer
+            singer: item.artist.name
         })
     })
 }

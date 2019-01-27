@@ -15,7 +15,7 @@
             <scroll class='scroll' ref='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll'>
                 <div>
                     <div class='bg' ref='bg'>
-                        <img :src='cover' class='bg-img' :class='{"blur": blur}'></img>
+                        <img :src='cover' class='bg-img' :class='{"blur": blur}' ref='bgImg'></img>
                     </div>
                     <div class='info' ref='info'>
                         <slot v-if='cusInfo' name='info'></slot>
@@ -24,6 +24,14 @@
                             <div class='info-title-wrapper'>
                                 <div class='info-main-title'>{{headerScrollTitle}}</div>
                                 <div class='info-sub-title' v-if='subTitle.length'>{{subTitle}}</div>
+                                <div class='info-creator' v-if='type == "disc" && creator' @click='showHomepage'>
+                                    <img class='info-creator-avatar' :src='creator.picUrl'></img>
+                                    <span class='info-creator-name'>{{creator.name}} ></span>
+                                </div>
+                                <div class='info-album' v-if='type == "disc" && subject'>
+                                    <p class='info-album-singer'>歌手: {{subject.singer}}</p>
+                                    <p class='info-album-date'>发行时间: {{subject.date}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -46,7 +54,7 @@
                 </div>
             </scroll>
             <div class='fixed-background' v-show='showFixedBG' ref='fbg'>
-                <img :src='cover' class='bg-img' :class='{"blur": blur}'></img>
+                <img :src='cover' class='bg-img' :class='{"blur": blur}' ref='fbgImg'></img>
             </div>
         </div>
     </transition>
@@ -56,9 +64,8 @@
     import FunctionalHeader from 'base/functional-header/functional-header'
     import songlist from 'components/song-list/song-list'
     import { mapActions } from 'vuex'
-    import { mockImg } from 'common/js/config'
     import { createSong } from 'common/js/song'
-    import { opacity } from 'common/js/dom'
+    import { opacity, clipPath } from 'common/js/dom'
     export default {
         name: 'detailboard',
         mixins: [playlistMixin, scrollMixin],
@@ -151,6 +158,10 @@
             },
             subject: {
                 type: Object
+            },
+            // 歌单页的creator信息
+            creator: {
+                type: Object
             }
         },
         data() {
@@ -179,6 +190,9 @@
                 // info内容按滚动比例降低opacity
                 const percent = Math.abs(val) / this.diff
                 this.$refs.info.style[opacity] = 1 - percent
+                if(this.showFunc) {
+                    this.$refs.func.style[opacity] = 1 - percent
+                }
                 // 更换title
                 if(this.headerScrollTitle) {
                     if(percent > 0.4) {
@@ -239,6 +253,9 @@
             },
             showSongSelect() {
                 this.showComponent('songselect', this.songs)
+            },
+            showHomepage() {
+                this.showComponent('homepage', this.creator.id)
             }
         },
         created() {
@@ -251,6 +268,13 @@
                 this.diff = el.getBoundingClientRect().top - this.$refs.header.$el.offsetHeight
                 this.$refs.scroll.refresh()
             }, 500)
+            // 没有func区域时高度不一样
+            if(!this.showFunc) {
+                this.$refs.bg.style.height = this.$refs.bgImg.style.height = '190px'
+                this.$refs.fbg.style.top = '-136px'
+                this.$refs.fbg.style.height = this.$refs.fbgImg.style.height = '190px'
+                this.$refs.fbg.style[clipPath] = 'polygon(0% 71.5789%, 100% 71.5789%, 100% 94.736%, 0% 94.736%)'
+            }
         }
     }
 </script>
@@ -327,14 +351,15 @@
                 top: 0
                 width: 100%
                 // 3. 多出10px，为了下面的组件设置border-radius后能显示出来
-                height: 280px
+                // info高度180, func高度实为50(高度60，margin -10),bg区域高度为230，加上radius = 10后是240
+                height: 240px
                 z-index: -10
                 overflow: hidden
                 // 设置一个背景色, 背景图片失效时自动换成背景色
                 background-color: $color-background
                 .bg-img
                     width: 100%
-                    height: 210px
+                    height: 100%
                     &.blur
                         opacity: 0.6
                         filter: blur(80px) brightness(50%)
@@ -354,6 +379,7 @@
                     position: absolute 
                     left: 140px
                     top: 70px
+                    height: 70px
                     .info-main-title
                         font-size: $font-size-medium-x
                         font-weight: bold
@@ -362,6 +388,27 @@
                         padding-top: 10px
                         font-size: $font-size-small
                         color: $color-light
+                    .info-creator
+                        position: absolute
+                        bottom: 0
+                        height: 25px
+                        display: flex
+                        align-items: center
+                        &-avatar
+                            height: 25px
+                            width: 25px
+                            border-radius: 50%
+                        &-name
+                            padding-left: 10px
+                            color: $color-text-ht
+                            font-size: $font-size-medium
+                    .info-album
+                        padding-top: 20px
+                        p
+                            color: $color-text-ll
+                            font-size: $font-size-medium
+                        &-date
+                            padding-top: 5px
             .func
                 height: 60px
                 margin-top: -10px
@@ -382,20 +429,20 @@
         // 4. 设置一个固定div背景, 绝对定位上移一些，以便置为show时所在位置就是背景的底部
         .fixed-background
             position: absolute 
-            // -(200-44)
-            top: -156px
+            // -(230-44)
+            top: -186px
             width: 100%
-            height: 210px
+            height: 240px
             // 6. 打底, 防止img模糊后scroll的内容透出来
             background: $color-background
             z-index: 6000
             // 图片裁剪，显示底部的10px
-            // TODO，改成clip-path
-            clip: rect(156px auto 200px auto)
+            // 显示图片186px - 230px的部分, 77.5% = 186/240
+            clip-path: polygon(0% 77.5%, 100% 77.5%, 100% 95.83333%, 0% 95.83333%)
             overflow: hidden
             .bg-img
                 width: 100%
-                height: 210px
+                height: 100%
                 &.blur
                     opacity: 0.6
                     filter: blur(80px) brightness(50%)

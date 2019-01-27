@@ -12,13 +12,18 @@ export function getDiscDetail(id) {
 		return axios.get(url).then(res => {
 			let result = {}
 			if(success(res.status)) {
-				let playlist = res.data.playlist
+				const playlist = res.data.playlist
+				const creator = playlist.creator
 				result = createDisc({
 					id: playlist.id,
 					name: playlist.name,
 					songList: getSongs(playlist.tracks),
 					picUrl: playlist.coverImgUrl,
-					creator: playlist.nickname
+					creator: {
+						id: creator.userId,
+						name: creator.nickname,
+						picUrl: creator.avatarUrl
+					}
 				})
 			}
 			return result

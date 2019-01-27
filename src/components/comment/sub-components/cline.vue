@@ -1,6 +1,6 @@
 <template>
     <div>
-        <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='comment.user.picUrl' :main='comment.user.userName' :sub='comment.time' height='40px' :showImg='true'></liner>
+        <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='comment.user.picUrl' :main='comment.user.userName' :sub='comment.time' height='40px' :showImg='true' :imgSelectable='true' @imgClick='imgClick'></liner>
         <div class='content'>
             <div class='comment'>{{comment.content}}</div>
             <span class='reply' v-if='!hideReply && comment.reply && comment.reply.length' @click='showReply(comment)'>{{comment.reply.length}}条回复 ></span>
@@ -38,6 +38,9 @@
         methods: {
             showReply(comment) {
                 this.$emit('showReply', comment)
+            },
+            imgClick(id) {
+                this.showComponent('homepage', this.comment.user.userId)
             }
         },
         created() {
@@ -57,7 +60,7 @@
         flex-direction: column
         border-bottom: 1px solid $color-light
         .comment
-            line-height: 25px
+            line-height: 20px
         .reply
             margin-top: 10px
             color: $color-text-h

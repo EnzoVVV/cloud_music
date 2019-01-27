@@ -83,7 +83,7 @@
                 </div>
             </div>
         </transition>
-        <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen'>
+        <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen' ref='miniplayer'>
             <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'></img></div>
             <div class='info'>
                 <div class='name'>{{currentSong.name}}</div>
@@ -102,7 +102,7 @@
         <minisonglist v-if='miniListFlag' @hide='miniListFlag = false'></minisonglist>
         <!-- 选择查看的歌手 -->
         <modal v-if='selectSingerList.length' title='请选择要查看的歌手' :hideBtn='true' @hide='hideModal'>
-            <liner v-for='singer in selectSingerList' :key='singer.id' :showImg='true' :picUrl='singer.picUrl' :main='singer.name' :selectable='true' @select='selectSinger'></liner>
+            <liner v-for='singer in selectSingerList' :key='singer.id' :showImg='true' :picUrl='singer.picUrl' :main='singer.name' :selectable='true' @select='selectSinger(singer)'></liner>
         </modal>
         <!-- 歌曲信息 -->
         <infolist v-if='infoListFlag' :song='currentSong' @hide='infoListFlag = false'></infolist>
@@ -118,7 +118,7 @@
     import { transform, transitionDuration,translate, rotate } from 'common/js/dom'
     import { checkSong } from 'api/song'
     import { qsearch } from 'api/search'
-    import { playerMixin } from 'common/js/mixins'
+    import { playerMixin, shiftPlayerMixin } from 'common/js/mixins'
     import { deepCopy } from 'common/js/tools'
     import { playMode } from 'common/js/config'
     const minisonglist = () => import('components/mini-song-list/mini-song-list')
@@ -138,7 +138,7 @@
     const stylus_width_height_ratio = 305 / 555
     export default {
         name: 'player',
-        mixins: [playerMixin],
+        mixins: [ playerMixin, shiftPlayerMixin ],
         components: {
             minisonglist,
             progressbar,
@@ -639,8 +639,7 @@
                     this.selectSingerList = singerInfo.slice()
                 }
             },
-            selectSinger(singerId) {
-                const singer = this.selectSingerList.find(i => i.id === singerId)
+            selectSinger(singer) {
                 this.selectSingerList = []
                 this.triggerSingerDetailPage(singer)
             },
@@ -859,7 +858,7 @@
             bottom: 0
             height: 44px
             width: 100%
-            z-index: 7000
+            z-index: 5000
             background: $color-background
             display: flex
             align-items: center

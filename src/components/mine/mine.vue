@@ -248,7 +248,7 @@
             .user-list
                 width: 100%
                 .user-list-header
-                    height: 30px
+                    height: 20px
                     background: $color-light
                     display: flex
                     align-items: center
@@ -259,6 +259,8 @@
                         position: absolute
                         left: 40px
                         font-size: $font-size-small
+                        color: $color-text-ii
+                        flex: 1
                     .icon-setting
                         position: absolute
                         right: 15px

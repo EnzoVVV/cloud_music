@@ -1,10 +1,13 @@
 <template>
     <div>
         <div class='song-list' :style='computedStyle'>
-            <div class='header' v-if='showHeader' @click='clickHeader'>
-                <IconSvg :icon-class='icon' class='icon'></IconSvg>
-                <span class='title'>{{title}}</span>
-                <span class='count'>{{count}}</span>
+            <div class='header' v-if='showHeader'>
+                <div class='header-wrapper' @click='clickHeader'>
+                    <IconSvg :icon-class='icon' class='icon'></IconSvg>
+                    <span class='title'>{{title}}</span>
+                    <span class='count'>{{count}}</span>
+                </div>
+                <div class='empty'></div>
                 <span class='favorite-status' v-if='showFBtn' @click.stop='toggleFS'>{{favoriteBtn}}</span> 
             </div>
             <ul>
@@ -112,7 +115,6 @@
                     // 请求取消收藏
                     this.$refs.confirm.show()
                 }
-                
             }
         },
         created() {
@@ -131,14 +133,19 @@
             border-bottom: 1px solid $color-light
             display: flex
             align-items: center
-            .icon
-                margin: 0 15px
-            .count
-                padding-left: 5px
-                color: $color-text-light
-                font-size: $font-size-small
+            &-wrapper
+                display: flex
+                align-items: center
+                .icon
+                    margin: 0 15px
+                .count
+                    padding-left: 5px
+                    color: $color-text-light
+                    font-size: $font-size-small
+            .empty
+                flex: 1
             .favorite-status
-                margin-left: 35%
+                padding-left: 10px
                 color: $color-text-ii
         .item
             display: flex

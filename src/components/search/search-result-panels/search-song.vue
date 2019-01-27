@@ -62,7 +62,7 @@
             this.searchSongs()
         },
         mounted() {
-
+            this.$bus.on('research', this.searchSongs)
         }
     }
 </script>

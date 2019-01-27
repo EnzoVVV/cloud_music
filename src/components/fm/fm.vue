@@ -1,7 +1,7 @@
 <template>
     <div class='player'>
         <transition name='normal'>
-            <div class='normal-player' v-show='fullScreen'>
+            <div class='normal-player' v-show='fullScreen' ref='player'>
                 <div class='background'>
                     <img :src='currentSong.picUrl' class='background-img'></img>
                 </div>
@@ -58,7 +58,7 @@
                 </div>
             </div>
         </transition>
-        <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen'>
+        <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen' ref='miniplayer'>
             <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'></img></div>
             <div class='info'>
                 <div class='name'>{{currentSong.name}}</div>
@@ -84,9 +84,10 @@
     import progresscircle from 'base/progress-circle/progress-circle'
     import { getPersonalFM } from 'api/fm'
     import { mapGetters, mapActions } from 'vuex'
-
+    import { shiftPlayerMixin } from 'common/js/mixins'
     export default {
         name: 'fm',
+        mixins: [ shiftPlayerMixin ],
         components: {
             progressbar,
             scroll,
@@ -497,7 +498,7 @@
             bottom: 0
             height: 44px
             width: 100%
-            z-index: 6000
+            z-index: 5000
             background: $color-background
             display: flex
             align-items: center
