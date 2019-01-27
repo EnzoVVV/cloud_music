@@ -148,7 +148,6 @@ import { mapMutations } from 'vuex';
                     type: type,
                     subject: subject,
                 })
-                debugger
                 this.flags.comment = true
             },
             showCollection() {

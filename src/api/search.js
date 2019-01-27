@@ -117,7 +117,6 @@ export function getHotKey() {
 const perpage = 10
 // 搜索QQ曲库下歌曲的url
 export function qsearch(song, singer, page = 1) {
-    debugger
     const url = '/api/search'
 
     const data = Object.assign({}, commonParams, {

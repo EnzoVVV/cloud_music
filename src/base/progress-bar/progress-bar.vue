@@ -118,9 +118,9 @@
     height: 30px
     .bar-inner
       position: relative
-      top: 13px
-      height: 4px
-      background: rgba(0, 0, 0, 0.3)
+      top: 14px
+      height: 2px
+      background: $color-text-d
       .progress
         position: absolute
         height: 100%
@@ -133,7 +133,7 @@
         height: 30px
         .progress-btn
           position: relative
-          top: 7px
+          top: 6px
           left: 7px
           box-sizing: border-box
           width: 16px
