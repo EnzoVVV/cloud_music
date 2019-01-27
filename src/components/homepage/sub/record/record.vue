@@ -9,7 +9,6 @@
     import tabswiper from 'base/swiper/tabswiper'
     import weekrecord from './week-record.vue'
     import allrecord from './all-record.vue'
-    import { playlistMixin } from 'common/js/mixins'
     const componentList = [
         {
             name: 'weekrecord',
@@ -22,7 +21,6 @@
     ]
     export default {
         name: 'record',
-        mixins: [ playlistMixin ],
         components: {
             tabswiper,
             FunctionalHeader

@@ -73,37 +73,39 @@ export const insertSongsToPlayNext = function ({commit, state}, songs) {
 }
 
 const createInsertFunction = function(playlist, sequenceList, currentIndex) {
-    // 如果已经有这首歌，找到已有的index
-    let fpIndex = findIndex(playlist, song)
-    // 在当前位置下一位插入新歌
-    currentIndex++
-    // 插入新歌
-    playlist.splice(currentIndex, 0, song)
-    // 如果已经包含了这首歌
-    if (fpIndex > -1) {
-        if (currentIndex < fpIndex) {
-            // 在老歌前面插入新歌后， fpIndex应该加一
-            playlist.splice(fpIndex + 1, 1)
-        } else {
-            // 在老歌之后插入新歌， 删掉老歌后， 新歌的index加一
-            playlist.splice(fpIndex, 1)
-            currentIndex--
+    return function(song) {
+        // 如果已经有这首歌，找到已有的index
+        let fpIndex = findIndex(playlist, song)
+        // 在当前位置下一位插入新歌
+        currentIndex++
+        // 插入新歌
+        playlist.splice(currentIndex, 0, song)
+        // 如果已经包含了这首歌
+        if (fpIndex > -1) {
+            if (currentIndex < fpIndex) {
+                // 在老歌前面插入新歌后， fpIndex应该加一
+                playlist.splice(fpIndex + 1, 1)
+            } else {
+                // 在老歌之后插入新歌， 删掉老歌后， 新歌的index加一
+                playlist.splice(fpIndex, 1)
+                currentIndex--
+            }
         }
-    }
 
-    let fsIndex = findIndex(sequenceList, song)
-    let curSIndex = findIndex(sequenceList, song) + 1
-    sequenceList.splice(curSIndex, 0, song)
+        let fsIndex = findIndex(sequenceList, song)
+        let curSIndex = findIndex(sequenceList, song) + 1
+        sequenceList.splice(curSIndex, 0, song)
 
-    if (fsIndex > -1) {
-        if (curSIndex < fsIndex) {
-            sequenceList.splice(fsIndex + 1, 1)
-        } else {
-            sequenceList.splice(fsIndex, 1)
+        if (fsIndex > -1) {
+            if (curSIndex < fsIndex) {
+                sequenceList.splice(fsIndex + 1, 1)
+            } else {
+                sequenceList.splice(fsIndex, 1)
+            }
         }
+        // 把非引用类型的入参返回
+        return currentIndex
     }
-    // 把非引用类型的入参返回
-    return currentIndex
 }
 
 // 在歌曲列表中删掉一项

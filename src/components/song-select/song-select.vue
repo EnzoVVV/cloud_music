@@ -1,5 +1,5 @@
 <template>
-    <div class='song-select'>
+    <div class='song-select' ref='wrapper'>
         <div class='header'>
             <div @click='back' class='back'><IconSvg icon-class='back'></IconSvg></div>
             <span class='title'>{{title}}</span>

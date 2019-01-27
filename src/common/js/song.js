@@ -107,7 +107,7 @@ export function processSongsUrl(songs) {
         if (res && Array.isArray(res)) {
             res.forEach((url, index) => {
                 const song = songs[index]
-                song.url = info.purl
+                song.url = url
                 // song.url = `http://dl.stream.qqmusic.qq.com/${info.purl}`
             })
         }

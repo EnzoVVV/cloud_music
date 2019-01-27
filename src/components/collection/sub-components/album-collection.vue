@@ -11,7 +11,6 @@
     import { mapGetters } from 'vuex'
     import { collectionMixin } from 'common/js/mixins'
     export default {
-        // TODO，拉不到最底
         name: 'albumCollection',
         mixins: [collectionMixin],
         components: {

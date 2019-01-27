@@ -61,6 +61,7 @@
         border-bottom: 1px solid $color-light
         .comment
             line-height: 20px
+            font-size: $font-size-medium
         .reply
             margin-top: 10px
             color: $color-text-h

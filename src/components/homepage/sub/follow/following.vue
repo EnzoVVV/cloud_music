@@ -30,7 +30,7 @@
         },
         methods: {
             getFollows() {
-                getUserFollowing(this.homepage.id).then(res => {
+                getUserFollowing(this.homepage.id, 1).then(res => {
                     this.follows = res
                 })
             }

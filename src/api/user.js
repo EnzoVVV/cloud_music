@@ -16,7 +16,7 @@ export function getUserInfo(id) {
                 id: id,
                 name: profile.nickname,
                 signature: profile.signature,
-                picUrl: profile.picUrl,
+                picUrl: profile.avatarUrl,
                 bgUrl: profile.backgroundUrl,
                 birthday: formatTimestamp(profile.birthday),
                 gender: getGender(profile.gender),
@@ -26,7 +26,7 @@ export function getUserInfo(id) {
                 playlistCount: profile.playlistCount,
                 playlistBeSubscribedCount: profile.playlistBeSubscribedCount,
                 level: data.level,
-                listenSongs: data.level
+                listenSongs: data.listenSongs
             }
         }
         return result
