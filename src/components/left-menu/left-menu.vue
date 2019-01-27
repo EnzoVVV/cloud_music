@@ -187,7 +187,7 @@
             },
             setBG() {
                 this.$nextTick(() => {
-                    this.$refs.header.style.backgroundImage = `url(${this.userInfo.bgUrl}`
+                    this.$refs.header.style.backgroundImage = `url(${this.userInfo.bgUrl})`
                 }) 
             },
             ...mapMutations({

@@ -9,7 +9,6 @@
     import tabswiper from 'base/swiper/tabswiper'
     import following from './following.vue'
     import follower from './follower.vue'
-    import { playlistMixin } from 'common/js/mixins'
     const componentList = [
         {
             name: 'following',
@@ -22,7 +21,6 @@
     ]
     export default {
         name: 'follow',
-        mixins: [ playlistMixin ],
         components: {
             tabswiper,
             FunctionalHeader

@@ -2,7 +2,7 @@
     <scroll class='scroll' ref='scroll'>
         <ul>
             <li v-for='follow in follows' :key='follow.id'>
-                <liner :picUrl='follow.picUrl' :main='follow.name' :sub='follow.signature' :showImg='true' :circleImg='true' :selectable='true'></liner>
+                <liner :picUrl='follow.picUrl' :main='follow.name' :sub='follow.signature' :showImg='true' :circleImg='true' :selectable='true' @select='showHomepage(follow)'></liner>
             </li>
         </ul>
     </scroll>
@@ -30,9 +30,12 @@
         },
         methods: {
             getFollows() {
-                getUserFollower(this.homepage.id).then(res => {
+                getUserFollower(this.homepage.id, 1).then(res => {
                     this.follows = res
                 })
+            },
+            showHomepage(user) {
+                this.showComponent('homepage', user.id)
             }
         },
         created() {

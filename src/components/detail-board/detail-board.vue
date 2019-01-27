@@ -28,14 +28,14 @@
                                     <img class='info-creator-avatar' :src='creator.picUrl'></img>
                                     <span class='info-creator-name'>{{creator.name}} ></span>
                                 </div>
-                                <div class='info-album' v-if='type == "disc" && subject'>
+                                <div class='info-album' v-if='type == "album" && subject'>
                                     <p class='info-album-singer'>歌手: {{subject.singer}}</p>
                                     <p class='info-album-date'>发行时间: {{subject.date}}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class='func' v-if='showFunc'>
+                    <div class='func' v-if='showFunc' ref='func'>
                         <div class='btn' @click='showComment'>
                             <IconImg imgName='comment' ></IconImg>
                             <div class='text'>评论</div>

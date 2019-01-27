@@ -139,7 +139,7 @@
                 translate(this.scrollEl, 0, this.headerTouch.totalDiff)
                 translate(this.headerEl, 0, this.headerTouch.totalDiff)
             },
-            headerTouchEnd(e) {[]
+            headerTouchEnd(e) {
                 if(!this.headerTouch.initiated) {
                     return 
                 }

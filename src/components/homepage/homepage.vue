@@ -8,7 +8,6 @@
         </div>
         <div class='bg-img' :style='bgStyle' ref='img'></div>
         <div class='info' ref='info'>
-            <div class='name'>{{singer.name}}</div>
             <div class='wrapper'>
                 <img :src='info.picUrl' class='avatar'></img>
                 <div class='empty'></div>
@@ -41,19 +40,19 @@
                 </div>
                 <div v-show='activeTab == 0' ref='music' class='list-music'>
                     <div class='music-header'>
-                        <div class='music-header-text'>歌单{{info.playlistCount}}</div>
+                        <div class='music-header-text'>歌单({{info.playlistCount}})</div>
                         <div class='music-header-info'>共被收藏{{info.playlistBeSubscribedCount}}次</div>
                     </div>
-                    <liner v-if='info' picUrl='static\images\play2.png' :main='recordMain' :sub='recordSub' :showImg='true' :selectale='true' @select='showRecord'></liner>
-                    <liner v-for='playlist in playlists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectale='true' @select='selectPlaylist(playlist)'></liner>
+                    <liner v-if='info' picUrl='static\images\play2.png' :main='recordMain' :sub='recordSub' :showImg='true' :selectable='true' @select='showRecord'></liner>
+                    <liner v-for='playlist in playlists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
                 </div>
                 <div v-show='activeTab == 1' ref='event' class='list-event'>
                     <div v-if='events.length'>
                         <div v-for='event in events' :key='event.id' class='event'>
-                            <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='info.picUrl' :main='eventMain' :sub='event.time' height='40px' :showImg='true'></liner>
+                            <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='info.picUrl' :main='eventMain(event)' :sub='event.time' height='40px' :showImg='true'></liner>
                             <div class='img'>{{event.msg}}</div>
                             <div class='song-wrapper' v-if='event.song'>
-                                <liner :hasBorder='false' :picUrl='event.song.picUrl' :main='event.song.name' :sub='event.song.singer' height='40px' :showImg='true' :selectale='true' @select='selectSong(event.song)'></liner>
+                                <liner :hasBorder='false' :picUrl='event.song.picUrl' :main='event.song.name' :sub='event.song.singer' height='40px' :showImg='true' :selectable='true' @select='selectSong(event.song)'></liner>
                             </div>
                         </div>
                     </div>
@@ -94,7 +93,7 @@
         },
         props: {
             userId: {
-                type: String
+                type: Number
             },
             self: {
                 type: Boolean,
@@ -180,6 +179,7 @@
             getInfo() {
                 getUserInfo(this.userId).then(res => {
                     this.info = res
+                    this.setHomepage(this.info)
                     this.loadImg()
                 })
             },
@@ -226,7 +226,7 @@
                 this.showComponent('discdetail', playlist)
             },
             goBack() {
-                this.$emit('goback')
+                this.$emit('back')
             },
             selectTab(tab) {
                 this.activeTab = this.tabs.indexOf(tab)
@@ -276,9 +276,9 @@
             },
             loadImg() {
                 let img = new Image()
-                img.src = this.info.picUrl
+                img.src = this.info.bgUrl
                 img.onload = () => {
-                    this.bgStyle = `background-image: url(${this.info.picUrl})`
+                    this.bgStyle = `background-image: url(${this.info.bgUrl})`
                     this.$nextTick(() => {
                         this.imgHeight = this.$refs.img.clientHeight
                         // $refs.name如果取的是组件，那么是获取到了vue实例，取得dom还要$refs.name.$el
@@ -317,7 +317,6 @@
         },
         mounted() {
             this.getHeight()
-            this.setHomepage(this.info)
             this.$bus.emit('shiftMiniPlayer', true)
         },
         beforeDestroy() {
@@ -334,7 +333,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 7000
+        z-index: 7800
         background: $color-background
         .header
             position: fixed
@@ -476,7 +475,6 @@
                         font-size: $font-size-medium-x
                         color: $color-text-ii
                         display: flex
-                        align-items: center
                         justify-content: center
                         padding-top: 50px
                 .list-brief

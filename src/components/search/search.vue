@@ -105,7 +105,6 @@
                     // 在result页搜索
                     this.$bus.emit('research')
                 }
-                this.showResult = true
                 this.$nextTick(() => {
                     this.showSuggest = false
                 })

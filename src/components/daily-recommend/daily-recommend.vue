@@ -4,7 +4,7 @@
             <div class='info'>
                 <IconSvg icon-class='calendar' class='calendar' size='150px'></IconSvg>
                 <span class='date'>{{day}}</span>
-                <span class='tip'>根据你的音乐口味生成, 每天06:00更新</span>
+                <span class='tip'>根据你的音乐口味生成, 每天6:00更新</span>
             </div>
         </div>
     </detailboard>
