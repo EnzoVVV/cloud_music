@@ -17,7 +17,9 @@ const state = {
   fsingers: [],
   discardDiscs: [],
   // 记录FM是否开启的状态到vuex
-  FMSwitch: false
+  FMSwitch: false,
+  homepage: {},
+  loginUser: null
 }
 
 export default state

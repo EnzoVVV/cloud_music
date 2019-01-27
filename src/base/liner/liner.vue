@@ -1,12 +1,12 @@
 <template>
     <div class='liner' :style='computedStyle' @click='handleSelect'>
         <check v-if='showCheck && !showSpeaker' :circle='circleCheck' @check='check' class='check' ref='check'></check>
-        <div class='img-wrapper' v-if='showImg && !showSpeaker' :style='imgWrapperStyle'>
+        <div class='img-wrapper' v-if='showImg && !showSpeaker' :style='imgWrapperStyle' @click='imgClick'>
             <img :src='picUrl' class='img' :style='imgStyle'></img>
             <IconImg imgName='cd-decorate' class='cd' v-if='cd'></IconImg>
         </div>
         <div class='index' v-if='showIndex && !showSpeaker'>{{index}}</div>
-        <div class='speaker' v-if='showSpeaker'><IconImg imgName='speaker'></IconImg></div>
+        <div class='speaker' v-if='showSpeaker' :style='speakerStyle'><IconImg imgName='speaker'></IconImg></div>
         <div class='content-wrapper' :style='contentStyle'>
             <div class='content'>
                 <div class='name' ref='main' :style='mainStyle'>{{main}}</div>
@@ -21,6 +21,7 @@
 <script>
     import check from 'base/check-box/check-box'
     import { mapGetters } from 'vuex'
+    import { getPxValue } from 'common/js/dom'
     export default {
         name: 'liner',
         components: {
@@ -53,7 +54,7 @@
             },
             height: {
                 type: String,
-                default: '60px'
+                default: '56px'
             },
             // 有下边框
             hasBorder: {
@@ -99,6 +100,11 @@
                 type: Boolean,
                 default: false
             },
+            // 是否点击img后传出事件
+            imgSelectable: {
+                type: Boolean,
+                default: false
+            },
             // liner图片显示cd背景
             cd: {
                 type: Boolean,
@@ -138,12 +144,17 @@
             },
             mainStyle() {
                 return {
-                    'font-size': Math.ceil(parseInt(this.height) * 0.27) + 'px'
+                    'font-size': Math.ceil(getPxValue(this.height) * 0.24) + 'px'
                 }
             },
             subStyle() {
                 return {
-                    'font-size': Math.floor(parseInt(this.height) * 0.23) + 'px'
+                    'font-size': Math.floor(getPxValue(this.height) * 0.18) + 'px'
+                }
+            },
+            speakerStyle() {
+                return {
+                    width: this.showIndex ? '30px' : '50px'
                 }
             },
             ...mapGetters([
@@ -185,6 +196,11 @@
                 if(this.selectable) {
                     this.$emit('select', this.itemId)
                 }
+            },
+            imgClick() {
+                if(this.imgSelectable) {
+                    this.$emit('imgClick', this.itemId)
+                }
             }
         },
         created() {
@@ -211,8 +227,8 @@
             padding-right: 5px
         .index
             float: left 
-            width: 50px
-            min-width: 50px
+            width: 30px
+            min-width: 30px
             height: 50px
             display: flex
             align-items: center
@@ -248,10 +264,10 @@
                     overflow: hidden
                     white-space: nowrap
                 .name
-                    font-size: $font-size-medium-x
+                    font-size: $font-size-medium
                     color: $color-text
                 .desc
-                    padding-top: 5px
+                    padding-top: 8px
                     font-size: $font-size-small
                     color: $color-text-g
             .sort

@@ -46,7 +46,7 @@ export const insertSong = function ({commit, state}, song) {
     let currentIndex = state.currentIndex
 
     let insert = createInsertFunction(playlist, sequenceList, currentIndex)
-    insert(song)
+    currentIndex = insert(song)
     insert = null
 
     commit(types.SET_PLAYLIST, playlist)
@@ -102,6 +102,8 @@ const createInsertFunction = function(playlist, sequenceList, currentIndex) {
             sequenceList.splice(fsIndex, 1)
         }
     }
+    // 把非引用类型的入参返回
+    return currentIndex
 }
 
 // 在歌曲列表中删掉一项
@@ -172,7 +174,10 @@ export const addSongToDisc = function ({commit}, {song, disc}) {
 // 创建歌单, 入参： 歌单名
 export const createDisc = function ({commit}, discName) {
     let disc = createADisc({
-        name: discName
+        name: discName,
+        creator: {
+            name: 'self'
+        }
     })
     saveDisc(disc)
     commit(types.SET_DISCS, getDiscs(0))
@@ -181,7 +186,10 @@ export const createDisc = function ({commit}, discName) {
 // 入参的payload只能有一个, 所以用对象与结构 {song, discName}
 export const createDiscAndAddSong = function ({commit}, {song, discName}) {
     let disc = createADisc({
-        name: discName
+        name: discName,
+        creator: {
+            name: 'self'
+        }
     })
     saveDisc(disc)
     addToDisc(song, disc)

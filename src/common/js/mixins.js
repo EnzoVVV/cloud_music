@@ -1,6 +1,13 @@
+// ----------js-------------------
 import { playMode } from 'common/js/config'
 import { generateRandomList } from 'common/js/tools'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
+
+// ----------组件-------------------
+import liner from 'base/liner/liner'
+import scroll from 'base/scroll/scroll'
+import loading from 'base/loading/loading'
+
 
 export const playerMixin = {
     computed: {
@@ -54,8 +61,7 @@ export const playerMixin = {
     }
 }
 
-import scroll from 'base/scroll/scroll'
-import loading from 'base/loading/loading'
+
 // 只有写在export对象内的才能被mixin, 这里import一个函数，但在export对象下没有应用这个函数， 那么在引用mixin的组件内， 是不能直接应用这个import的函数的
 // import { search } from 'api/api'
 export const resultMixin = {
@@ -133,7 +139,7 @@ export const scrollMixin = {
     }
 }
 
-import liner from 'base/liner/liner'
+
 export const collectionMixin = {
     components: {
         scroll,
@@ -141,5 +147,90 @@ export const collectionMixin = {
     },
     mounted() {
         this.$bus.on('collection-search', this.search)
+    }
+}
+
+// 用户页
+export const homepageMixin = {
+    components: {
+        scroll,
+        liner
+    },
+    methods: {
+        selectSong(song) {
+            this.insertSong(song)
+            this.$bus.emit('shiftPlayer', true)
+        },
+        ...mapActions([
+            'insertSong'
+        ])
+    }
+}
+
+// 播放记录
+export const recordMixin = {
+    data() {
+        return {
+            records: []
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'homepage'
+        ])
+    },
+    methods: {
+        handlePlaylist(flag) {
+            const scroll = this.$refs.scroll
+            const bottomVal = 45 + 88 + 'px'
+            const bottom = flag ? bottomVal : ''
+            scroll.$el.style.bottom = bottom
+            scroll.refresh()
+        }
+    },
+    created() {
+        this.getRecord()
+    }
+}
+
+// 关注/粉丝
+export const followMixin = {
+    data() {
+        return {
+            follows: []
+        }
+    },
+    computed: {
+        ...mapGetters([
+            'homepage'
+        ])
+    },
+    methods: {
+        handlePlaylist(flag) {
+            const scroll = this.$refs.scroll
+            const bottomVal = 45 + 88 + 'px'
+            const bottom = flag ? bottomVal : ''
+            scroll.$el.style.bottom = bottom
+            scroll.refresh()
+        }
+    },
+    created() {
+        this.getFollows()
+    }
+}
+
+// 用户页提升player的zindex
+export const shiftPlayerMixin = {
+    methods: {
+        shiftMiniPlayer(flag) {
+            this.$refs.miniplayer.style.zIndex = flag ? 8000 : 5000
+        },
+        shiftPlayer(flag) {
+            this.$refs.player.style.zIndex = flag ? 8100 : 7000
+        }
+    },
+    mounted() {
+        this.$bus.on('shiftMiniPlayer', this.shiftMiniPlayer)
+        this.$bus.on('shiftPlayer', this.shiftPlayer)
     }
 }

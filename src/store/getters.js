@@ -37,3 +37,7 @@ export const albums = state => state.albums
 export const fsingers = state => state.fsingers
 
 export const FMSwitch = state => state.FMSwitch
+
+export const homepage = state => state.homepage
+
+export const loginUser = state => state.loginUser
