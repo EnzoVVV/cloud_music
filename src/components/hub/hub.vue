@@ -139,7 +139,7 @@ import { mapMutations } from 'vuex';
                 this.flags.playlist = true
             },
             showFM(flag = true) {
-                this.flags.FM = true
+                this.flags.FM = flag
                 // 记录FM是否开启状态到vuex
                 this.setFMSwitch(flag)
             },

@@ -1,5 +1,5 @@
 <template>
-    <div class='player' v-show='playlist.length'>
+    <div class='player' v-show='playlist.length && !FMSwitch'>
         <transition name='normal'>
             <div class='normal-player' v-show='fullScreen' ref='player'>
                 <div class='background'>
