@@ -47,6 +47,7 @@ export const transform = prefixStyle('transform')
 // IE9以及更早版本不支持transition属性
 export const transitionDuration = prefixStyle('transitionDuration')
 export const opacity = prefixStyle('opacity')
+export const clipPath = prefixStyle('clipPath')
 
 export function translate(el, x = 0, y = 0, options) {
     if (!el) return

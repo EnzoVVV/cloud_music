@@ -46,7 +46,6 @@
     import brief from 'components/brief/brief'
     import { transform, translate } from 'common/js/dom'
     import { mapGetters, mapActions } from 'vuex'
-    import { getSongsUrl } from 'api/song'
     import { playlistMixin } from 'common/js/mixins'
     const radius = 10
     export default {

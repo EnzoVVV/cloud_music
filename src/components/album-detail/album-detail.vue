@@ -1,5 +1,5 @@
 <template>
-    <detailboard headerTitle='专辑' :headerScrollTitle='album.name' :rollingTitle='true' :songs='songs' :favoriteStatus='favoriteStatus' :cover='album.picUrl' :showSearch='false' :showIndex='true' type='album' @toggleFS='toggleFS' @back='goback'>
+    <detailboard headerTitle='专辑' :subject='album' :headerScrollTitle='album.name' :rollingTitle='true' :songs='songs' :favoriteStatus='favoriteStatus' :cover='album.picUrl' :showSearch='false' :showIndex='true' type='album' @toggleFS='toggleFS' @back='goback'>
     </detailboard>
 </template>
 <script>

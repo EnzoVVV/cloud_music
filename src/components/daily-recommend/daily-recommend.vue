@@ -1,9 +1,10 @@
 <template>
-    <detailboard headerTitle='每日推荐' :blur='true' :songs='songs' :showImg='true' :cover='cover' :cusInfo='true' :showFunc='false' :showFBtn='false' :showSearch='false'>
+    <detailboard headerTitle='每日推荐' :blur='true' :songs='songs' :showImg='true' :cover='cover' :cusInfo='true' :showFunc='false' :showFBtn='false' :showSearch='false' @back='back'>
         <div class='bg' slot='info'>
             <div class='info'>
                 <IconSvg icon-class='calendar' class='calendar' size='150px'></IconSvg>
                 <span class='date'>{{day}}</span>
+                <span class='tip'>根据你的音乐口味生成, 每天06:00更新</span>
             </div>
         </div>
     </detailboard>
@@ -24,7 +25,7 @@
         data() {
             return {
                 songs: [],
-                cover: ''
+                cover: 'static/images/default-bg.png'
             }
         },
         computed: {
@@ -36,7 +37,7 @@
 
         },
         methods: {
-            goback() {
+            back() {
                 this.$emit('back')
             },
             selectSong(song, index) {
@@ -79,10 +80,18 @@
             position: absolute 
             left: -20px
             bottom: 0
+            width: 100%
             .date
                 position: absolute 
-                left: 62px
+                left: 53px
                 bottom: 45px
                 font-size: $font-size-large-e
                 color: $color-text-a
+            .tip
+                width: 100%
+                color: $color-text-d
+                font-size: $font-size-small-s
+                position: absolute
+                left: 43px
+                bottom: 0
 </style>

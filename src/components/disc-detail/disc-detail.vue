@@ -1,5 +1,5 @@
 <template>
-    <detailboard headerTitle='歌单' :subject='discInfo' :headerScrollTitle='title' :rollingTitle='true' :songs='songs' :showFBtn='showFBtn' :favoriteStatus='favoriteStatus' :cover='cover' :showIndex='true' @toggleFS='toggleFS' @back='goback'>
+    <detailboard headerTitle='歌单' :subject='discInfo' :creator='creator' :headerScrollTitle='title' :rollingTitle='true' :songs='songs' :showFBtn='showFBtn' :favoriteStatus='favoriteStatus' :cover='cover' :showIndex='true' @toggleFS='toggleFS' @back='goback'>
     </detailboard>
 </template>
 <script>
@@ -23,7 +23,8 @@
                 title: '',
                 cover: '',
                 favoriteStatus: false,
-                showFBtn: true
+                showFBtn: true,
+                creator: {}
             }
         },
         computed: {
@@ -50,7 +51,7 @@
             ]),
             getDiscDetails() {
                 // 是我创建的歌单
-                if(this.discInfo.creator == 'self') {
+                if(this.discInfo.creator && this.discInfo.creator.name == 'self') {
                     this.showFBtn = false
                     this.disc = this.discInfo
                     this.songs = this.discInfo.songList
@@ -62,6 +63,7 @@
                         this.songs = this.disc.songList
                         this.title = this.disc.name
                         this.cover = this.disc.picUrl
+                        this.creator = this.disc.creator
                     })
                 }
             },
