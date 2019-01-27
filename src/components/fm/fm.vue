@@ -238,7 +238,8 @@
                 this.toggleSongFS(this.currentSong)
             },
             ...mapActions([
-                'toggleSongFS'
+                'toggleSongFS',
+                'stopPlaying'
             ]),
             toggleFullScreen() {
                 this.fullScreen = !this.fullScreen
@@ -261,7 +262,9 @@
                     this.currentLyric.stop()
                 }
                 const audio = this.$refs.audio
-                audio.pause()
+                if(audio) {
+                    audio.pause()
+                }
             },
             timeupdate(e) {
                 // 移动进度条时，更新this.currentTime，同时在播放，也会触发更新this.currentTime的这个函数
@@ -342,6 +345,8 @@
         },
         created() {
             this.getFMData()
+            // 杀掉player, 1. 设置playing为false, 停止播放 2. player外层v-show 添加!FMSwitch, 隐藏player
+            this.stopPlaying()
         },
         mounted() {
             setTimeout(() => {
@@ -467,9 +472,11 @@
                         &.time-left
                             text-align: left
                             padding-right: 5px
+                            color: $color-text-i
                         &.time-right
                             text-align: right
                             padding-left: 5px
+                            color: $color-text-d
                     .progressbar
                         flex: 1
                 .operator

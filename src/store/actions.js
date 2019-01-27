@@ -133,6 +133,10 @@ export const deleteSongList = function ({commit}) {
     commit(types.SET_PLAYING_STATE, false)
 }
 
+export const stopPlaying = function ({commit}) {
+    commit(types.SET_PLAYING_STATE, false)
+}
+
 
 // ---------------------搜索历史------------------------------------
 export const saveSearchHistory = function ({commit}, query) {
