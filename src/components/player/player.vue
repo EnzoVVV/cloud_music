@@ -65,7 +65,7 @@
                     <div class='operator'>
                         <!-- 这五个按钮公用一个样式类，就是operator-icon，用空格和自有样式类分开 -->
                         <div class='operator-icon mode' @click='toggleMode'>
-                            <IconSvg :icon-class='modeIcon'></IconSvg>
+                            <IconImg :imgName='modeIcon' size='55px'></IconImg>
                         </div>
                         <div class='operator-icon pre' @click='playPre'>
                             <IconImg imgName='pre' size='45px'></IconImg>
@@ -77,7 +77,7 @@
                             <IconImg imgName='next' size='45px'></IconImg>
                         </div>
                         <div class='operator-icon list' @click='showPlayList'>
-                            <IconImg imgName='list' size='40px'></IconImg>
+                            <IconImg imgName='list-icon' size='55px'></IconImg>
                         </div>
                     </div>
                 </div>
@@ -228,9 +228,8 @@
                 if(this.FMSwitch) {
                     this.showComponent('FM', false)
                 }
-                debugger
+                // 检查歌曲是否可播放
                 checkSong(newSong.id).then(res => {
-                    debugger
                     if(res.success) {
                         this.loadSong(newSong)
                     } else {
@@ -831,9 +830,11 @@
                         &.time-left
                             text-align: left
                             padding-right: 5px
+                            color: $color-text-i
                         &.time-right
                             text-align: right
                             padding-left: 5px
+                            color: $color-text-d
                     .progressbar
                         flex: 1
                 .operator

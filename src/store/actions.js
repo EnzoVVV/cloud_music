@@ -10,19 +10,32 @@ function findIndex(list, song) {
     })
 }
 
+// 设置播放列表并播放第index首歌曲
 export const selectPlay = function ({commit, state}, {list, index}) {
     commit(types.SET_SEQUENCE_LIST, list)
     if (state.mode === playMode.random) {
-      let randomList = generateRandomList(list)
-      commit(types.SET_PLAYLIST, randomList)
-      index = randomList.findIndex(i => i.id == list[index].id)
+        let randomList = generateRandomList(list)
+        commit(types.SET_PLAYLIST, randomList)
+        index = randomList.findIndex(i => i.id == list[index].id)
     } else {
-      commit(types.SET_PLAYLIST, list)
+        commit(types.SET_PLAYLIST, list)
     }
     commit(types.SET_CURRENT_INDEX, index)
     commit(types.SET_FULL_SCREEN, true)
     commit(types.SET_PLAYING_STATE, true)
 }
+
+// 播放列表中已有的一首歌
+export const playSongInList = function ({commit, state}, song) {
+    const index = state.sequenceList.findIndex(i => i.id == song.id)
+    if(index < 0) {
+        throw Error('歌单中不存在此歌曲, 不要调用此方法')
+    }
+    commit(types.SET_CURRENT_INDEX, index)
+    commit(types.SET_FULL_SCREEN, true)
+    commit(types.SET_PLAYING_STATE, true)
+}
+
 
 // 歌单中插入一首歌，并播放这首歌
 export const insertSong = function ({commit, state}, song) {
@@ -112,6 +125,7 @@ export const deleteSong = function ({commit, state}, song) {
     commit(types.SET_PLAYING_STATE, playingState)    
 }
 
+// 清空播放列表
 export const deleteSongList = function ({commit}) {
     commit(types.SET_CURRENT_INDEX, -1)
     commit(types.SET_PLAYLIST, [])

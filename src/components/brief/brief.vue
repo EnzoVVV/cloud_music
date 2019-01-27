@@ -88,7 +88,6 @@
             .wrapper
                 height: 100px
                 .singer
-                    height: 100px
                     width: 80px
                     float: left 
                     display: flex
@@ -102,8 +101,9 @@
                         overflow: hidden
                         border-radius: 5px
                     .text
+                        width: 100%
                         color: $color-text-ii
                         font-size: $font-size-small
                         padding-top: 8px
-
+                        overflow: hidden
 </style>

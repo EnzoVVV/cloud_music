@@ -21,7 +21,7 @@
             // 一个周期的时间, 单位秒
             period: {
                 type: Number,
-                default: 5
+                default: 10
             },
             // TODO，帧数大了有问题
             // 帧数
