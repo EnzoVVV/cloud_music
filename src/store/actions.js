@@ -54,6 +54,7 @@ export const insertSong = function ({commit, state}, song) {
     commit(types.SET_CURRENT_INDEX, currentIndex)
     commit(types.SET_FULL_SCREEN, true)
     commit(types.SET_PLAYING_STATE, true)
+    window.hub.$bus.emit('insertSong')
 }
 
 // 插入歌曲到下一首的位置

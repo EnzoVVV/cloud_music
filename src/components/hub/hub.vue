@@ -9,18 +9,16 @@
         <discdetail v-if='discDetailFlag' :discInfo='discInfo' @back='discDetailFlag = false'></discdetail>
         <albumdetail v-if='albumDetailFlag' :album='album' @back='albumDetailFlag=false'></albumdetail>
         <playlist v-if='flags.playlist' @back='flags.playlist = false'></playlist>
-        <comment v-if='flags.comment' :type='comment.type' :subject='comment.subject' @back='flags.comment = false'></comment>
         <fm v-if='flags.FM'></fm>
         <collection v-if='flags.collection' @back='flags.collection = false'></collection>
         <songselect v-if='flags.songselect' :songs='songselect.songs' @back='flags.songselect = false'></songselect>
-        <homepage v-if='flags.homepage' :userId='homepage.id' :self='homepage.self' @back='flags.homepage = false'></homepage>
         <follow v-if='flags.follow' :title='follow.title'></follow>
     </div>
 </template>
 <script>
+    import Vue from 'vue'
     import message from 'base/message/message'
     import modal from 'base/modal/modal'
-    import Vue from 'vue'
     import singerdetail from 'components/singer-detail/singer-detail'
     import rank from 'components/rank/rank'
     import DailyRecommend from 'components/daily-recommend/daily-recommend'
@@ -29,13 +27,13 @@
     const albumdetail = () => import('components/album-detail/album-detail')
     const playlist = () => import('components/play-list/play-list')
     const fm = () => import('components/fm/fm')
-    const comment = () => import('components/comment/comment')
     const collection = () => import('components/collection/collection')
     const songselect = () => import('components/song-select/song-select')
-    const homepage = () => import('components/homepage/homepage')
     const follow = () => import('components/homepage/sub/follow/follow')
-    
-import { mapMutations } from 'vuex';
+
+    import builder from 'common/js/comp-builder'
+    import { mapMutations } from 'vuex'
+
     export default {
         name: 'hub',
         components: {
@@ -49,10 +47,8 @@ import { mapMutations } from 'vuex';
             albumdetail,
             playlist,
             fm,
-            comment,
             collection,
             songselect,
-            homepage,
             follow
         },
         props: {
@@ -81,22 +77,12 @@ import { mapMutations } from 'vuex';
                 flags: {
                     playlist: false,
                     FM: false,
-                    comment: false,
                     collection: false,
                     songselect: false,
-                    homepage: false,
                     follow: false
-                },
-                comment: {
-                    type: '',
-                    subject: {}
                 },
                 songselect: {
                     songs: []
-                },
-                homepage: {
-                    id: null,
-                    self: false
                 },
                 follow: {
                     title: 'TA的好友'
@@ -153,11 +139,10 @@ import { mapMutations } from 'vuex';
                 this.setFMSwitch(flag)
             },
             showComment(type, subject) {
-                Object.assign(this.comment, {
+                builder('comment', {
                     type: type,
-                    subject: subject,
+                    subject: subject
                 })
-                this.flags.comment = true
             },
             showCollection() {
                 this.flags.collection = true
@@ -167,9 +152,10 @@ import { mapMutations } from 'vuex';
                 this.songselect.songs = songs
             },
             showHomepage(id, self = false) {
-                this.flags.homepage = true
-                this.homepage.id = id
-                this.homepage.self = self
+                builder('homepage', {
+                    userId: id,
+                    self: self
+                })
             },
             showFollow(title) {
                 this.flags.follow = true
@@ -236,6 +222,8 @@ import { mapMutations } from 'vuex';
                 self.modalCallerOnConfirm = onConfirm
                 self.modalCallerOnCancel = onCancel
             }
+
+            window.hub = this
         }
     }
 </script>

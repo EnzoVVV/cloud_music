@@ -58,7 +58,7 @@
                 </div>
             </div>
         </transition>
-        <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen' ref='miniplayer'>
+        <div class='mini-player' v-show='!fullScreen && !coverMiniPlayer' @click='toggleFullScreen' ref='miniplayer'>
             <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'></img></div>
             <div class='info'>
                 <div class='name'>{{currentSong.name}}</div>
@@ -84,10 +84,10 @@
     import progresscircle from 'base/progress-circle/progress-circle'
     import { getPersonalFM } from 'api/fm'
     import { mapGetters, mapActions } from 'vuex'
-    import { shiftPlayerMixin } from 'common/js/mixins'
+
+    import PopupManager from 'common/js/popup-manager'
     export default {
         name: 'fm',
-        mixins: [ shiftPlayerMixin ],
         components: {
             progressbar,
             scroll,
@@ -117,7 +117,8 @@
                 currentSong: {},
                 playing: false,
                 fullScreen: true,
-                favoriteFS: false
+                favoriteFS: false,
+                coverMiniPlayer: false
             }
         },
         computed: {
@@ -138,6 +139,14 @@
             ])
         },
         watch: {
+            fullScreen(val) {
+                // player和miniplayer弹出时，始终保持最高index，如果某组件(comment)想覆盖miniplayer, 可通过PopupManager
+                if(val) {
+                    this.$refs.player.style.zIndex = PopupManager.nextZIndex()
+                } else {
+                    this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
+                }
+            }
         },
         methods: {
             loadSong() {
@@ -342,6 +351,11 @@
                     this.$refs.lyricWrapper.$el.style.visibility = 'hidden'
                     this.showLyric = false
                 }
+            },
+            // 切换是否覆盖miniplayer
+            handleCoverMiniPlayer(flag) {
+                // 当前显示comment组件时，隐藏miniplayer
+                this.coverMiniPlayer = flag
             }
         },
         created() {
@@ -353,6 +367,7 @@
             setTimeout(() => {
                 this.transitionCompleted = true
             }, 300)
+            this.$bus.on('coverMiniPlayer', this.handleCoverMiniPlayer)
         }
     }
 </script>
