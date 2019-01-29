@@ -6,7 +6,20 @@ import { success } from './shared'
 
 export function login() {
     const url = HOST + `/login/cellphone?phone=18123683717&password=cloudtest`
-    return axios.get(url)
+    return axios.get(url).then(res => {
+        let result = null
+        if(success(res.status)) {
+            const profile = res.data.profile
+            result = {
+                id: profile.userId,
+                name: profile.nickname,
+                signature: profile.signature,
+                picUrl: profile.avatarUrl,
+                bgUrl: profile.backgroundUrl
+            }
+        }
+        return result
+    })
 }
 
 
