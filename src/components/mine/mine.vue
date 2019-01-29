@@ -3,7 +3,7 @@
         <scroll class='scroll' ref='scroll'>
             <div class='mine'>
                 <div class='user-info'>
-                    <IconImg imgName='default-avatar' class='avatar' size='50px'></IconImg>
+                    <img :src='avatar' class='avatar'></img>
                     <div class='user-name'>{{userName}}</div>
                 </div>
                 <div class='decorate'></div>
@@ -38,7 +38,7 @@
                         <div @click='showCListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='disc in discs' :key='disc.name' v-show='!clistFold' @click='showDiscDetail(disc)'>
+                        <li class='list' v-for='disc in discs' :key='disc.id' v-show='!clistFold' @click='showDiscDetail(disc)'>
                             <img class='img' :src='disc.picUrl'></img>
                             <div class='text'>
                                 <div class='name'>{{disc.name}}</div>
@@ -57,7 +57,7 @@
                         <div @click='showFListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='disc in fdiscs' :key='disc.name' v-show='!flistFold' @click='showDiscDetail(disc)'>
+                        <li class='list' v-for='disc in fdiscs' :key='disc.id' v-show='!flistFold' @click='showDiscDetail(disc)'>
                             <img class='img' :src='disc.picUrl'></img>
                             <div class='text'>
                                 <div class='name'>{{disc.name}}</div>
@@ -118,11 +118,15 @@
         },
         computed: {
             userName() {
-                return '用户名'
+                return (this.loginUser && this.loginUser.name) ? this.loginUser.name : '未登录用户'
+            },
+            avatar() {
+                return (this.loginUser && this.loginUser.picUrl) ? this.loginUser.picUrl : 'static/images/default-avatar.png'
             },
             ...mapGetters([
                 'discs',
-                'fdiscs'
+                'fdiscs',
+                'loginUser'
             ])
         },
         watch: {
@@ -148,10 +152,10 @@
                 this.flistFold = !this.flistFold
             },
             clistInfo(list) {
-                return `${list.count}首`
+                return `${list.songList.length}首`
             },
             flistInfo(list) {
-                return `${list.count}首 by ${list.creator}`
+                return `${list.songList.length}首 by ${list.creator.name}`
             },
             showCListSetting() {
                 this.$bus.emit('showDiscManage', 0)
@@ -227,6 +231,8 @@
                 align-items: center
                 .avatar
                     margin: 0 15px
+                    width: 50px
+                    height: 50px
             .basic
                 margin-top: 15px
                 .item

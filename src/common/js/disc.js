@@ -5,7 +5,6 @@ export default class Disc {
         this.songList = songList
         this.picUrl = picUrl
         this.creator = creator
-        this.count = songList.length
     }
     addSong(song) {
         if(!this.songList.find(i => i.id === song.id)) {
@@ -21,7 +20,7 @@ export default class Disc {
 }
 
 let id = new Date() * 1000
-const defaultDiscImg = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJIFfomYGWHkuqnOuyO_rHnHZI5-yBB5NpKwzZ97CBDIGm0RHdLQ'
+const defaultDiscImg = 'static/images/default-bg.png'
 
 export function createDisc(discData) {
     return new Disc({
@@ -37,6 +36,9 @@ export const defaultDiscs = [
     // 默认的“我喜欢的音乐”歌单id为1
     createDisc({
         id: 1,
-        name: '我喜欢的音乐'
+        name: '我喜欢的音乐',
+        creator: {
+            name: 'self'
+        }
     })
 ]

@@ -1,8 +1,8 @@
 import storage from 'good-storage'
+import { deepCopy } from 'common/js/tools'
 
-const SEARCH_KEY = '__search__'
-const SEARCH_MAX_LEN = 15
 
+// ----------------------公用函数---------------------------
 // 往数组开头塞入一项
 function insertArray(array, query, compare, maxLength) {
     if(!array) return
@@ -30,6 +30,8 @@ function deleteFromArray(array, compare) {
 
 // ----------------------搜索历史---------------------------
 
+const SEARCH_KEY = '__search__'
+const SEARCH_MAX_LEN = 15
 // 将query添加到storage的搜索历史中， 并返回最新的搜索历史
 export function saveSearch(query) {
     let searches = storage.get(SEARCH_KEY, [])
@@ -63,9 +65,11 @@ export function restoreSearch() {
 }
 
 // ---------------歌单-------------------------------
-const DISC_KEY = '__disc__'
-const DISC_F_KEY = '__favorite_disc__'
+export const DISC_KEY = '__disc__'
+export const DISC_F_KEY = '__favorite_disc__'
 import { defaultDiscs } from 'common/js/disc'
+import Song from 'common/js/song'
+import Disc from 'common/js/disc'
 
 // 获取storage中所有歌单
 export function getDiscs(type = 0) {
@@ -80,7 +84,7 @@ export function getDiscs(type = 0) {
     } else if(type === 1) {
         discs = storage.get(DISC_F_KEY, [])
     }
-    return discs
+    return discs.map(disc => new Disc(deepCopy(disc)))
 }
 
 
@@ -109,16 +113,17 @@ export function addToDisc(song, disc) {
 
 // 添加/移除歌曲到'我喜欢的音乐'歌单
 export function toggleSongFS(song) {
+    const copySong = new Song(deepCopy(song))
     // 切换song实例里的状态
-    song.toggleFavoriteStatus()
+    copySong.toggleFavoriteStatus()
     let discs = getDiscs()
-    let favoriteDisc = discs.find(i => i.id === 1)
-    if(song.favorite) {
+    let favoriteDisc = discs[0]
+    if(copySong.favorite) {
         // 添加
-        favoriteDisc.songList.push(song)
+        favoriteDisc.songList.push(copySong)
     } else {
         // 移除
-        favoriteDisc = favoriteDisc.songList.filter(i => i.id != song.id)
+        favoriteDisc = favoriteDisc.songList.filter(i => i.id != copySong.id)
     }
     storage.set(DISC_KEY, discs)
 }
@@ -141,6 +146,11 @@ export function deleteSongFromDisc(song ,disc) {
 
 function getDiscKey(type = 0) {
     return type === 0 ? DISC_KEY : DISC_F_KEY
+}
+
+export function setDiscs(discs, type) {
+    const key = getDiscKey(type)
+    storage.set(key, discs)
 }
 
 
