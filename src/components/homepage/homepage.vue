@@ -317,11 +317,7 @@
         },
         mounted() {
             this.getHeight()
-            this.$bus.emit('shiftMiniPlayer', true)
-        },
-        beforeDestroy() {
-            this.$bus.emit('shiftMiniPlayer', false)
-            this.$bus.emit('shiftPlayer', false)
+            this.$emit('mountedCalled')
         }
     }
 </script>

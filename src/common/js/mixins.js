@@ -218,19 +218,3 @@ export const followMixin = {
         this.getFollows()
     }
 }
-
-// 用户页提升player的zindex
-export const shiftPlayerMixin = {
-    methods: {
-        shiftMiniPlayer(flag) {
-            this.$refs.miniplayer.style.zIndex = flag ? 8000 : 5000
-        },
-        shiftPlayer(flag) {
-            this.$refs.player.style.zIndex = flag ? 8100 : 7000
-        }
-    },
-    mounted() {
-        this.$bus.on('shiftMiniPlayer', this.shiftMiniPlayer)
-        this.$bus.on('shiftPlayer', this.shiftPlayer)
-    }
-}

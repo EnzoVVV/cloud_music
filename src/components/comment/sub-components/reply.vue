@@ -16,6 +16,7 @@
     import FunctionalHeader from 'base/functional-header/functional-header'
     import scroll from 'base/scroll/scroll'
     import cline from './cline'
+    import PopupManager from 'common/js/popup-manager'
     export default {
         name: 'reply',
         components: {
@@ -46,7 +47,7 @@
         created() {
         },
         mounted() {
-
+            this.$el.style.zIndex = PopupManager.nextZIndex()
         }
     }
 </script>

@@ -83,7 +83,7 @@
                 </div>
             </div>
         </transition>
-        <div class='mini-player' v-show='!fullScreen' @click='toggleFullScreen' ref='miniplayer'>
+        <div class='mini-player' v-show='!fullScreen && !coverMiniPlayer' @click='toggleFullScreen' ref='miniplayer'>
             <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'></img></div>
             <div class='info'>
                 <div class='name'>{{currentSong.name}}</div>
@@ -118,7 +118,7 @@
     import { transform, transitionDuration,translate, rotate } from 'common/js/dom'
     import { checkSong } from 'api/song'
     import { qsearch } from 'api/search'
-    import { playerMixin, shiftPlayerMixin } from 'common/js/mixins'
+    import { playerMixin } from 'common/js/mixins'
     import { deepCopy } from 'common/js/tools'
     import { playMode } from 'common/js/config'
     const minisonglist = () => import('components/mini-song-list/mini-song-list')
@@ -126,6 +126,8 @@
     const infolist = () => import('components/info-list/info-list')
     const roller = () => import('base/roller/roller')
     const liner = () => import('base/liner/liner')
+
+    import PopupManager from 'common/js/popup-manager'
     // 切歌动画transitionDuration(ms)
     const duration = 300
     const translateOption = {
@@ -138,7 +140,7 @@
     const stylus_width_height_ratio = 305 / 555
     export default {
         name: 'player',
-        mixins: [ playerMixin, shiftPlayerMixin ],
+        mixins: [ playerMixin ],
         components: {
             minisonglist,
             progressbar,
@@ -176,7 +178,8 @@
                 FS: false,
                 currentLyricText: '',
                 infoListFlag: false,
-                longTitle: false
+                longTitle: false,
+                coverMiniPlayer: false
             }
         },
         computed: {
@@ -220,6 +223,17 @@
             }
         },
         watch: {
+            fullScreen(val) {
+                if(!this.playlist.length || this.FMSwitch) {
+                    return
+                }
+                // player和miniplayer弹出时，始终保持最高index，如果某组件(comment)想覆盖miniplayer, 可通过PopupManager
+                if(val) {
+                    this.$refs.player.style.zIndex = PopupManager.nextZIndex()
+                } else {
+                    this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
+                }
+            },
             currentSong(newSong, oldSong) {
                 if (!newSong.id || !newSong.url || newSong.id === oldSong.id) {
                     return
@@ -649,6 +663,15 @@
             triggerSingerDetailPage(singer) {
                 this.setSinger(singer)
                 this.$bus.emit('showSingerDetail', true, 7500)
+            },
+            // 切换是否覆盖miniplayer
+            handleCoverMiniPlayer(flag) {
+                // 当前显示comment组件时，隐藏miniplayer
+                this.coverMiniPlayer = flag
+            },
+            // insert song时需要抬高player的zindex
+            handleInsertSong() {
+                this.$refs.player.style.zIndex = PopupManager.nextZIndex()
             }
         },
         mounted() {
@@ -660,6 +683,8 @@
                     this.togglePlay()
                 }
             })
+            this.$bus.on('coverMiniPlayer', this.handleCoverMiniPlayer)
+            this.$bus.on('insertSong', this.handleInsertSong)
         }
     }
 </script>

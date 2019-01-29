@@ -16,6 +16,7 @@
     import scroll from 'base/scroll/scroll'
     import cline from './cline'
     const reply = () => import('./reply')
+    import PopupManager from 'common/js/popup-manager'
     export default {
         name: 'cviewer',
         components: {
@@ -54,7 +55,7 @@
         created() {
         },
         mounted() {
-
+            this.$el.style.zIndex = PopupManager.nextZIndex()
         }
     }
 </script>

@@ -9,6 +9,7 @@
     import tabswiper from 'base/swiper/tabswiper'
     import weekrecord from './week-record.vue'
     import allrecord from './all-record.vue'
+    import PopupManager from 'common/js/popup-manager'
     const componentList = [
         {
             name: 'weekrecord',
@@ -60,7 +61,7 @@
 
         },
         mounted() {
-
+            this.$el.style.zIndex = PopupManager.nextZIndex()
         }
     }
 </script>
