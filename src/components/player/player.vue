@@ -51,7 +51,7 @@
                 </div>
                 <div class='bottom'>
                     <div class='func'>
-                        <div class='btn' @click='toggleFS'><IconImg imgName='like'></IconImg></div>
+                        <div class='btn' @click='toggleFS'><IconImg :imgName='likeIcon'></IconImg></div>
                         <div class='btn' @click='showComment'><IconImg imgName='comment'></IconImg></div>
                         <div class='btn' @click='infoListFlag = true'><IconImg imgName='uj'></IconImg></div>
                     </div>
@@ -220,6 +220,9 @@
                 const title = this.switchedSong && this.switchedSong.name || ''
                 this.longTitle = title.length * 14 > window.innerWidth - 25 - 10
                 return title
+            },
+            likeIcon() {
+                return this.FS ? 'liked' : 'like'
             }
         },
         watch: {
