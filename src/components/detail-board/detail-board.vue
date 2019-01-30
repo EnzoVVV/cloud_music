@@ -49,13 +49,14 @@
                             <div class='text'>多选</div>
                         </div>
                     </div>
-                    <songlist v-if='!cusList' :songs='songs' @click='selectSong' @clickHeader='playAll' :showHeader='showHeader' :showIndex='showIndex' :showImg='showImg' :showFBtn='showFBtn' :favoriteStatus='favoriteStatus' @toggleFS='toggleFS' ref='songlist' class='songlist'></songlist>
+                    <songlist v-if='!cusList' :songs='songs' @click='selectSong' @clickHeader='playAll' :showHeader='showHeader' :showIndex='showIndex' :showImg='showImg' :showFBtn='showFBtn' :favoriteStatus='favoriteStatus' :setting='true' @iconClick='showInfoList' @toggleFS='toggleFS' ref='songlist' class='songlist'></songlist>
                     <div v-else ref='slot'><slot name='list'></slot></div>
                 </div>
             </scroll>
             <div class='fixed-background' v-show='showFixedBG' ref='fbg'>
                 <img :src='cover' class='bg-img' :class='{"blur": blur}' ref='fbgImg'></img>
             </div>
+            <infolist v-if='infoListFlag' :song='infoSong' :showDelete='showDelete' @deleteSong='deleteSong' @hide='infoListFlag = false'></infolist>
         </div>
     </transition>
 </template>
@@ -66,12 +67,15 @@
     import { mapActions } from 'vuex'
     import { createSong } from 'common/js/song'
     import { opacity, clipPath } from 'common/js/dom'
+    const infolist = () => import('components/info-list/info-list')
+    import Song from 'common/js/song'
     export default {
         name: 'detailboard',
         mixins: [playlistMixin, scrollMixin],
         components: {
             FunctionalHeader,
-            songlist
+            songlist,
+            infolist
         },
         props: {
             songs: {
@@ -162,10 +166,16 @@
             // 歌单页的creator信息
             creator: {
                 type: Object
+            },
+            // 显示infolist中的删除项
+            showDelete: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
             return {
+                songsCopy: this.songs,
                 showFixedBG: false,
                 // 当前标题 (默认标题/滑动标题)
                 curTitle: this.headerTitle,
@@ -176,7 +186,9 @@
                 // 正在搜索
                 searching: false,
                 // 搜索结果
-                searches: []
+                searches: [],
+                infoListFlag: false,
+                infoSong: null
             }
         },
         computed: {
@@ -201,6 +213,10 @@
                         this.curTitle = this.headerTitle
                     }
                 }
+            },
+            songs() {
+                // props的songs是调服务异步获取的, 需要watch，与songsCopy同步
+                this.setSongs()
             }
         },
         methods: {
@@ -240,7 +256,8 @@
                 })
             },
             ...mapActions([
-                'selectPlay'
+                'selectPlay',
+                'deleteSongFromDisc'
             ]),
             toggleFS(status) {
                 this.$emit('toggleFS', status)
@@ -256,6 +273,23 @@
             },
             showHomepage() {
                 this.showComponent('homepage', this.creator.id)
+            },
+            showInfoList(song) {
+                this.infoSong = song
+                this.infoListFlag = true
+            },
+            deleteSong() {
+                this.deleteSongFromDisc({
+                    song: this.infoSong,
+                    disc: this.subject
+                })
+                const index = this.songsCopy.findIndex(song => song.id === this.infoSong.id)
+                // 无法响应外层, 在自己的作用域中删除该项
+                this.songsCopy.splice(index, 1)
+            },
+            setSongs() {
+                // infolist中不删除歌曲时， 无需deepCopy songs
+                this.songsCopy = this.showDelete ? this.songs.map(song => new Song(song)) : this.songs
             }
         },
         created() {
@@ -380,6 +414,8 @@
                     left: 140px
                     top: 70px
                     height: 70px
+                    // 140是left值, 右侧再留10px空间
+                    width: calc(100% - 140px - 10px)
                     .info-main-title
                         font-size: $font-size-medium-x
                         font-weight: bold
