@@ -12,7 +12,7 @@
             </div>
             <ul>
                 <li v-for='(song,index) in songs' :key='song.id' class='item' @click='handleClick(song,index)'>
-                    <liner :showImg='showImg' :showIndex='showIndex' :picUrl='song.picUrl' :main='song.name' :sub='getDesc(song)' :index='index+1' :speaker='true' :itemId='song.id'></liner>
+                    <liner :showImg='showImg' :showIndex='showIndex' :picUrl='song.picUrl' :main='song.name' :sub='getDesc(song)' :index='index+1' :speaker='true' :itemId='song.id' :icon='settingIcon' @iconClick='iconClick'></liner>
                 </li>
             </ul>
         </div>
@@ -67,6 +67,11 @@
             radius: {
                 type: Boolean,
                 default: true
+            },
+            // 显示歌曲设置按钮
+            setting: {
+                type: Boolean,
+                default: false
             }
 
         },
@@ -89,6 +94,9 @@
                     }
                 }
                 return ''
+            },
+            settingIcon() {
+                return this.setting ? 'uj' : ''
             }
         },
         watch: {
@@ -115,6 +123,13 @@
                     // 请求取消收藏
                     this.$refs.confirm.show()
                 }
+            },
+            iconClick(itemId) {
+                if(!this.setting) {
+                    return
+                }
+                const selectedSong = this.songs.find(song => song.id == itemId)
+                this.$emit('iconClick', selectedSong)
             }
         },
         created() {

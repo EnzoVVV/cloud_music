@@ -12,9 +12,10 @@
                 <div class='name' ref='main' :style='mainStyle'>{{main}}</div>
                 <div class='desc' ref='sub' :style='subStyle' v-if='sub.length'>{{sub}}</div>
             </div>
-            <div class='sort' v-if='sort' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
+            <div class='icon' v-if='sort' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
                 <IconSvg icon-class='menu'></IconSvg>
             </div>
+            <div class='icon' v-if='icon' @click.stop='iconClick'><IconSvg :icon-class='icon'></IconSvg></div>
         </div>
     </div>
 </template>
@@ -109,6 +110,10 @@
             cd: {
                 type: Boolean,
                 default: false
+            },
+            // liner尾部的图标
+            icon: {
+                type: String
             }
 
         },
@@ -201,6 +206,9 @@
                 if(this.imgSelectable) {
                     this.$emit('imgClick', this.itemId)
                 }
+            },
+            iconClick() {
+                this.$emit('iconClick', this.itemId)
             }
         },
         created() {
@@ -266,13 +274,15 @@
                 .name
                     font-size: $font-size-medium
                     color: $color-text
+                    padding-top: 1px
                 .desc
-                    padding-top: 8px
+                    padding-top: 7px
                     font-size: $font-size-small
                     color: $color-text-g
-            .sort
+            .icon
                 width: 50px
                 display: flex
                 align-items: center
+                justify-content: center
 
 </style>
