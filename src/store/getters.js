@@ -24,7 +24,7 @@ export const discs = state => state.discs
 // 我喜欢的歌曲
 export const favoriteSongs = state => {
   let disc = state.discs[0] || []
-  return disc.length > 0 ? disc.songList : []
+  return disc.songList && disc.songList.length > 0 ? disc.songList : []
 }
 
 export const fdiscs = state => state.fdiscs

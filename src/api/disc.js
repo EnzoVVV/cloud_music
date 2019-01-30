@@ -30,3 +30,17 @@ export function getDiscDetail(id) {
 		})
 	}
 }
+
+// 收藏/取消 歌单
+export function favoriteDisc(id, status) {
+	const code = status ? 1 : 2
+	const url = HOST + `/playlist/subscribe?t=${code}&id=${id}`
+	return axios.get(url)
+}
+
+// 歌单中 添加/删除 歌曲
+export function addSongsToDisc(discId, songIds) {
+	const songsId = songIds.join(',')
+	const url = HOST + `/playlist/tracks?op=add&pid=${discId}&tracks=${songsId}`
+	return axios.get(url)
+}

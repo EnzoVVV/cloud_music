@@ -8,7 +8,7 @@
                 </li>
             </ul>
         </minilist>
-        <sort v-if='sortFlag' :list='fdiscs' @back='finish'></sort>
+        <sort v-if='sortFlag' :list='fdiscs' @back='finish' @deleted='handleDelete'></sort>
     </div>
 </template>
 <script>
@@ -35,6 +35,19 @@
 
         },
         methods: {
+            handleDelete(list) {
+                list.forEach(disc => {
+                    // 把被删除的歌单存起来, 给'恢复歌单'用
+                    this.storeDiscardDisc(disc)
+                    // 本地删除歌单
+                    this.deleteDisc({
+                        disc: disc,
+                        type: 1
+                    })
+                    // 服务端删除歌单
+                    favoriteDisc(disc.id, false)
+                })
+            },
             finish(list) {
                 if(list !== null) {
                     this.$el.style.display = 'none'

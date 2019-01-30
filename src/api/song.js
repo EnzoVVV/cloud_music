@@ -52,6 +52,12 @@ export function checkSong(id) {
 	})
 }
 
+// 喜欢/取消 歌曲
+export function favoriteSong(id, status) {
+	const url = HOST + `/like?id=${id}&like=${status}`
+	return axios.get(url)
+}
+
 // 获取QQ音乐的歌曲url
 export function getSongUrl(song) {
 	return getSongsUrl([song]).then(res => {

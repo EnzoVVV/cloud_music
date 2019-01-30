@@ -1,6 +1,6 @@
 <template>
     <div>
-        <minilist title='创建的歌单' @hide='hide' v-if='!modalFlag'>
+        <minilist title='创建的歌单' @hide='hide' v-if='!modalFlag' ref='minilist'>
             <ul slot='list'>
                 <li class='line' @click='popUpCreateDisc'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
@@ -24,6 +24,7 @@
     import { discMixin } from '../disc-mixin/disc-mixin'
     import { mapGetters, mapMutations, mapActions } from 'vuex'
     import createdisc from 'components/create-disc/create-disc'
+    import { favoriteDisc } from 'api/disc'
     export default {
         name: 'CreatedDiscManage',
         mixins: [discMixin],
@@ -49,9 +50,16 @@
         },
         methods: {
             handleDelete(list) {
-                // 把被删除的歌单存起来, 给'恢复歌单'用
                 list.forEach(disc => {
+                    // 把被删除的歌单存起来, 给'恢复歌单'用
                     this.storeDiscardDisc(disc)
+                    // 本地删除歌单
+                    this.deleteDisc({
+                        disc: disc,
+                        type: 0
+                    })
+                    // 服务端删除歌单
+                    favoriteDisc(disc.id, false)
                 })
             },
             finish(list) {
@@ -65,7 +73,8 @@
                 setDiscs: 'SET_DISCS'
             }),
             ...mapActions([
-                'storeDiscardDisc'
+                'storeDiscardDisc',
+                'deleteDisc'
             ]),
             popUpCreateDisc() {
                 this.modalFlag = true

@@ -10,7 +10,7 @@
                     <img class='img' v-lazy='disc.picUrl'></img>
                     <div class='text'>
                         <p class='name'>{{disc.name}}</p>
-                        <p class='info'>{{clistInfo(disc)}}></p>
+                        <p class='info'>{{clistInfo(disc)}}</p>
                     </div>
                 </li>
             </ul>
@@ -22,6 +22,7 @@
     import modal from 'base/modal/modal'
     import createdisc from 'components/create-disc/create-disc'
     import { mapGetters, mapActions } from 'vuex'
+    import { addSongToDisc } from 'api/disc'
     export default {
         name: 'SaveToDisc',
         components: {
@@ -51,7 +52,7 @@
         },
         methods: {
             clistInfo(disc) {
-                return `${disc.count}首`
+                return `${disc.songList.length}首`
             },
             // 隐藏CreateDisc
             hideCreateDisc() {
@@ -74,16 +75,20 @@
                         song: this.song,
                         disc: disc
                     })
-                }
-                if(this.songs) {
+                    addSongToDisc(disc.id, [this.song.id]).then(() => {
+                        this.hide()
+                    })
+                } else if(this.songs) {
                     this.songs.forEach(song => {
                         this.addSongToDisc({
                             song: song,
                             disc: disc
                         })
                     })
+                    addSongToDisc(disc.id, this.songs.map(song => song.id)).then(() => {
+                        this.hide()
+                    })
                 }
-                this.hide()
             },
             ...mapActions([
                 'addSongToDisc'

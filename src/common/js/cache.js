@@ -92,7 +92,8 @@ export function getDiscs(type = 0) {
 export function saveDisc(disc, type = 0) {
     let discs = getDiscs(type)
     let index = discs.findIndex(i => i.id === disc.id)
-    if(index != null && index != undefined) {
+    // findIndex找不到时, index为-1
+    if(index > -1) {
         // 已存在, 则替换(添加歌曲到歌单)
         discs.splice(index, 1, disc)
     } else {
@@ -140,7 +141,7 @@ export function deleteDisc(disc, type = 0) {
 export function deleteSongFromDisc(song ,disc) {
     let discs = getDiscs()
     let targetDisc = discs.find(i => i.id === disc.id)
-    targetDisc = targetDisc.filter(i => i.id === song.id)
+    targetDisc.songList = targetDisc.songList.filter(i => i.id === song.id)
     storage.set(DISC_KEY, discs)
 }
 
@@ -155,6 +156,7 @@ export function setDiscs(discs, type) {
 
 
 // -------------------专辑-----------------------
+import Album from 'common/js/album'
 const ALBUM_KEY = '__album__'
 // 收藏专辑
 export function saveAlbum(album) {
@@ -171,7 +173,7 @@ export function deleteAlbum(album) {
 }
 // 获取storage中的专辑
 export function getAlbums() {
-    return storage.get(ALBUM_KEY, [])
+    return storage.get(ALBUM_KEY, []).map(album => new Album(album))
 }
 
 
