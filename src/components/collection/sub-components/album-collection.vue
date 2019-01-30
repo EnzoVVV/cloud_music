@@ -2,7 +2,7 @@
     <scroll class='scroll'>
         <ul>
             <li v-for='album in curAlbums' :key='album.id'>
-                <liner :picUrl='album.picUrl' :main='album.name' :sub='album.singer'></liner>
+                <liner :picUrl='album.picUrl' :main='album.name' :sub='album.singer' :showImg='true' :cd='true'></liner>
             </li>
         </ul>
     </scroll>

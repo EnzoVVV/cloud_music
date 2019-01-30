@@ -40,17 +40,21 @@
                 </div>
                 <div v-show='activeTab == 0' ref='music' class='list-music'>
                     <div class='music-header'>
-                        <div class='music-header-text'>歌单({{info.playlistCount}})</div>
-                        <div class='music-header-info'>共被收藏{{info.playlistBeSubscribedCount}}次</div>
+                        <div class='music-header-text'>歌单({{createdPlaylists.length}})</div>
+                        <div class='music-header-info'>共被收藏{{subscribedCount}}次</div>
                     </div>
                     <liner v-if='info' picUrl='static\images\play2.png' :main='recordMain' :sub='recordSub' :showImg='true' :selectable='true' @select='showRecord'></liner>
-                    <liner v-for='playlist in playlists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
+                    <liner v-for='playlist in createdPlaylists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
+                    <div class='music-header'>
+                        <div class='music-header-text'>收藏的歌单({{favoritePlaylists.length}})</div>
+                    </div>
+                    <liner v-for='playlist in favoritePlaylists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
                 </div>
                 <div v-show='activeTab == 1' ref='event' class='list-event'>
                     <div v-if='events.length'>
                         <div v-for='event in events' :key='event.id' class='event'>
                             <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='info.picUrl' :main='eventMain(event)' :sub='event.time' height='40px' :showImg='true'></liner>
-                            <div class='img'>{{event.msg}}</div>
+                            <div class='msg'>{{event.msg}}</div>
                             <div class='song-wrapper' v-if='event.song'>
                                 <liner :hasBorder='false' :picUrl='event.song.picUrl' :main='event.song.name' :sub='event.song.singer' height='40px' :showImg='true' :selectable='true' @select='selectSong(event.song)'></liner>
                             </div>
@@ -109,7 +113,7 @@
                 showFixedTab: false,
                 headerHeight: 44,
                 imgHeight: 0,
-                bgStyle: null,
+                bgStyle: 'background-image: "static/images/default-bg.png',
                 headerHeight: 0,
                 minHeight: 0,
                 heightCheck: [
@@ -128,7 +132,8 @@
                 ],
                 reachTop: false,
                 info: {},
-                playlists: [],
+                createdPlaylists: [],
+                favoritePlaylists: [],
                 events: [],
                 recordFlag: false,
                 followFlag: false,
@@ -165,6 +170,13 @@
             },
             recordSub() {
                 return `累计听歌${this.info.listenSongs}首`
+            },
+            subscribedCount() {
+                let count = 0
+                this.createdPlaylists.forEach(playlist => {
+                    count += playlist.subscribedCount
+                })
+                return count
             }
         },
         watch: {
@@ -184,15 +196,16 @@
                 })
             },
             getPlaylist() {
-                getUserPlaylist(this.userId).then(res => {
-                    this.playlists = res
-                    if(this.self) {
-                        for(let playlist of this.playlists) {
-                            if(playlist.name.indexOf('喜欢的音乐')) {
-                                playlist.name = '我喜欢的音乐'
-                                break
-                            }
+                getUserPlaylist(this.userId).then(playlists => {
+                    playlists.forEach(playlist => {
+                        if(playlist.creator && playlist.creator.id == this.userId) {
+                            this.createdPlaylists.push(playlist)
+                        } else {
+                            this.favoritePlaylists.push(playlist)
                         }
+                    })
+                    if(this.self) {
+                        this.createdPlaylists[0].name = '我喜欢的音乐'
                     }
                 })
             },
@@ -461,7 +474,8 @@
                     .event
                         border-bottom: 1px solid $color-light
                         .msg
-                            font-size: $font-size-small
+                            font-size: 13px
+                            line-height: 20px
                             margin: 5px 0 5px 50px
                         .song-wrapper
                             background: rgba(144,144,144,0.1)
