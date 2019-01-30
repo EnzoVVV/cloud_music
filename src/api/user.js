@@ -48,7 +48,11 @@ export function getUserPlaylist(id) {
                     name: item.name,
                     picUrl: item.coverImgUrl,
                     trackCount: item.trackCount,
-                    playCount: item.playCount
+                    playCount: item.playCount,
+                    subscribedCount: item.subscribedCount,
+                    creator: {
+                        id: item.creator.userId
+                    }
                 }
             })  
         }
