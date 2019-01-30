@@ -4,9 +4,19 @@ import PopupManager from 'common/js/popup-manager'
 
 const comment = () => import('components/comment/comment')
 const homepage = () => import('components/homepage/homepage')
+const discdetail = () => import('components/disc-detail/disc-detail')
+const albumdetail = () => import('components/album-detail/album-detail')
+const singerdetail = () => import('components/singer-detail/singer-detail')
+
+const message = () => import('base/message/message')
 
 Vue.component('comment', comment)
 Vue.component('homepage', homepage)
+Vue.component('discdetail', discdetail)
+Vue.component('albumdetail', albumdetail)
+Vue.component('singerdetail', singerdetail)
+
+Vue.component('message', message)
 
 /*
     comp-builder约束
@@ -18,22 +28,20 @@ Vue.component('homepage', homepage)
 /*
     comp-builder为了解决两个问题
     1. 无限次创建同一组件的实例
-    2. 每次创建组件实例，都设置一个高于其他组件的index
+    2. 每次创建组件实例，都设置一个高于其他组件的zIndex
 */
 
 
-const builder = function(name, props) {
-    PopupManager.addComp(name)
+const builder = function(name, props, manage = true) {
     const sharedData = {
-        flag: true
+        flag: false
     }
     const _props = props || {}
     Object.assign(_props, sharedData)
 
     const div = document.createElement('div')
     document.body.appendChild(div)
-    // 为了传递props，必须将组件包裹在父组件(wrapper组件)中
-    let instance = new Vue({
+    const options = {
         // 设置el后, new Vue会自动执行$mount()
         el: div,
         data: _props,
@@ -58,7 +66,9 @@ const builder = function(name, props) {
             tearDown() {
                 // 设v-if为false, 终结组件实例
                 this.flag = false
-                PopupManager.popComp()
+                if(manage) {
+                    PopupManager.popComp()
+                }
                 // 在transition动画结束后终结wrapper实例
                 setTimeout(() => {
                     this.terminate()
@@ -73,12 +83,22 @@ const builder = function(name, props) {
             },
             handleMounted() {
                 this.$refs.child.$el.style.zIndex = PopupManager.nextZIndex()
+                if(manage) {
+                    PopupManager.addComp(name)
+                }
             }
+        },
+        mounted() {
+            // 父组件mounted时子组件还没mounted
+            // wrapper mounted后再将v-if置为true，否则组件的transition动画触发不了
+            this.flag = true
         }
-        // mounted() {
-        //     // 父组件mounted时子组件还没mounted
-        // }
-    }).$children[0]
+    }
+    if(manage) {
+        options.store = store
+    }
+    // 为了传递props，必须将组件包裹在父组件(wrapper组件)中
+    let instance = new Vue(options).$children[0]
 
     return instance
 }

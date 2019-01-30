@@ -50,7 +50,7 @@
 				}
 			},
 			goback() {
-				this.$emit('update:showSingerDetail',false)
+				this.$emit('back')
 			},
 			getSingerDetails() {
 				let self = this
@@ -62,9 +62,11 @@
 			}
 		},
 		created() {
-			console.log('singer detail created')
 			this.check()
 			this.getSingerDetails()
+		},
+		mounted() {
+			this.$emit('mountedCalled')
 		}
 	};
 </script>
