@@ -23,6 +23,7 @@ export const selectPlay = function ({commit, state}, {list, index}) {
     commit(types.SET_CURRENT_INDEX, index)
     commit(types.SET_FULL_SCREEN, true)
     commit(types.SET_PLAYING_STATE, true)
+    window.hub.$bus.emit('liftPlayer')
 }
 
 // 播放列表中已有的一首歌
@@ -54,7 +55,7 @@ export const insertSong = function ({commit, state}, song) {
     commit(types.SET_CURRENT_INDEX, currentIndex)
     commit(types.SET_FULL_SCREEN, true)
     commit(types.SET_PLAYING_STATE, true)
-    window.hub.$bus.emit('insertSong')
+    window.hub.$bus.emit('liftPlayer')
 }
 
 // 插入歌曲到下一首的位置
