@@ -98,7 +98,7 @@
             search(item) {
                 this.inputValue = item
                 this.setQuery(this.inputValue)
-                if(!showResult) {
+                if(!this.showResult) {
                     // 初始页搜索
                     this.showResult = true
                 } else {

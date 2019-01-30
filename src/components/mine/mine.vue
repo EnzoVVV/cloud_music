@@ -2,7 +2,7 @@
     <div>
         <scroll class='scroll' ref='scroll'>
             <div class='mine'>
-                <div class='user-info'>
+                <div class='user-info' @click='showHomePage'>
                     <img :src='avatar' class='avatar'></img>
                     <div class='user-name'>{{userName}}</div>
                 </div>
@@ -39,14 +39,7 @@
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
                         <li class='list' v-for='disc in discs' :key='disc.id' v-show='!clistFold' @click='showDiscDetail(disc)'>
-                            <img class='img' :src='disc.picUrl'></img>
-                            <div class='text'>
-                                <div class='name'>{{disc.name}}</div>
-                                <p class='info'>{{clistInfo(disc)}}</p>
-                            </div>
-                            <!-- TODO，搞个图标 -->
-                            <!-- '我喜欢的音乐' id是1, 我喜欢的音乐  没有这个按钮 -->
-                            <div class='icon' @click.stop='showListControl(disc,0)' v-if='disc.id != 1'><IconImg img-name='music'></IconImg></div>
+                            <liner :picUrl='disc.picUrl' :main='clistMain(disc, index)' :sub='clistInfo(disc)' :showImg='true' :icon='clistIcon(index)' @iconClick='showListControl(disc,0)'></liner>
                         </li>
                     </transition-group>
                 </div>
@@ -58,12 +51,7 @@
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
                         <li class='list' v-for='disc in fdiscs' :key='disc.id' v-show='!flistFold' @click='showDiscDetail(disc)'>
-                            <img class='img' :src='disc.picUrl'></img>
-                            <div class='text'>
-                                <div class='name'>{{disc.name}}</div>
-                                <p class='info'>{{flistInfo(disc)}}</p>
-                            </div>
-                            <div class='icon' @click.stop='showListControl(disc,1)'><IconImg img-name='music'></IconImg></div>
+                            <liner :picUrl='disc.picUrl' :main='disc.name' :sub='flistInfo(disc)' :showImg='true' icon='uj' @iconClick='showListControl(disc,1)'></liner>
                         </li>
                     </transition-group>
                 </div>
@@ -85,9 +73,9 @@
     </div>
 </template>
 <script>
-    const mockUrl = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS4o0FN1T9tJYFQsg6VS_ABXxB1tIvndE7cwipQH79XaxxAMZ5f'
     import scroll from 'base/scroll/scroll'
     import minilist from 'base/mini-list/mini-list'
+    import liner from 'base/liner/liner'
     import { rotate } from 'common/js/dom'
     import { playlistMixin } from 'common/js/mixins'
     import { mapGetters, mapActions } from 'vuex'
@@ -96,7 +84,8 @@
         mixins: [playlistMixin],
         components: {
             scroll,
-            minilist
+            minilist,
+            liner
         },
         props: {
 
@@ -132,6 +121,9 @@
         watch: {
         },
         methods: {
+            clistIcon(index) {
+                return index == 0 ? null : 'uj'
+            },
             // TODO，精简
             toggleCList() {
                 const clistArrow = this.$refs.clistArrow.$el
@@ -150,6 +142,9 @@
                     rotate(arrow, -90)
                 }
                 this.flistFold = !this.flistFold
+            },
+            clistMain(disc, index) {
+                return index == 0 ? '我喜欢的音乐' : disc.name
             },
             clistInfo(list) {
                 return `${list.songList.length}首`
@@ -191,6 +186,9 @@
             showCollection() {
                 this.showComponent('collection')
             },
+            showHomePage() {
+                this.showComponent('homepage', this.loginUser.id, true)
+            },
             ...mapActions([
                 'deleteDisc'
             ])
@@ -212,7 +210,6 @@
         overflow: hidden
         .mine
             overflow: hidden
-            height: 100%
             .decorate
                 position: absolute
                 top: -30vh
@@ -282,27 +279,6 @@
                         &.lists-enter, &.lists-leave-to
                             height: 0
                             opacity: 0
-                        &:after
-                            content: ''
-                            position: absolute 
-                            left: 14%
-                            bottom: 0
-                            right: 0
-                            height: 1px
-                            background: $color-light
-                        .img
-                            width: 50px
-                            height: 50px
-                            border-radius: 5px
-                            overflow: hidden
-                        .text
-                            margin-left: 10px
-                            width: calc(100% - 100px)
-                            .name
-                                padding-bottom: 6px
-                            .info
-                                color: $color-text-g
-                                font-size: $font-size-small
     .line
         height: 44px
         display: flex

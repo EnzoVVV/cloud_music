@@ -89,10 +89,12 @@ export const playlistMixin = {
         ])
     },
     mounted() {
-        this.handlePlaylist(this.playlist)
+        const flag = this.playlist.length > 0 || this.FMSwitch
+        this.handlePlaylist(flag)
     },
     activated() {
-        this.handlePlaylist(this.playlist)
+        const flag = this.playlist.length > 0 || this.FMSwitch
+        this.handlePlaylist(flag)
     },
     watch: {
         playlist(val) {

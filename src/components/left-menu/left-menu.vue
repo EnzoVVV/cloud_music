@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class='background' @click='hide' ref='bg'>
+        <div class='background' @click='back' ref='bg'>
         </div>
         <div class='menu' @touchstart='touchstart' @touchmove='touchmove' @touchend='touchend' ref='menu'>
             <scroll class='scroll' ref='scroll' :listen-scroll='listenScroll' :probe-type='probeType'>
@@ -89,7 +89,7 @@
                 showLeftMenu: false,
                 touch: {},
                 userInfo: {
-                    picUrl: 'static\images\default-avatar.png',
+                    picUrl: 'static/images/default-avatar.png',
                     name: '未登录'
                 }
             }
@@ -128,6 +128,12 @@
             },
             hide() {
                 this.$emit('hide')
+            },
+            back() {
+                this.fold()
+                setTimeout(() => {
+                    this.hide()
+                }, 300)
             },
             touchstart(e) {
                 this.touch.initiated = true
