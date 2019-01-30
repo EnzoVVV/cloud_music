@@ -1,8 +1,6 @@
 <template>
     <div>
-        <message v-if='messageFlag' :text='messageContent' ref='message'></message>
         <modal v-if='modalFlag' :title='modalInfo.title' :confirmBtnText='modalInfo.confirmBtnText' :cancelBtnText='modalInfo.cancelBtnText' @confirm='modalConfirm' @hide='modalFlag = false'></modal>
-        <singerdetail v-if='singerDetailFlag' :showSingerDetail.sync='singerDetailFlag' :zIndex='singerDetailZIndex'></singerdetail>
         <rank v-if='rankFlag' @back='rankFlag = false'></rank>
         <DailyRecommend v-if='dailyFlag' @back='dailyFlag = false'></DailyRecommend>
         <discmanage v-if='discManageFlag' :type='discManageType' @hide='discManageFlag = false'></discmanage>
@@ -17,14 +15,10 @@
 </template>
 <script>
     import Vue from 'vue'
-    import message from 'base/message/message'
     import modal from 'base/modal/modal'
-    import singerdetail from 'components/singer-detail/singer-detail'
     import rank from 'components/rank/rank'
     import DailyRecommend from 'components/daily-recommend/daily-recommend'
     import discmanage from 'components/disc-manage/disc-manage'
-    import discdetail from 'components/disc-detail/disc-detail'
-    const albumdetail = () => import('components/album-detail/album-detail')
     const playlist = () => import('components/play-list/play-list')
     const fm = () => import('components/fm/fm')
     const collection = () => import('components/collection/collection')
@@ -37,14 +31,10 @@
     export default {
         name: 'hub',
         components: {
-            message,
             modal,
-            singerdetail,
             rank,
             DailyRecommend,
             discmanage,
-            discdetail,
-            albumdetail,
             playlist,
             fm,
             collection,
@@ -56,18 +46,10 @@
         },
         data() {
             return {
-                singerDetailFlag: false,
-                singerDetailZIndex: null,
                 rankFlag: false,
                 dailyFlag: false,
                 discManageFlag: false,
                 discManageType: 0,
-                discDetailFlag: false,
-                discInfo: null,
-                albumDetailFlag: false,
-                album: null,
-                messageFlag: false,
-                messageContent: '',
                 modalFlag: false,
                 modalInfo: {
                     title: '',
@@ -97,9 +79,8 @@
 
         },
         methods: {
-            showSingerDetail(flag = true, zIndex) {
-                this.singerDetailFlag = flag
-                this.singerDetailZIndex = zIndex
+            showSingerDetail() {
+                builder('singerdetail')
             },
             showRank() {
                 this.rankFlag = true
@@ -112,23 +93,19 @@
                 this.discManageType = type
             },
             showDiscDetail(discInfo) {
-                this.discDetailFlag = true
-                this.discInfo = discInfo
+                builder('discdetail', {
+                    discInfo: discInfo
+                })
             },
             showAlbumDetail(album) {
-                this.albumDetailFlag = true
-                this.album = album
+                builder('albumdetail', {
+                    album: album
+                })
             },
             showMessage(messageContent) {
-                this.messageContent = messageContent
-                if(this.messageFlag) {
-                    this.$refs.message.show()
-                } else {
-                    this.messageFlag = true
-                    this.$nextTick(() => {
-                        this.$refs.message.show()
-                    })
-                }
+                builder('message', {
+                    text: messageContent
+                }, false)
             },
             showPlaylist() {
                 this.flags.playlist = true
@@ -223,7 +200,15 @@
                 self.modalCallerOnCancel = onCancel
             }
 
-            window.hub = this
+            // 为了js文件中能emit事件, 添加一个轻量bus到全局
+            new Vue({
+                render() {
+                    return ''
+                },
+                mounted() {
+                    window.hub = this
+                }
+            }).$mount()
         }
     }
 </script>

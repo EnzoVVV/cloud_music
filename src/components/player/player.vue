@@ -116,7 +116,7 @@
     import scroll from 'base/scroll/scroll'
     import progresscircle from 'base/progress-circle/progress-circle'
     import { transform, transitionDuration,translate, rotate } from 'common/js/dom'
-    import { checkSong } from 'api/song'
+    import { checkSong, favoriteSong } from 'api/song'
     import { qsearch } from 'api/search'
     import { playerMixin } from 'common/js/mixins'
     import { deepCopy } from 'common/js/tools'
@@ -226,17 +226,6 @@
             }
         },
         watch: {
-            fullScreen(val) {
-                if(!this.playlist.length || this.FMSwitch) {
-                    return
-                }
-                // player和miniplayer弹出时，始终保持最高index，如果某组件(comment)想覆盖miniplayer, 可通过PopupManager
-                if(val) {
-                    this.$refs.player.style.zIndex = PopupManager.nextZIndex()
-                } else {
-                    this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
-                }
-            },
             currentSong(newSong, oldSong) {
                 if (!newSong.id || !newSong.url || newSong.id === oldSong.id) {
                     return
@@ -275,6 +264,7 @@
         },
         methods: {
             showComment() {
+                this.setFullScreen(false)
                 this.showComponent('comment', 'song', this.currentSong)
             },
             checkFS() {
@@ -283,6 +273,7 @@
             toggleFS() {
                 this.toggleSongFS(this.currentSong)
                 this.FS = !this.FS
+                favoriteSong(this.currentSong.id, this.FS)
             },
             ...mapMutations({
                 setFullScreen: 'SET_FULL_SCREEN',
@@ -672,9 +663,14 @@
                 // 当前显示comment组件时，隐藏miniplayer
                 this.coverMiniPlayer = flag
             },
-            // insert song时需要抬高player的zindex
-            handleInsertSong() {
+            // insertSong, selectPlayer时，抬高player的zIndex
+            liftPlayer() {
                 this.$refs.player.style.zIndex = PopupManager.nextZIndex()
+            },
+            liftMiniPlayer() {
+                // 每次用builder创建组件时，抬高miniplayer的zIndex
+                // 使miniplayer的zIndex始终保持在最上层, 如果组件需要覆盖miniplayer，设置coverMiniPlayer控制miniplayer的v-show
+                this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
             }
         },
         mounted() {
@@ -687,7 +683,8 @@
                 }
             })
             this.$bus.on('coverMiniPlayer', this.handleCoverMiniPlayer)
-            this.$bus.on('insertSong', this.handleInsertSong)
+            this.$bus.on('liftPlayer', this.liftPlayer)
+            this.$bus.on('liftMiniPlayer', this.liftMiniPlayer)
         }
     }
 </script>
