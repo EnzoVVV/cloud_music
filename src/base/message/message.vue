@@ -12,6 +12,11 @@
             text: {
                 type: String,
                 default: 'success'
+            },
+            // message显示时间
+            period: {
+                type: Number,
+                default: 1200
             }
         },
         data() {
@@ -31,14 +36,19 @@
                 changeOpacity(this.$el, 1, 500)
                 setTimeout(() => {
                     changeOpacity(this.$el, 0 ,500)
-                }, 1200)
+                    setTimeout(() => {
+                        this.$emit('back')
+                    }, 500)
+                }, this.period)
             }
         },
         created() {
 
         },
         mounted() {
-
+            setTimeout(() => {
+                this.show()
+            }, 10)
         }
     }
 </script>

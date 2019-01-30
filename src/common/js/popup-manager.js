@@ -1,4 +1,4 @@
-let zIndex = 7000
+let zIndex = 4500
 let compNames = []
 // 这些cover comp会覆盖住miniplayer
 const coverComps = ['comment']
@@ -16,6 +16,11 @@ const PopupManager = {
         if(isCoverComp(comp)) {
             // 添加cover comp，不显示miniplayer
             PopupManager.coverMiniPlayer(true)
+        } else {
+            // 当前组件不是cover comp，可显示miniplayer
+            PopupManager.coverMiniPlayer(false)
+            // 加入了非cover comp时，将miniplayer的zIndex提高
+            window.hub.$bus.emit('liftMiniPlayer')
         }
     },
     popComp() {
