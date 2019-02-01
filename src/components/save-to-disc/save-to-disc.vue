@@ -22,7 +22,7 @@
     import modal from 'base/modal/modal'
     import createdisc from 'components/create-disc/create-disc'
     import { mapGetters, mapActions } from 'vuex'
-    import { addSongToDisc } from 'api/disc'
+    import { addSongsToDisc } from 'api/disc'
     export default {
         name: 'SaveToDisc',
         components: {

@@ -7,7 +7,6 @@
         methods: {
             getVideo() {
                 getRecommendMV().then(res => {
-                    debugger
                     this.videolist = res
                 })
             }
