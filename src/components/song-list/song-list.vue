@@ -84,7 +84,7 @@
                 return `(共${this.songs.length}首)`
             },
             favoriteBtn() {
-                return this.favoriteStatus ? '-取消收藏' : '+收藏全部'
+                return this.favoriteStatus ? '- 取消收藏' : '+ 收藏全部'
             },
             computedStyle() {
                 if(this.radius) {

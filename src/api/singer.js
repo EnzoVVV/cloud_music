@@ -5,6 +5,7 @@ import axios from 'axios'
 import getFirstLetter from 'common/js/getFirstLetter/getFirstLetter'
 import { getSongs, processSongsUrl } from 'common/js/song'
 import { getAlbums } from 'common/js/album'
+import Singer from 'common/js/singer'
 
 export function getSingerList() {
 	if(window.useCloud) {
@@ -121,6 +122,33 @@ export function getSimilarSingers(id) {
 					name: item.name,
 					picUrl: item.picUrl
 				}
+			})
+		}
+		return result
+	})
+}
+
+// 收藏歌手
+export function favoriteSinger(id, status) {
+	const code = status ? 1 : 2
+	const url = HOST + `/artist/sub?id=${id}&t=${code}`
+	return axios.get(url)
+}
+
+// 获取登录用户收藏的歌手
+export function getFavoriteSingers() {
+	const url = HOST + '/artist/sublist'
+	return axios.get(url).then(res => {
+		let result = []
+		if(success(res.status)) {
+			result = res.data.data.map(item => {
+				return  new Singer({
+					id: item.id,
+					mid: null,
+					name: item.name,
+					picUrl: item.img1v1Url,
+					alias: item.alias[0] || ''
+				})
 			})
 		}
 		return result

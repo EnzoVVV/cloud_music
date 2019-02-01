@@ -1,6 +1,6 @@
 <template>
     <div>
-        <minilist @hide='hide' :modifiedHeader='true' @headerClick='headerClick' @listClick='select' ref='minilist'>
+        <minilist @hide='hide' :modifiedHeader='true' :coverMPlayer='true' @headerClick='headerClick' @listClick='select' ref='minilist'>
             <div slot='header' class='minilist-header'>
                 <div class='mode-wrapper' @click='toggleMode'>
                     <div class='modeIcon'><IconSvg :icon-class='modeIcon' size='15px'></IconSvg></div>

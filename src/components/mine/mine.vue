@@ -2,7 +2,7 @@
     <div>
         <scroll class='scroll' ref='scroll'>
             <div class='mine'>
-                <div class='user-info' @click='showHomePage'>
+                <div class='user-info' @click='showHomepage'>
                     <img :src='avatar' class='avatar'></img>
                     <div class='user-name'>{{userName}}</div>
                 </div>
@@ -38,7 +38,7 @@
                         <div @click='showCListSetting' class='icon-setting'><IconSvg icon-class='setting' size='18px'></IconSvg></div>
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
-                        <li class='list' v-for='disc in discs' :key='disc.id' v-show='!clistFold' @click='showDiscDetail(disc)'>
+                        <li class='list' v-for='(disc, index) in discs' :key='disc.id' v-show='!clistFold' @click='showDiscDetail(disc)'>
                             <liner :picUrl='disc.picUrl' :main='clistMain(disc, index)' :sub='clistInfo(disc)' :showImg='true' :icon='clistIcon(index)' @iconClick='showListControl(disc,0)'></liner>
                         </li>
                     </transition-group>
@@ -60,13 +60,13 @@
         <!-- 我喜欢的音乐，没有这个， 创建的歌单，有编辑歌单信息 -->
         <minilist :title='listControl.title' v-if='listControl.show' @hide='listControl.show = false'>
             <ul slot='list'>
-                <li class='line' v-if='listControl.type === 0'>
+                <!-- <li class='line' v-if='listControl.type === 0'>
                     <IconSvg icon-class='video' class='icon'></IconSvg>
-                    <div>编辑歌单信息</div>
-                </li>
+                    <div class='text'>编辑歌单信息</div>
+                </li> -->
                 <li class='line' @click='requestDeleteList'>
-                    <IconSvg icon-class='clear' class='icon'></IconSvg>
-                    <div>删除</div>
+                    <IconImg imgName='list-delete' class='icon'></IconImg>
+                    <div class='text'>删除</div>
                 </li>
             </ul>
         </minilist>
@@ -79,6 +79,7 @@
     import { rotate } from 'common/js/dom'
     import { playlistMixin } from 'common/js/mixins'
     import { mapGetters, mapActions } from 'vuex'
+    import { favoriteDisc } from 'api/disc'
     export default {
         name: 'mine',
         mixins: [playlistMixin],
@@ -97,7 +98,6 @@
                 CreatedDiscManageFlag: false,
                 listControl: {
                     show: false,
-                    id: null,
                     title: '',
                     // 0是'创建的歌单', 1是'收藏的歌单'
                     type: 0
@@ -158,12 +158,12 @@
             showFListSetting() {
                 this.$bus.emit('showDiscManage', 1)
             },
-            showListControl(list, type) {
+            showListControl(disc, type) {
                 Object.assign(this.listControl, {
                     show: true,
-                    id: list.id,
-                    title: list.name,
-                    type: type
+                    title: disc.name,
+                    type: type,
+                    disc: disc
                 })
             },
             requestDeleteList() {
@@ -173,12 +173,18 @@
                 }, 'deleteList')
             },
             deleteList() {
+                const disc = this.listControl.disc
                 this.deleteDisc({
-                    disc: this.listControl,
+                    disc: disc,
                     type: this.listControl.type
                 })
                 this.listControl.show = false
                 this.$message('已删除')
+                favoriteDisc(disc.id, false)
+                if(this.listControl.type == 0) {
+                    // 恢复歌单，暂存删除的自创歌单
+                    this.storeDiscardDisc(disc)
+                }
             },
             showDiscDetail(disc) {
                 this.$bus.emit('showDiscDetail', disc)
@@ -186,11 +192,12 @@
             showCollection() {
                 this.showComponent('collection')
             },
-            showHomePage() {
+            showHomepage() {
                 this.showComponent('homepage', this.loginUser.id, true)
             },
             ...mapActions([
-                'deleteDisc'
+                'deleteDisc',
+                'storeDiscardDisc'
             ])
         },
         created() {
@@ -256,17 +263,14 @@
                     display: flex
                     align-items: center
                     .icon-arrow
-                        position: absolute
-                        left: 10px
+                        padding-left: 15px
+                        padding-right: 10px
                     .text
-                        position: absolute
-                        left: 40px
                         font-size: $font-size-small
                         color: $color-text-ii
                         flex: 1
                     .icon-setting
-                        position: absolute
-                        right: 15px
+                        padding-right: 15px
                 .lists
                     .list
                         margin-left: 5px
@@ -283,15 +287,14 @@
         height: 44px
         display: flex
         align-items: center
-        position: relative
         .icon
-            margin: 0 15px
-        &:after
-            content: ''
-            position: absolute 
-            left: 13%
-            bottom: 0
-            right: 0
-            height: 1px
-            background: $color-light
+            margin: 0 8px
+        .text
+            font-size: $font-size-medium
+            color: $color-text-dark
+            height: 100%
+            width: 100%
+            display: flex
+            align-items: center
+            border-bottom: 1px solid $color-light
 </style>

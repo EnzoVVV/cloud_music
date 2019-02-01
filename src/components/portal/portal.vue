@@ -13,14 +13,16 @@
     import mine from 'components/mine/mine'
     import video from 'components/video/video'
     import swiper from 'base/swiper/swiper'
+    import hub from 'components/hub/hub'
     import { findComponentDownward } from 'common/js/tools'
     import { mapActions, mapMutations } from 'vuex'
-    import hub from 'components/hub/hub'
+    import { login } from 'api/login'
     import { getUserPlaylist } from 'api/user'
     import { getDiscDetail } from 'api/disc'
-    import { login } from 'api/login'
+    import { getFavoriteSingers } from 'api/singer'
     import storage from 'good-storage'
-    import { DISC_KEY, DISC_F_KEY, setDiscs } from 'common/js/cache'
+    import { DISC_KEY, DISC_F_KEY, setDiscs, SINGER_KEY, setSingers } from 'common/js/cache'
+    
     const componentList = [
         {
             component: mine,
@@ -72,39 +74,52 @@
             ]),
             ...mapMutations({
                 setUser: 'SET_LOGIN_USER'
-            })
+            }),
+            // 根据服务/缓存恢复vuex数据(登录用户信息, 收藏歌单/歌手/专辑)
+            restore() {
+                this.restoreAlbums()
+
+                login().then(res => {
+                    this.setUser(res)
+                    this.userId = res.id
+                }).then(() => {
+                    if(!storage.get(DISC_KEY, null) || !storage.get(DISC_F_KEY, null)) {
+                    // if(true) {
+                        getUserPlaylist(this.userId).then(playlists => {
+                            let promises = playlists.map(playlist => getDiscDetail(playlist.id))
+                            Promise.all(promises).then(discs => {
+                                let createdDiscs = []
+                                let favoriteDiscs = []
+                                discs.forEach(disc => {
+                                    if(disc.creator && disc.creator.id == this.userId) {
+                                        createdDiscs.push(disc)
+                                    } else {
+                                        favoriteDiscs.push(disc)
+                                    }
+                                })
+                                setDiscs(createdDiscs, 0)
+                                setDiscs(favoriteDiscs, 1)
+                                this.restoreDisc()
+                            })
+                        })
+                    } else {
+                        this.restoreDisc()
+                    }
+                    if(!storage.get(SINGER_KEY, null)) {
+                    // if(true) {
+                        getFavoriteSingers().then(singers => {
+                            setSingers(singers)
+                            this.restoreSingers()
+                        })
+                    } else {
+                        this.restoreSingers()
+                    }
+                })
+            }
         },
         created() {
-            login().then(res => {
-                this.setUser(res)
-                this.userId = res.id
-            }).then(() => {
-                if(!storage.get(DISC_KEY, null) || !storage.get(DISC_F_KEY, null)) {
-                    getUserPlaylist(this.userId).then(playlists => {
-                        let promises = playlists.map(playlist => getDiscDetail(playlist.id))
-                        Promise.all(promises).then(discs => {
-                            let createdDiscs = []
-                            let favoriteDiscs = []
-                            discs.forEach(disc => {
-                                if(disc.creator && disc.creator.id == this.userId) {
-                                    createdDiscs.push(disc)
-                                } else {
-                                    favoriteDiscs.push(disc)
-                                }
-                            })
-                            setDiscs(createdDiscs, 0)
-                            setDiscs(favoriteDiscs, 1)
-                            this.restoreDisc()
-                        })
-                    })
-                } else {
-                    this.restoreDisc()
-                }
-            })
             this.curIndex = this.defaultIndex
-            // this.restoreDisc()
-            this.restoreAlbums()
-            this.restoreSingers()
+            this.restore()
         },
         mounted() {
             this.$refs.swiper.$on('updatetouchend',this.touchend)

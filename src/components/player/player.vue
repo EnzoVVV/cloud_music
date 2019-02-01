@@ -17,7 +17,7 @@
                     <div class='header-share'><IconSvg icon-class='share' size='23px'></IconSvg></div>
                 </div>
                 <div class='middle' ref='middle'>
-                    <IconImg imgName='stylus' ref='stylus' class='stylus'></IconImg>
+                    <IconImg imgName='stylus' ref='stylus' class='stylus' v-show='!showLyric'></IconImg>
                     <!-- 切换歌词页面的click事件替换成在touchend中处理了 -->
                     <!-- 移动端，touch事件之后是click事件，为了click所以此处不能touchstart.prevent，如必须，则可以在touch处理函数中e.preventDefault -->
                     <div class='cd-wrapper' ref='cdWrapper' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
@@ -900,14 +900,14 @@
                 flex: 1
                 padding-left: 5px
                 .name
-                    font-size: $font-size-medium-x
+                    font-size: $font-size-medium
                     color: $color-text
                     padding-bottom: 5px
                     text-overflow: ellipsis 
                     overflow: hidden
                     white-space: nowrap
                 .lyric
-                    font-size: $font-size-small
+                    font-size: $font-size-small-s
                     color: $color-text-g
             .play
                 margin: 0 15px

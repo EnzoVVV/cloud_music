@@ -137,3 +137,10 @@ function getFollowData(item) {
         signature: item.signature
     }
 }
+
+// 关注用户
+export function followUser(id, status) {
+    const code = status ? 1 : 2
+    const url = HOST + `/follow?id=${id}&t=${code}`
+    return axios.get(url)
+}

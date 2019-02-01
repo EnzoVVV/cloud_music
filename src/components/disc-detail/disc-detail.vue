@@ -56,7 +56,7 @@
             ]),
             getDiscDetails() {
                 // 是我创建的歌单
-                if(this.discInfo.creator && this.discInfo.creator.id == this.loginUser.id) {
+                if(this.isMyDisc()) {
                     this.showFBtn = false
                     this.mine = true
                     this.disc = this.discInfo
@@ -73,6 +73,10 @@
                         this.creator = this.disc.creator
                     })
                 }
+            },
+            isMyDisc() {
+                const creator = this.discInfo.creator
+                return (creator && (creator.id === this.loginUser.id || creator.marker === 'self'))
             },
             goback() {
                 this.$emit('back')

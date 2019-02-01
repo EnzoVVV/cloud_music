@@ -3,8 +3,8 @@
         <minilist title='收藏的歌单' @hide='hide' ref='minilist'>
             <ul slot='list'>
                 <li class='line' @click='showSort'>
-                    <IconSvg icon-class='video' class='icon'></IconSvg>
-                    <div>歌单管理</div>
+                    <IconImg imgName='list-manage' class='icon'></IconImg>
+                    <div class='text'>歌单管理</div>
                 </li>
             </ul>
         </minilist>
@@ -73,15 +73,14 @@
             height: 44px
             display: flex
             align-items: center
-            position: relative
             .icon
-                margin: 0 15px
-            &:after
-                content: ''
-                position: absolute 
-                left: 13%
-                bottom: 0
-                right: 0
-                height: 1px
-                background: $color-light
+                margin: 0 8px
+            .text
+                font-size: $font-size-medium
+                color: $color-text-dark
+                height: 100%
+                width: 100%
+                display: flex
+                align-items: center
+                border-bottom: 1px solid $color-light
 </style>

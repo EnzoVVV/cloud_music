@@ -18,7 +18,7 @@
             // song有值时确认，创建歌单并添加歌曲, 否则仅创建歌单
             song: {
                 // class类型是Function
-                type: Function
+                type: Object
             }
         },
         data() {

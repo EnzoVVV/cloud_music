@@ -4,8 +4,6 @@
         <rank v-if='rankFlag' @back='rankFlag = false'></rank>
         <DailyRecommend v-if='dailyFlag' @back='dailyFlag = false'></DailyRecommend>
         <discmanage v-if='discManageFlag' :type='discManageType' @hide='discManageFlag = false'></discmanage>
-        <discdetail v-if='discDetailFlag' :discInfo='discInfo' @back='discDetailFlag = false'></discdetail>
-        <albumdetail v-if='albumDetailFlag' :album='album' @back='albumDetailFlag=false'></albumdetail>
         <playlist v-if='flags.playlist' @back='flags.playlist = false'></playlist>
         <fm v-if='flags.FM'></fm>
         <collection v-if='flags.collection' @back='flags.collection = false'></collection>

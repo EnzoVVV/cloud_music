@@ -3,7 +3,7 @@
         <div class='header' ref='header'>
             <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
             <div class='header-title'>{{title}}</div>
-            <ibutton v-if='!singerFS && reachTop' icon='add' text='收藏' :red='true' size='small' class='header-favorite' @click='favoriteSinger(singer, true)'></ibutton>
+            <ibutton v-if='!singerFS && reachTop' icon='add' text='收藏' :red='true' size='small' class='header-favorite' @click='toggleSingerFS(singer, true)'></ibutton>
             <IconSvg icon-class='share' size='23px' class='header-share'></IconSvg>
         </div>
         <div class='bg-img' :style='bgStyle' ref='img'></div>
@@ -12,8 +12,8 @@
             <div class='wrapper'>
                 <div class='other'>test</div>
                 <ibutton icon='person' text='个人主页'></ibutton>
-                <ibutton v-if='!singerFS' icon='add' text='收藏' :red='true' class='favorite' @click='favoriteSinger(singer, true)'></ibutton>
-                <ibutton v-else icon='bingo-light' text='已收藏' class='favorite' @click='favoriteSinger(singer, false)'></ibutton>
+                <ibutton v-if='!singerFS' icon='add' text='收藏' :red='true' class='favorite' @click='toggleSingerFS(singer, true)'></ibutton>
+                <ibutton v-else icon='bingo-light' text='已收藏' class='favorite' @click='toggleSingerFS(singer, false)'></ibutton>
             </div>
         </div>
         <div class='fixed-tab' v-show='showFixedTab'>
@@ -47,6 +47,7 @@
     import { transform, translate } from 'common/js/dom'
     import { mapGetters, mapActions } from 'vuex'
     import { playlistMixin } from 'common/js/mixins'
+    import { favoriteSinger } from 'api/singer'
     const radius = 10
     export default {
         name: 'musiclist',
@@ -121,7 +122,15 @@
         },
         methods: {
             checkSingerFS() {
-                return !!this.fsingers.find(i => i.id === this.singer.id)
+                this.singerFS = !!this.fsingers.find(i => i.id === this.singer.id)
+            },
+            toggleSingerFS(singer, status) {
+                this.singerFS = status
+                this.favoriteSinger({
+                    singer: singer,
+                    status: status
+                })
+                favoriteSinger(singer.id, status)
             },
             goBack() {
                 this.$emit('goback')
@@ -221,7 +230,7 @@
         },
         created() {
             this.loadImg()
-            this.singerFS = this.checkSingerFS()
+            this.checkSingerFS()
         },
         mounted() {
             this.getHeight()

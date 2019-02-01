@@ -259,15 +259,15 @@
             margin-left: 10px
             display: flex
             height: 100%
-            width: calc(100% - 10px)
+            flex: 1
             .content
                 flex-direction: column
                 display: flex
                 justify-content: center
                 flex: 1
-                width: 100%
                 div
                     width: 100%
+                    max-width: calc(100% - 30px)
                     text-overflow: ellipsis 
                     overflow: hidden
                     white-space: nowrap

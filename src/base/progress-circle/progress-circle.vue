@@ -43,7 +43,7 @@
     justify-content: center
     align-items: center
     circle
-      stroke-width: 8px
+      stroke-width: 6px
       transform-origin: center
       &.progress-background
         transform: scale(0.9)
