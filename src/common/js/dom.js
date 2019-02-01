@@ -106,6 +106,34 @@ export function changeOpacity(el, value, duration = 200) {
 	}, duration)
 }
 
+// 元素的弹性效果
+export function bubble(el) {
+	// 放大阶段时间
+	const duration1 = 200
+	// 缩小阶段时间
+	const duration2 = 200
+	// 回弹到原状阶段时间
+	const duration3 = 200
+	// 放大阶段
+	el.style[transitionDuration] = duration1 + 'ms'
+	el.style[transform] = 'scale(1.5)'
+	// 缩小阶段
+	setTimeout(() => {
+		el.style[transitionDuration] = duration2 + 'ms'
+		el.style[transform] = 'scale(0.8)'
+	}, duration1)
+	// 回弹到原状阶段
+	setTimeout(() => {
+		el.style[transitionDuration] = duration3 + 'ms'
+		el.style[transform] = 'scale(1)'
+	}, duration1 + duration2)
+	// 还原transitionDuration
+	setTimeout(() => {
+		el.style[transitionDuration] = 0
+		el.style[transform] = 'scale(0.8)'
+	}, duration1 + duration2 + duration3)
+}
+
 // 获取去掉px后的数字
 export function getPxValue(s) {
 	// parseInt('0.3px') 结果是0，不精确

@@ -1,5 +1,5 @@
 <template>
-    <div class='button' :style='computedStyle'>
+    <div class='button' :style='computedStyle' @click='handleClick'>
         <IconSvg :icon-class='icon' :size='iconSize'></IconSvg>
         <span class='text'>{{text}}</span>
     </div>
@@ -73,7 +73,9 @@
 
         },
         methods: {
-
+            handleClick() {
+                this.$emit('click')
+            }
         },
         created() {
 
