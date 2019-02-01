@@ -1,17 +1,19 @@
 <template>
     <div class='swiper' ref='swiper'>
-        <div v-for='(comp,index) in componentList' :ref='index' :key='comp.name' class='container' :style='containerStyle(index)'>
+        <div v-for='(comp,index) in componentList' :ref='index' :key='comp.name + index' class='container' :style='containerStyle(index)'>
             <component :is='comp.component' v-if='ifload(index)'></component>
+			<loading v-else></loading>
         </div>
     </div>
 </template>
 <script>
 	import { translate, transform, transitionDuration } from 'common/js/dom.js'
-	import { findComponentDownward, findComponentUpward } from 'common/js/tools.js'
-	import { cloneDeep } from 'lodash'
+	import { findComponentDownward, findComponentUpward, deepCopy } from 'common/js/tools.js'
+	import loading from 'base/loading/loading'
     export default {
         name: 'swiper',
         components: {
+			loading
         },
         props: {
             componentList: {
@@ -33,7 +35,7 @@
                 curIndex: this.defaultIndex,
                 loadedCompIndex: (new Set()).add(this.defaultIndex),
 				touch: {},
-				compList: cloneDeep(this.componentList),
+				compList: deepCopy(this.componentList),
 				maxMoveDistance: 0
             }
         },
@@ -255,7 +257,8 @@
 			},
 			// 允许加载已经加载过的组件，或者临近组件
             ifload(index) {
-                return this.hasLoaded(index) || this.isNear(index)
+				// return this.hasLoaded(index) || this.isNear(index)
+				return this.hasLoaded(index)
 			},
 			// container初始位置
             containerStyle(index) {
