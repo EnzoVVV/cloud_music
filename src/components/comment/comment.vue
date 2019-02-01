@@ -8,10 +8,10 @@
                         <liner :picUrl='info.picUrl' :main='info.main' :sub='info.sub' height='80px' :hasBorder='false' :showImg='true'></liner>
                     </div>
                     <div class='header'>精彩评论</div>
-                    <cline v-for='(comment, index) in hotComments' :key='index + "hot"' :comment='comment'></cline>
+                    <cline v-for='(comment, index) in hotComments' :key='index + "hot"' :comment='comment' :type='type' :subject='info'></cline>
                     <div v-if='allHotComments.length > 10' class='all' @click='cviewerFlag = true'>全部精彩评论 ></div>
                     <div class='header'>最新评论</div>
-                    <cline v-for='(comment, index) in comments' :key='index + "common"' :comment='comment' @showReply='showReply'></cline>
+                    <cline v-for='(comment, index) in comments' :key='index + "common"' :comment='comment'  :type='type' :subject='info' @showReply='showReply'></cline>
                     <!-- 如果还有数据, 则拉到最底时显示loading，加载完数据后，内容增多，loading组件被推到下面了 -->
                     <loading v-show='hasMore'></loading>
                 </div>
@@ -110,6 +110,7 @@
             this.loadMore()
             this.getHotComments()
             this.info = {
+                id: this.subject.id,
                 picUrl: this.subject.picUrl,
                 main: this.subject.name,
                 sub: this.subject.singer || this.subject.creator || ''

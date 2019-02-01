@@ -1,14 +1,18 @@
-// ----------js-------------------
+// ---------- js -------------------
 import { playMode } from 'common/js/config'
 import { generateRandomList } from 'common/js/tools'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
 
-// ----------组件-------------------
+// ---------- 组件 -------------------
 import liner from 'base/liner/liner'
 import scroll from 'base/scroll/scroll'
 import loading from 'base/loading/loading'
+import videolist from 'components/video-list/video-list'
 
+// ---------- API -------------------
+import { getVideo } from 'api/video'
 
+// ---------- Mixins -------------------
 export const playerMixin = {
     computed: {
         ...mapGetters([
@@ -218,5 +222,45 @@ export const followMixin = {
     },
     created() {
         this.getFollows()
+    }
+}
+
+
+// video
+export const videoMixin = {
+    render(h) {
+        let children = []
+        const self = this
+        if(this.videolist.length > 0) {
+            const videolistVNode = h(
+                'videolist', {
+                    props: {
+                        videolist: self.videolist
+                    }
+                }
+            )
+            children.push(videolistVNode)
+        } else {
+            children = []
+        }
+
+        return h(
+            'div', {
+                attr: {
+                    class: 'video'
+                }
+            }, children
+        )
+    },
+    components: {
+        videolist
+    },
+    data() {
+        return {
+            videolist: []
+        }
+    },
+    created() {
+        this.getVideo()
     }
 }

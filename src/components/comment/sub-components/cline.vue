@@ -1,6 +1,10 @@
 <template>
     <div>
-        <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='comment.user.picUrl' :main='comment.user.userName' :sub='comment.time' height='40px' :showImg='true' :imgSelectable='true' @imgClick='imgClick'></liner>
+        <div class='user-line'>
+            <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='comment.user.picUrl' :main='comment.user.userName' :sub='comment.time' height='40px' :showImg='true' :imgSelectable='true' @imgClick='imgClick'></liner>
+            <span v-if='likedCount !== 0' class='liked-count'>{{likedCount}}</span>
+            <div class='like-btn' @click='toggleLike' ref='likeBtn'><IconImg :imgName='likeIcon' size='15px'></IconImg></div>
+        </div>
         <div class='content'>
             <div class='comment'>{{comment.content}}</div>
             <span class='reply' v-if='!hideReply && comment.reply && comment.reply.length' @click='showReply(comment)'>{{comment.reply.length}}条回复 ></span>
@@ -9,6 +13,8 @@
 </template>
 <script>
     import liner from 'base/liner/liner'
+    import { likeComment } from 'api/comment'
+    import { bubble } from 'common/js/dom'
     export default {
         name: 'cline',
         components: {
@@ -22,15 +28,29 @@
             hideReply: {
                 type: Boolean,
                 default: false
+            },
+            // 资源类型
+            type: {
+                type: String,
+                required: true
+            },
+            // 资源信息
+            subject: {
+                type: Object,
+                required: true
             }
         },
         data() {
             return {
-                replyFlag: false
+                replyFlag: false,
+                liked: this.comment.liked || false,
+                likedCount: this.comment.likedCount || 0
             }
         },
         computed: {
-
+            likeIcon() {
+                return this.liked ? 'thumb-liked' : 'thumb-like'
+            }
         },
         watch: {
 
@@ -41,6 +61,14 @@
             },
             imgClick(id) {
                 this.showComponent('homepage', this.comment.user.userId)
+            },
+            toggleLike() {
+                this.liked = !this.liked
+                this.likedCount += this.liked ? 1 : -1
+                likeComment(this.subject.id, this.comment.id, this.liked, this.type)
+                if(this.liked) {
+                    bubble(this.$refs.likeBtn)
+                }
             }
         },
         created() {
@@ -53,6 +81,14 @@
 </script>
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
+    .user-line
+        display: flex
+        align-items: center
+        .liked-count
+            color: $color-text-light
+            font-size: $font-size-small
+        .like-btn
+            padding: 0 10px
     .content
         margin-left: 45px
         padding: 5px 5px 10px 0

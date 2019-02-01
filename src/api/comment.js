@@ -62,6 +62,13 @@ export function getHotComment(id, type) {
     })
 }
 
+// 评论点赞, id: 资源id, cid: 评论id, status: 点赞状态，type: 资源类型
+export function likeComment(id, cid, status, type) {
+    const typeCode = typeCodeMapping[type]
+    const code = status ? 1 : 0
+    const url = HOST + `/comment/like?id=${id}&cid=${cid}&t=${code}&type=${typeCode}`
+    return axios.get(url)
+}
 
 const typeCodeMapping = {
     song: 0,

@@ -53,8 +53,8 @@
   display: block
 }
 
+/* customed */
 .vjs-custom-skin > .video-js .vjs-big-play-button {
-  /* new */
   position: absolute;
   top: 0;
   left: 0;
@@ -63,17 +63,26 @@
   margin: auto;
 }
 
+/* 设置播放按钮总样式 */
+/* customed */
 .vjs-custom-skin > .video-js .vjs-big-play-button {
-  background-color: rgba(0,0,0,0.45);
-  font-size: 3.5em;
-  border-radius: 50%;
-  height: 2em !important;
+  background: none;
+  border: none;
+  font-size: 6em;
+  height: 1.5em !important;
+  width: 1.5em !important;
   /* line-height: 2em !important;
   margin-top: -1em !important */
 }
-/* new */
+
+/* customed */
 .vjs-custom-skin > .video-js .vjs-poster {
   border-radius: 5px !important
+}
+
+/* 设置播放按钮的按钮样式 */
+.video-js .vjs-big-play-button .vjs-icon-placeholder:before, .vjs-button > .vjs-icon-placeholder:before, .video-js .vjs-modal-dialog, .vjs-modal-dialog .vjs-modal-dialog-content {
+  top: -1px
 }
 
 .video-js:hover .vjs-big-play-button,.vjs-custom-skin > .video-js .vjs-big-play-button:focus,.vjs-custom-skin > .video-js .vjs-big-play-button:active {
