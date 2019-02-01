@@ -47,7 +47,6 @@ const builder = function(name, props, manage = true) {
         data: _props,
         // TODO, 这里的components下，必须用本js文件函数外import的，不能在函数中动态import，不能用变量，why？？
         // components: { comp },
-        store,
         render: function(h) {
             // 如果render写成 render: h => {}则this是undefined
             if(this.flag) {

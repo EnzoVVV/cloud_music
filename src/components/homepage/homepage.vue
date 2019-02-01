@@ -113,7 +113,7 @@
                 showFixedTab: false,
                 headerHeight: 44,
                 imgHeight: 0,
-                bgStyle: 'background-image: "static/images/default-bg.png',
+                bgStyle: 'background-image: "static/images/default-bg.png"',
                 headerHeight: 0,
                 minHeight: 0,
                 heightCheck: [

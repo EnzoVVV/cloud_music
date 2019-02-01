@@ -176,11 +176,11 @@ export const addSongToDisc = function ({commit}, {song, disc}) {
 }
 
 // 创建歌单, 入参： 歌单名
-export const createDisc = function ({commit}, discName) {
+export const createDisc = function ({commit, state}, discName) {
     let disc = createADisc({
         name: discName,
         creator: {
-            name: 'self'
+            marker: 'self'
         }
     })
     saveDisc(disc)
@@ -192,7 +192,7 @@ export const createDiscAndAddSong = function ({commit}, {song, discName}) {
     let disc = createADisc({
         name: discName,
         creator: {
-            name: 'self'
+            marker: 'self'
         }
     })
     saveDisc(disc)

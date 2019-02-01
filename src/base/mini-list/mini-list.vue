@@ -33,6 +33,17 @@
             modifiedHeader: {
                 type: Boolean,
                 default: false
+            },
+            // header是否有下边线
+            headerBorder: {
+                type: Boolean,
+                default: true
+            },
+            // minilist的父组件比miniplayer的zIndex低, minilist是子组件，就算zIndex比miniplayer数值高，也不会在miniplayer层叠之上
+            // 是否覆盖miniplayer
+            coverMPlayer: {
+                type: Boolean,
+                default: true
             }
         },
         data() {
@@ -177,6 +188,9 @@
                     list.addEventListener('touchmove', this.touchmove)
                     list.addEventListener('touchend', this.touchend)
                 }
+            },
+            coverMiniPlayer(flag) {
+                window.hub.$bus.emit('coverMiniPlayer', flag)
             }
         },
         created() {
@@ -184,6 +198,11 @@
         mounted() {
             this.scrollEl = this.$refs.scroll.$el
             this.headerEl = this.$refs.header
+            if(!this.headerBorder) {
+                const headerHeight = parseInt(getComputedStyle(this.headerEl).height)
+                // top - 1 挡住header的border
+                this.scrollEl.style.top = headerHeight - 1 + 'px'
+            }
             // 由于scroll采用绝对定位, 没法撑开这个高度，需要手动设置高度
             this.$refs.wrapper.style.height = parseInt(getComputedStyle(this.scrollEl.firstElementChild).height) + parseInt(getComputedStyle(this.headerEl).height) + 'px'
             translate(this.$refs.wrapper, 0, 0, {
@@ -194,6 +213,11 @@
             setTimeout(() => {
                 this.animationCompleted()
             }, AnimationDuration)
+        },
+        beforeDestroy() {
+            if(this.coverMPlayer) {
+                this.coverMiniPlayer(false)
+            }
         }
     }
 </script>
@@ -224,13 +248,14 @@
             transform: translate3d(0, 100%, 0)
             .header
                 height: 44px
-                padding-left: 5px
+                padding-left: 10px
                 border-radius: 10px 10px 0 0
                 background: $color-background
                 display: flex
                 align-items: center 
-                font-size: $font-size-small
+                font-size: $font-size-medium
                 color: $color-text-g
+                border-bottom: 1px solid $color-light
                 .title
                     text-overflow: ellipsis
                     overflow: hidden

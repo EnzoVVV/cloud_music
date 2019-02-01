@@ -3,20 +3,20 @@
         <minilist :title='title' @hide='hide' v-if='!modalFlag' ref='minilist'>
             <ul slot='list'>
                 <li class='line' @click='popUpCreateDisc'>
-                    <IconSvg icon-class='video' class='icon'></IconSvg>
-                    <div>收藏到歌单</div>
+                    <IconImg imgName='list-save' class='icon'></IconImg>
+                    <div class='text'>收藏到歌单</div>
                 </li>
                 <li class='line'>
-                    <IconSvg icon-class='video' class='icon'></IconSvg>
-                    <div>{{singerLine}}</div>
+                    <IconImg imgName='list-singer' class='icon'></IconImg>
+                    <div class='text'>{{singerLine}}</div>
                 </li>
                 <li class='line'>
-                    <IconSvg icon-class='video' class='icon'></IconSvg>
-                    <div>{{albumLine}}</div>
+                    <IconImg imgName='list-album' class='icon'></IconImg>
+                    <div class='text'>{{albumLine}}</div>
                 </li>
                 <li class='line' v-if='showDelete' @click='popUpDelete'>
-                    <IconSvg icon-class='video' class='icon'></IconSvg>
-                    <div>删除</div>
+                    <IconImg imgName='list-delete' class='icon'></IconImg>
+                    <div class='text'>删除</div>
                 </li>
             </ul>
         </minilist>
@@ -106,16 +106,14 @@
             height: 44px
             display: flex
             align-items: center
-            position: relative
             .icon
-                margin: 0 15px
-            // 半边框，用伪类
-            &:after
-                content: ''
-                position: absolute 
-                left: 13%
-                bottom: 0
-                right: 0
-                height: 1px
-                background: $color-light
+                margin: 0 8px
+            .text
+                font-size: $font-size-medium
+                color: $color-text-dark
+                height: 100%
+                width: 100%
+                display: flex
+                align-items: center
+                border-bottom: 1px solid $color-light
 </style>

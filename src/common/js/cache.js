@@ -178,7 +178,8 @@ export function getAlbums() {
 
 
 // ------------------歌手---------------------------
-const SINGER_KEY = '__singer__'
+import Singer from 'common/js/singer'
+export const SINGER_KEY = '__singer__'
 // 收藏歌手
 export function saveSinger(singer) {
     let singers = getSingers()
@@ -195,7 +196,12 @@ export function deleteSinger(singer) {
 }
 // 获取storage中的歌手
 export function getSingers() {
-    return storage.get(SINGER_KEY, [])
+    return storage.get(SINGER_KEY, []).map(singer => new Singer(singer))
+}
+
+// 设置收藏的歌手(全部)
+export function setSingers(singers) {
+    storage.set(SINGER_KEY, singers)
 }
 
 // --------------已删除的歌单-------------------

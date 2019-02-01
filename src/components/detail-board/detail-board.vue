@@ -49,7 +49,7 @@
                             <div class='text'>多选</div>
                         </div>
                     </div>
-                    <songlist v-if='!cusList' :songs='songs' @click='selectSong' @clickHeader='playAll' :showHeader='showHeader' :showIndex='showIndex' :showImg='showImg' :showFBtn='showFBtn' :favoriteStatus='favoriteStatus' :setting='true' @iconClick='showInfoList' @toggleFS='toggleFS' ref='songlist' class='songlist'></songlist>
+                    <songlist v-if='!cusList' :songs='songsCopy' @click='selectSong' @clickHeader='playAll' :showHeader='showHeader' :showIndex='showIndex' :showImg='showImg' :showFBtn='showFBtn' :favoriteStatus='favoriteStatus' :setting='true' @iconClick='showInfoList' @toggleFS='toggleFS' ref='songlist' class='songlist'></songlist>
                     <div v-else ref='slot'><slot name='list'></slot></div>
                 </div>
             </scroll>
@@ -229,7 +229,7 @@
                     // 由于selectSong函数需要song的index, 所以这里的结构需要加一个歌曲的index
                     // 要判断query有内容，因为indexOf('')一定大于1， 会把所有内容都搜出来
                     if(query.length) {
-                        this.songs.forEach((song, index) => {
+                        this.songsCopy.forEach((song, index) => {
                             if(song.name.indexOf(query) > -1) {
                                 this.searches.push({
                                     index: index,
@@ -245,13 +245,13 @@
             },
             selectSong(song, index) {
                 this.selectPlay({
-                    list: this.songs,
+                    list: this.songsCopy,
                     index: index
                 })
             },
             playAll() {
                 this.selectPlay({
-                    list: this.songs,
+                    list: this.songsCopy,
                     index: 0
                 })
             },
@@ -269,7 +269,7 @@
                 this.showComponent('comment', this.type, this.subject)
             },
             showSongSelect() {
-                this.showComponent('songselect', this.songs)
+                this.showComponent('songselect', this.songsCopy)
             },
             showHomepage() {
                 this.showComponent('homepage', this.creator.id)

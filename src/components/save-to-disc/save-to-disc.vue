@@ -60,7 +60,6 @@
             },
             // CreateDisc点击确认，隐藏CreateDisc，再隐藏本组件
             confirm() {
-                this.add(disc)
                 this.hideCreateDisc()
                 this.hide()
             },
@@ -75,7 +74,7 @@
                         song: this.song,
                         disc: disc
                     })
-                    addSongToDisc(disc.id, [this.song.id]).then(() => {
+                    addSongsToDisc(disc.id, [this.song.id]).then(() => {
                         this.hide()
                     })
                 } else if(this.songs) {
@@ -85,7 +84,7 @@
                             disc: disc
                         })
                     })
-                    addSongToDisc(disc.id, this.songs.map(song => song.id)).then(() => {
+                    addSongsToDisc(disc.id, this.songs.map(song => song.id)).then(() => {
                         this.hide()
                     })
                 }

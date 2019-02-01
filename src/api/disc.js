@@ -44,3 +44,9 @@ export function addSongsToDisc(discId, songIds) {
 	const url = HOST + `/playlist/tracks?op=add&pid=${discId}&tracks=${songsId}`
 	return axios.get(url)
 }
+
+// 创建歌单
+export function createDiscApi(discName) {
+	const url = HOST + `/playlist/create?name=${discName}`
+	return axios.get(url)
+}
