@@ -194,6 +194,9 @@
             }
         },
         created() {
+            if(this.coverMPlayer) {
+                this.coverMiniPlayer(true)
+            }
         },
         mounted() {
             this.scrollEl = this.$refs.scroll.$el

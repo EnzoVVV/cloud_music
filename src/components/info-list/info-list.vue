@@ -1,6 +1,6 @@
 <template>
     <div>
-        <minilist :title='title' @hide='hide' v-if='!modalFlag' ref='minilist'>
+        <minilist :title='title' :headerBorder='false' @hide='hide' v-if='!modalFlag' ref='minilist'>
             <ul slot='list'>
                 <li class='line' @click='popUpCreateDisc'>
                     <IconImg imgName='list-save' class='icon'></IconImg>

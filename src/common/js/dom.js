@@ -113,7 +113,7 @@ export function bubble(el) {
 	// 缩小阶段时间
 	const duration2 = 200
 	// 回弹到原状阶段时间
-	const duration3 = 200
+	const duration3 = 100
 	// 放大阶段
 	el.style[transitionDuration] = duration1 + 'ms'
 	el.style[transform] = 'scale(1.5)'
@@ -130,7 +130,6 @@ export function bubble(el) {
 	// 还原transitionDuration
 	setTimeout(() => {
 		el.style[transitionDuration] = 0
-		el.style[transform] = 'scale(0.8)'
 	}, duration1 + duration2 + duration3)
 }
 
