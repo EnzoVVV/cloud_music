@@ -1,49 +1,38 @@
 <template>
-    <div class='video'>
-        <videolist :videolist='videolist' v-if='videolist.length'></videolist>
-    </div>
+    <tabswiper :tabContent='tabs' :componentList='componentList' :defaultIndex='0' :swiperHeight='swiperHeight'></tabswiper>
 </template>
 <script>
-    import videolist from 'components/video-list/video-list'
-    import { getVideo, getVideoArtistDetail } from 'api/video'
+    import tabswiper from 'base/swiper/tabswiper'
+    import recommendMV from './sub-components/recommend-mv'
+    import freshMV from './sub-components/fresh-mv'
+    const componentList = [
+        {
+            name: 'recommendMV',
+            component: recommendMV
+        },
+        {
+            name: 'freshMV',
+            component: freshMV
+        }
+    ]
     export default {
         name: 'videoviewer',
         components: {
-            videolist
-        },
-        props: {
+            tabswiper
         },
         data() {
             return {
-                videolist: []
+                tabs: [
+                    {
+                        text: '推荐'
+                    },
+                    {
+                        text: '最新'
+                    }
+                ],
+                componentList: componentList,
+                swiperHeight: window.innerHeight - 54 - 44
             }
-        },
-        computed: {
-
-        },
-        watch: {
-
-        },
-        methods: {
-            getVideo() {
-                getVideo(10).then(res => {
-                    this.videolist = res
-                    this.videolist.forEach(video => {
-                        getVideoArtistDetail(video.artists[0].id).then(res => {
-                            video.avatar = res
-                        })
-                    })
-                })
-            }
-        },
-        created() {
-            this.getVideo()
-        },
-        mounted() {
-
         }
     }
 </script>
-<style lang='stylus' scoped>
-    @import '~common/stylus/variable'
-</style>

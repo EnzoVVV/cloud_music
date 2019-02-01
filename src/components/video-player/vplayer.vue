@@ -1,10 +1,11 @@
 <template>
-    <video-player :options='playerOptions' class='video-player vjs-custom-skin'></video-player>
+    <video-player :options='playerOptions' class='video-player vjs-custom-skin' v-if='prepared'></video-player>
 </template>
 <script>
     import 'video.js/dist/video-js.css'
     import './custom-theme.css'
     import { videoPlayer } from 'vue-video-player'
+    import { getVideoDetail } from 'api/video'
     export default {
         name: 'vplayer',
         components: {
@@ -14,6 +15,10 @@
             videoUrl: {
                 type: String,
                 default: ''
+            },
+            subject: {
+                type: Object,
+                required: true
             }
         },
         data() {
@@ -30,23 +35,24 @@
                         type: "video/mp4",
                         src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
                     }],
-                    poster: "/static/images/author.jpg",
-                }
+                    poster: this.subject.picUrl
+                },
+                prepared: false
             }
         },
         computed: {
 
         },
         watch: {
-            videoUrl(val) {
-                this.playerOptions.sources[0].src = val
-            }
         },
         methods: {
 
         },
         created() {
-            this.playerOptions.sources[0].src = this.videoUrl
+            getVideoDetail(this.subject.id).then(res => {
+                this.playerOptions.sources[0].src = res
+                this.prepared = true
+            })
         },
         mounted() {
 
@@ -57,7 +63,6 @@
     @import '~common/stylus/variable'
     // 不能直接在这里改播放器样式，会被覆盖
     // TODO，加载样式文件的顺序是啥
-    // TODO，圆角加不上呢，改播放按钮样式
     .video-player
         margin: 5px
         border-radius: 5px

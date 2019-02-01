@@ -3,13 +3,10 @@
         <scroll class='wrapper'>
             <ul>
                 <li v-for='video in videolist' :key='video.id' class='video'>
-                    <div class='img-wrapper' @click='play(video)'>
-                        <img v-lazy='video.picUrl' class='img'></img>
-                        <IconImg imgName='play' class='play' size='80px'></IconImg>
-                    </div>
+                    <vplayer :subject='video'></vplayer>
                     <div class='title'>{{video.name}}</div>
                     <div class='info'>
-                        <img class='avatar' :src='video.avatar'></img>
+                        <img class='avatar' :src='video.picUrl'></img>
                         <div class='artist'>{{video.artists[0].name}}</div>
                         <div class='btn' @click='toggleFS'><IconImg imgName='like'></IconImg></div>
                         <div class='btn' @click='showComment(video.id)'><IconImg imgName='comment'></IconImg></div>
@@ -18,13 +15,11 @@
                 </li>
             </ul>
         </scroll>
-        <vplayer v-if='startPlay' :videoUrl='videoUrl'></vplayer>
     </div>
 </template>
 <script>
     import scroll from 'base/scroll/scroll'
     import vplayer from 'components/video-player/vplayer'
-    import { getMVAddress } from 'api/video'
     export default {
         name: 'videolist',
         components: {
@@ -38,9 +33,6 @@
         },
         data() {
             return {
-                infoListFlag: false,
-                startPlay: false,
-                videoUrl: ''
             }
         },
         computed: {
@@ -55,12 +47,6 @@
             },
             showComment(id) {
 
-            },
-            play(video) {
-                getMVAddress(video.id).then(res => {
-                    this.videoUrl = res
-                    this.startPlay = true
-                })
             }
         },
         created() {
@@ -88,17 +74,6 @@
                 padding: 5px
                 margin-bottom: 5px
                 background: $color-text-a
-                .img-wrapper
-                    position: relative
-                .img
-                    height: 100%
-                    width: 100%
-                    border-radius: 5px
-                .play
-                    position: absolute
-                    top: 50%
-                    left: 50%
-                    transform: translate3d(-50%, -50%, 0)
                 .title
                     margin: 10px 0
                     border-bottom: 1px solid $color-text-i
