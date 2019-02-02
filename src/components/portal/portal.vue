@@ -83,8 +83,8 @@
                     this.setUser(res)
                     this.userId = res.id
                 }).then(() => {
-                    if(!storage.get(DISC_KEY, null) || !storage.get(DISC_F_KEY, null)) {
-                    // if(true) {
+                    // if(!storage.get(DISC_KEY, null) || !storage.get(DISC_F_KEY, null)) {
+                    if(true) {
                         getUserPlaylist(this.userId).then(playlists => {
                             let promises = playlists.map(playlist => getDiscDetail(playlist.id))
                             Promise.all(promises).then(discs => {
@@ -105,8 +105,8 @@
                     } else {
                         this.restoreDisc()
                     }
-                    if(!storage.get(SINGER_KEY, null)) {
-                    // if(true) {
+                    // if(!storage.get(SINGER_KEY, null)) {
+                    if(true) {
                         getFavoriteSingers().then(singers => {
                             setSingers(singers)
                             this.restoreSingers()

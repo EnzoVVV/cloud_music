@@ -356,6 +356,14 @@
             handleCoverMiniPlayer(flag) {
                 // 当前显示comment组件时，隐藏miniplayer
                 this.coverMiniPlayer = flag
+            },
+            liftPlayer() {
+                this.$refs.player.style.zIndex = PopupManager.nextZIndex()
+            },
+            liftMiniPlayer() {
+                // 每次用builder创建组件时，抬高miniplayer的zIndex
+                // 使miniplayer的zIndex始终保持在最上层, 如果组件需要覆盖miniplayer，设置coverMiniPlayer控制miniplayer的v-show
+                this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
             }
         },
         created() {
@@ -367,7 +375,9 @@
             setTimeout(() => {
                 this.transitionCompleted = true
             }, 300)
+            this.liftPlayer()
             this.$bus.on('coverMiniPlayer', this.handleCoverMiniPlayer)
+            this.$bus.on('liftMiniPlayer', this.liftMiniPlayer)
         }
     }
 </script>

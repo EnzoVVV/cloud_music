@@ -15,15 +15,10 @@
 	}
 </script>
 <style lang='stylus' scoped>
-@import '~common/stylus/variable'
+	@import '~common/stylus/variable'
 	.loading
-		position: fixed
-		top: 0
-		bottom: 0
 		width: 100%
-		display: flex
-		justify-content: center
-		align-items: center
+		text-align: center
 		.desc
 			line-height: 20px
 			font-size: $font-size-small

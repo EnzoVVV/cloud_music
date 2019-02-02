@@ -82,7 +82,9 @@ const builder = function(name, props, manage = true) {
             },
             handleMounted() {
                 this.$refs.child.$el.style.zIndex = PopupManager.nextZIndex()
+                debugger
                 if(manage) {
+                    debugger
                     PopupManager.addComp(name)
                 }
             }
