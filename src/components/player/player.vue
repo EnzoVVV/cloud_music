@@ -651,7 +651,6 @@
             // 选择要查看的歌手
             showSingerDetail() {
                 let singerInfo = this.currentSong.singerInfo
-                debugger
                 if(singerInfo.length == 1) {
                     // 只有一个歌手
                     this.triggerSingerDetailPage(singerInfo[0])
