@@ -56,6 +56,7 @@ export const insertSong = function ({commit, state}, song) {
     commit(types.SET_FULL_SCREEN, true)
     commit(types.SET_PLAYING_STATE, true)
     window.hub.$bus.emit('liftPlayer')
+    window.hub.$bus.emit('playlist-change')
 }
 
 // 插入歌曲到下一首的位置
@@ -72,6 +73,7 @@ export const insertSongsToPlayNext = function ({commit, state}, songs) {
 
     commit(types.SET_PLAYLIST, playlist)
     commit(types.SET_SEQUENCE_LIST, sequenceList)
+    window.hub.$bus.emit('playlist-change')
 }
 
 const createInsertFunction = function(playlist, sequenceList, currentIndex) {
@@ -117,6 +119,9 @@ export const deleteSong = function ({commit, state}, song) {
     let currentIndex = state.currentIndex
     let pIndex = findIndex(playlist, song)
     playlist.splice(pIndex, 1)
+    if(Math.abs(pIndex - currentIndex) <= 1) {
+        window.hub.$bus.emit('playlist-change')
+    }
     let sIndex = findIndex(sequenceList, song)
     sequenceList.splice(sIndex, 1)
     if (currentIndex > pIndex || currentIndex === playlist.length) {

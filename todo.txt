@@ -1,4 +1,1 @@
-1. 列表只有一首歌曲时, 挪动CD后，无法暂停播放
-
-
 music-list, 已收藏button的bingo-light看不清

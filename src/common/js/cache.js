@@ -84,7 +84,12 @@ export function getDiscs(type = 0) {
     } else if(type === 1) {
         discs = storage.get(DISC_F_KEY, [])
     }
-    return discs.map(disc => new Disc(deepCopy(disc)))
+    return discs.map(disc => {
+        const copyDisc = deepCopy(disc)
+        // deepCopy后songList里的song实例变成普通object了，需要转换回去
+        copyDisc.songList = copyDisc.songList.map(song => new Song(song))
+        return new Disc(copyDisc)
+    })
 }
 
 
