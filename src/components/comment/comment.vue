@@ -28,7 +28,6 @@
     import cline from './sub-components/cline'
     const reply = () => import('./sub-components/reply')
     const cviewer = () => import('./sub-components/cviewer')
-    import loading from 'base/loading/loading'
     import { getComment, getHotComment } from 'api/comment'
     export default {
         name: 'comment',
@@ -37,7 +36,6 @@
             scroll,
             liner,
             cline,
-            loading,
             reply,
             cviewer
         },

@@ -6,7 +6,6 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 // ---------- 组件 -------------------
 import liner from 'base/liner/liner'
 import scroll from 'base/scroll/scroll'
-import loading from 'base/loading/loading'
 import videolist from 'components/video-list/video-list'
 
 // ---------- API -------------------
@@ -70,8 +69,7 @@ export const playerMixin = {
 // import { search } from 'api/api'
 export const resultMixin = {
     components: {
-        scroll,
-        loading
+        scroll
     },
     data() {
         return {

@@ -50,10 +50,10 @@
         },
         methods: {
             selectDisc(discInfo) {
-                this.$bus.emit('showDiscDetail', discInfo)
+                this.showComponent('discDetail', discInfo)
             },
             showPlaylist() {
-                this.$bus.emit('showPlaylist')
+                this.showComponent('playlist')
             },
             formatNumber(n) {
                 return formatNumber(n)

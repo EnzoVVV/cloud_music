@@ -49,7 +49,7 @@
             },
             selectSinger(singer) {
                 this.setSinger(singer)
-                this.$bus.emit('showSingerDetail',true)
+                this.showComponent('singerdetail')
             },
             ...mapMutations({
                 setSinger: 'SET_SINGER'

@@ -10,8 +10,8 @@
 <script>
     import Header from 'components/header/header'
     import music from 'components/music/music'
-    import mine from 'components/mine/mine'
-    import video from 'components/video/video'
+    const mine = () => import('components/mine/mine')
+    const video = () => import('components/video/video')
     import swiper from 'base/swiper/swiper'
     import hub from 'components/hub/hub'
     import { findComponentDownward } from 'common/js/tools'

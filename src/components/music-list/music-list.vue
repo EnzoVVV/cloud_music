@@ -47,7 +47,7 @@
     import { transform, translate } from 'common/js/dom'
     import { mapGetters, mapActions } from 'vuex'
     import { playlistMixin } from 'common/js/mixins'
-    import { favoriteSinger } from 'api/singer'
+    import { favoriteSinger, getSingerDetail } from 'api/singer'
     const radius = 10
     export default {
         name: 'musiclist',
@@ -181,10 +181,20 @@
                 }
             },
             loadImg() {
+                if(!this.singer.picUrl) {
+                    // song里的singer可能没有picUrl
+                    getSingerDetail(this.singer.id).then(res => {
+                        this.imgLoad(res.picUrl)
+                    })
+                } else {
+                    this.imgLoad(this.singer.picUrl)
+                }
+            },
+            imgLoad(src) {
                 let img = new Image()
-                img.src = this.singer.picUrl
+                img.src = src
                 img.onload = () => {
-                    this.bgStyle = `background-image: url(${this.singer.picUrl})`
+                    this.bgStyle = `background-image: url(${src})`
                     this.$nextTick(() => {
                         this.imgHeight = this.$refs.img.clientHeight
                         // $refs.name如果取的是组件，那么是获取到了vue实例，取得dom还要$refs.name.$el

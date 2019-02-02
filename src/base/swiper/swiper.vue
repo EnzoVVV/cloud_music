@@ -9,11 +9,9 @@
 <script>
 	import { translate, transform, transitionDuration } from 'common/js/dom.js'
 	import { findComponentDownward, findComponentUpward, deepCopy } from 'common/js/tools.js'
-	import loading from 'base/loading/loading'
     export default {
         name: 'swiper',
         components: {
-			loading
         },
         props: {
             componentList: {

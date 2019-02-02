@@ -12,17 +12,16 @@
     </div>
 </template>
 <script>
-    import Vue from 'vue'
-    import modal from 'base/modal/modal'
-    import rank from 'components/rank/rank'
-    import DailyRecommend from 'components/daily-recommend/daily-recommend'
-    import discmanage from 'components/disc-manage/disc-manage'
+    const modal = () => import('base/modal/modal')
+    const rank = () => import('components/rank/rank')
+    const DailyRecommend = () => import('components/daily-recommend/daily-recommend')
+    const discmanage = () => import('components/disc-manage/disc-manage')
     const playlist = () => import('components/play-list/play-list')
     const fm = () => import('components/fm/fm')
     const collection = () => import('components/collection/collection')
     const songselect = () => import('components/song-select/song-select')
     const follow = () => import('components/homepage/sub/follow/follow')
-
+    import Vue from 'vue'
     import builder from 'common/js/comp-builder'
     import { mapMutations } from 'vuex'
 
@@ -166,19 +165,16 @@
                 songselect: this.showSongSelect,
                 discdetail: this.showDiscDetail,
                 homepage: this.showHomepage,
-                follow: this.showFollow
+                follow: this.showFollow,
+                dailyrecommend: this.showDailyRecommend,
+                discmanage: this.showDiscManage,
+                albumdetail: this.showAlbumDetail
             }
         },
         mounted() {
             this.$bus.on('showComponent', this.showComponent)
-            this.$bus.on('showSingerDetail', this.showSingerDetail)
-            this.$bus.on('showRank', this.showRank)
-            this.$bus.on('showDailyRecommend', this.showDailyRecommend)
-            this.$bus.on('showDiscManage', this.showDiscManage)
-            this.$bus.on('showDiscDetail', this.showDiscDetail)
             this.$bus.on('unrevealed', this.showUnrevealedMessage)
             this.$bus.on('showMessage', this.showMessage)
-            this.$bus.on('showAlbumDetail', this.showAlbumDetail)
 
             const self = this
             Vue.prototype.showComponent = function() {

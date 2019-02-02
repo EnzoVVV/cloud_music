@@ -3,8 +3,8 @@
 </template>
 <script>
     import tabswiper from 'base/swiper/tabswiper'
-    import recommendMV from './sub-components/recommend-mv'
-    import freshMV from './sub-components/fresh-mv'
+    const recommendMV = () => import('./sub-components/recommend-mv')
+    const freshMV = () => import('./sub-components/fresh-mv')
     const componentList = [
         {
             name: 'recommendMV',
