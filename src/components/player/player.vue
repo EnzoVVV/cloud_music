@@ -288,6 +288,10 @@
                 // 停止歌词
                 if(this.currentLyric) {
                     this.currentLyric.stop()
+                    this.currentLyric = null
+                    this.currentTime = 0
+                    this.currentLineNum = 0
+                    this.currentLyricText = ''
                 }
                 this.$refs.audio.src = song.url
                 this.$refs.audio.play()
@@ -320,6 +324,10 @@
                 if (!this.songReady) {
                     return
                 }
+                if(this.playlist.length == 1) {
+                    this.loop()
+                    return
+                }
                 if(clicked) {
                     // 点击按钮切歌
                     translate(this.$refs.nextCdWrapper, 0, 0, translateOption)
@@ -345,6 +353,10 @@
             },
             playPre(clicked = true) {
                 if (!this.songReady) {
+                    return
+                }
+                if(this.playlist.length == 1) {
+                    this.loop()
                     return
                 }
                 if(clicked) {
@@ -639,6 +651,7 @@
             // 选择要查看的歌手
             showSingerDetail() {
                 let singerInfo = this.currentSong.singerInfo
+                debugger
                 if(singerInfo.length == 1) {
                     // 只有一个歌手
                     this.triggerSingerDetailPage(singerInfo[0])
@@ -656,7 +669,7 @@
             },
             triggerSingerDetailPage(singer) {
                 this.setSinger(singer)
-                this.$bus.emit('showSingerDetail', true, 7500)
+                this.showComponent('singerdetail')
             },
             // 切换是否覆盖miniplayer
             handleCoverMiniPlayer(flag) {
@@ -685,6 +698,8 @@
             this.$bus.on('coverMiniPlayer', this.handleCoverMiniPlayer)
             this.$bus.on('liftPlayer', this.liftPlayer)
             this.$bus.on('liftMiniPlayer', this.liftMiniPlayer)
+            // 当前歌曲临近的歌曲变化, 需要重新计算side song
+            this.$bus.on('playlist-change', this.getSideSong)
         }
     }
 </script>

@@ -125,6 +125,7 @@
                     transitionDuration: '0.3s',
                     percent: true
                 })
+                changeOpacity(this.$refs.bg, 0, 300)
             },
             hide() {
                 this.$emit('hide')
@@ -219,6 +220,7 @@
                 transitionDuration: '0.3s',
                 percent: true
             })
+            changeOpacity(this.$refs.bg, 0.5, 300)
         }
     }
 </script>
@@ -231,7 +233,7 @@
         right: 0
         bottom: 0
         background: $color-text
-        opacity: 0.5
+        opacity: 0
         z-index: 5900
     .menu
         position: fixed
