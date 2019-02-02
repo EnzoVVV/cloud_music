@@ -113,7 +113,6 @@
                 this.setFMSwitch(flag)
             },
             showComment(type, subject) {
-                debugger
                 builder('comment', {
                     type: type,
                     subject: subject

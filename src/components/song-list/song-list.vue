@@ -160,7 +160,7 @@
             .empty
                 flex: 1
             .favorite-status
-                padding-left: 10px
+                padding: 0 10px
                 color: $color-text-ii
         .item
             display: flex

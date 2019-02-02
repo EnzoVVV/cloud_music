@@ -13,17 +13,14 @@ const PopupManager = {
     },
     addComp(comp) {
         compNames.push(comp)
-        debugger
         if(isCoverComp(comp)) {
             // 添加cover comp，不显示miniplayer
             PopupManager.coverMiniPlayer(true)
         } else {
-            debugger
             // 当前组件不是cover comp，可显示miniplayer
             PopupManager.coverMiniPlayer(false)
             // 加入了非cover comp时，将miniplayer的zIndex提高
             window.hub.$bus.emit('liftMiniPlayer')
-            debugger
         }
     },
     popComp() {

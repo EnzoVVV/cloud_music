@@ -2,7 +2,7 @@
     <div class='swiper' ref='swiper'>
         <div v-for='(comp,index) in componentList' :ref='index' :key='comp.name + index' class='container' :style='containerStyle(index)'>
             <component :is='comp.component' v-if='ifload(index)'></component>
-			<loading v-else></loading>
+			<loading v-else class='loading'></loading>
         </div>
     </div>
 </template>
@@ -305,4 +305,13 @@
 				transform: translateX(-100%)
 			&.swipe-right-enter-active, &.swipe-right-leave-active 
 				transition: transform linear 0.2s
+		.loading
+			position: absolute
+			top: 0
+			bottom: 0
+			left: 0
+			right: 0
+			display: flex
+			justify-content: center
+			align-items: center
 </style>
