@@ -153,10 +153,10 @@
                 return `${list.songList.length}首 by ${list.creator.name}`
             },
             showCListSetting() {
-                this.showComponent('discManage', 0)
+                this.showComponent('discmanage', 0)
             },
             showFListSetting() {
-                this.showComponent('discManage', 1)
+                this.showComponent('discmanage', 1)
             },
             showListControl(disc, type) {
                 Object.assign(this.listControl, {
