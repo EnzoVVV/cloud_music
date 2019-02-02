@@ -56,9 +56,9 @@
             handleClick(singer) {
                 this.setSinger(singer)
                 // 先把当前的singer-detail注销掉,再弹出新的歌手页
-                this.$bus.emit('showSingerDetail',false)
+                this.showComponent('singerDetail',false)
                 this.$nextTick(() => {
-                    this.$bus.emit('showSingerDetail',true)
+                    this.showComponent('singerDetail',true)
                 })
             },
             ...mapMutations({

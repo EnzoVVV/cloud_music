@@ -6,7 +6,7 @@
 </template>
 <script>
     import FunctionalHeader from 'base/functional-header/functional-header'
-    import albumCollection from './sub-components/album-collection'
+    const albumCollection = () => import('./sub-components/album-collection')
     import tabswiper from 'base/swiper/tabswiper'
     const componentList = [
         {

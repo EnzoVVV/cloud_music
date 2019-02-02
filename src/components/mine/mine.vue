@@ -153,10 +153,10 @@
                 return `${list.songList.length}首 by ${list.creator.name}`
             },
             showCListSetting() {
-                this.$bus.emit('showDiscManage', 0)
+                this.showComponent('discManage', 0)
             },
             showFListSetting() {
-                this.$bus.emit('showDiscManage', 1)
+                this.showComponent('discManage', 1)
             },
             showListControl(disc, type) {
                 Object.assign(this.listControl, {
@@ -187,7 +187,7 @@
                 }
             },
             showDiscDetail(disc) {
-                this.$bus.emit('showDiscDetail', disc)
+                this.showComponent('discdetail', disc)
             },
             showCollection() {
                 this.showComponent('collection')

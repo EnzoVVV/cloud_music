@@ -45,15 +45,13 @@
     import slider from 'base/slider/slider'
     import discList from 'components/discList/discList'
     import scroll from 'base/scroll/scroll'
-    import loading from 'base/loading/loading'
     import { getPersonalFM } from 'api/fm'
     export default {
         name: 'recommend',
         components: {
             slider,
             discList,
-            scroll,
-            loading
+            scroll
         },
         props: {
 
@@ -94,7 +92,7 @@
                 this.showComponent('rank')
             },
             showDailyRecommend() {
-                this.$bus.emit('showDailyRecommend', true)
+                this.showComponent('dailyrecommend')
             },
             showPlaylist() {
                 this.showComponent('playlist')

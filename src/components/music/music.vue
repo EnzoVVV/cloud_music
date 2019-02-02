@@ -1,12 +1,12 @@
 <template>
     <div>
-        <tabswiper :tabContent='musicHeader' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight'></tabswiper>
+        <tabswiper :tabContent='musicHeader' :componentList='componentList' :defaultIndex='0' :swiperHeight='swiperHeight'></tabswiper>
     </div>
 </template>
 <script>
     import recommend from 'components/recommend/recommend'
-    import singer from 'components/singer/singer'
-    import radio from 'components/radio/radio'
+    const singer = () => import('components/singer/singer')
+    const radio = () => import('components/radio/radio')
     import tabswiper from 'base/swiper/tabswiper'
     const componentList = [
         {
@@ -44,8 +44,7 @@
                     }
                 ],
                 componentList: componentList,
-                swiperHeight: window.innerHeight - 54 - 44,
-                defaultIndex: 1
+                swiperHeight: window.innerHeight - 54 - 44
             }
         }
     }
