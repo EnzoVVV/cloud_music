@@ -39,7 +39,6 @@
         },
         data() {
             return {
-                mockImg: require('./mockimg.jpg')
             }
         },
         computed: {
@@ -50,7 +49,7 @@
         },
         methods: {
             selectDisc(discInfo) {
-                this.showComponent('discDetail', discInfo)
+                this.showComponent('discdetail', discInfo)
             },
             showPlaylist() {
                 this.showComponent('playlist')
