@@ -6,9 +6,11 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "api": "node api/app.js",
+    "prepare": "yarn install && cd api && yarn install",
+    "start": "yarn run api | yarn run dev"
   },
   "dependencies": {
     "axios": "^0.18.0",
