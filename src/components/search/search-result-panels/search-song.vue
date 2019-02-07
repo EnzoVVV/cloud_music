@@ -1,8 +1,8 @@
 <template>
     <div class='song'>
-        <scroll class='list'>
+        <scroll class='list' ref='scroll'>
             <div>
-                <songlist :songs='songs' @click='selectSong' v-if='songs.length'></songlist>
+                <songlist :songs='songs' @click='selectSong' v-if='songs.length' :speaker='false'></songlist>
                 <loading v-else class='loading'></loading>
             </div>
         </scroll>
@@ -12,12 +12,12 @@
     import songlist from 'components/song-list/song-list'
     import { mapActions } from 'vuex'
     import { searchSong } from 'api/search'
-    import { resultMixin } from 'common/js/mixins'
+    import { playlistMixin, resultMixin } from 'common/js/mixins'
     import { getAlbumPicUrl } from 'api/album'
     import Song from 'common/js/song'
     export default {
         name: 'searchSong',
-        mixins: [resultMixin],
+        mixins: [ playlistMixin, resultMixin ],
         components: {
             songlist
         },
