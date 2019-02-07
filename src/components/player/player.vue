@@ -10,9 +10,7 @@
                     <div class='header-info'>
                         <div class='header-info-title' v-if='!longTitle'>{{headerTitle}}</div>
                         <roller class='header-info-title' v-else :content='headerTitle' :fontSize='14' :height='16'></roller>
-                        <div class='header-info-singer'>
-                            <div class='header-info-singer-name' @click='showSingerDetail'>{{switchedSong && switchedSong.singer || ''}} ></div>
-                        </div>
+                        <div class='header-info-singer' @click='showSingerDetail'>{{switchedSong && switchedSong.singer || ''}} ></div>
                     </div>
                     <div class='header-share'><IconSvg icon-class='share' size='23px'></IconSvg></div>
                 </div>
@@ -51,7 +49,7 @@
                 </div>
                 <div class='bottom'>
                     <div class='func'>
-                        <div class='btn' @click='toggleFS'><IconImg :imgName='likeIcon'></IconImg></div>
+                        <div class='btn' ref='likeBtn' @click='toggleFS'><IconImg :imgName='likeIcon'></IconImg></div>
                         <div class='btn' @click='showComment'><IconImg imgName='comment'></IconImg></div>
                         <div class='btn' @click='infoListFlag = true'><IconImg imgName='uj'></IconImg></div>
                     </div>
@@ -91,7 +89,7 @@
             </div>
             <progresscircle :radius='radius' :percent='percent' class='play'>
                 <div @click.stop='togglePlay' class='circle-button'>
-                    <IconSvg :icon-class='miniPlayBtnIcon'></IconSvg>
+                    <IconSvg :icon-class='miniPlayBtnIcon' size='20px'></IconSvg>
                 </div>
             </progresscircle>
             <div class='list' @click.stop='miniListFlag = true'>
@@ -102,7 +100,11 @@
         <minisonglist v-if='miniListFlag' @hide='miniListFlag = false'></minisonglist>
         <!-- 选择查看的歌手 -->
         <modal v-if='selectSingerList.length' title='请选择要查看的歌手' :hideBtn='true' @hide='hideModal'>
-            <liner v-for='singer in selectSingerList' :key='singer.id' :showImg='true' :picUrl='singer.picUrl' :main='singer.name' :selectable='true' @select='selectSinger(singer)'></liner>
+            <scroll>
+                <div>
+                    <liner v-for='singer in selectSingerList' :key='singer.id' :showImg='true' :picUrl='singer.picUrl || defaultSingerPic' :main='singer.name' :selectable='true' @select='selectSinger(singer)'></liner>
+                </div>
+            </scroll>
         </modal>
         <!-- 歌曲信息 -->
         <infolist v-if='infoListFlag' :song='currentSong' @hide='infoListFlag = false'></infolist>
@@ -110,22 +112,16 @@
 </template>
 
 <script>
-    import { mapGetters, mapMutations, mapActions } from 'vuex'
-    import progressbar from 'base/progress-bar/progress-bar'
-    import Lyric from 'lyric-parser'
-    import scroll from 'base/scroll/scroll'
-    import progresscircle from 'base/progress-circle/progress-circle'
-    import { transform, transitionDuration,translate, rotate } from 'common/js/dom'
-    import { checkSong, favoriteSong } from 'api/song'
+    import { mapGetters, mapMutations } from 'vuex'
+    import { transform, transitionDuration,translate, rotate, bubble } from 'common/js/dom'
+    import { checkSong } from 'api/song'
     import { qsearch } from 'api/search'
-    import { playerMixin } from 'common/js/mixins'
+    import { playerMixin, playersMixin } from 'common/js/mixins'
     import { deepCopy } from 'common/js/tools'
     import { playMode } from 'common/js/config'
     const minisonglist = () => import('components/mini-song-list/mini-song-list')
-    const modal = () => import('base/modal/modal')
     const infolist = () => import('components/info-list/info-list')
     const roller = () => import('base/roller/roller')
-    const liner = () => import('base/liner/liner')
 
     import PopupManager from 'common/js/popup-manager'
     // 切歌动画transitionDuration(ms)
@@ -140,16 +136,11 @@
     const stylus_width_height_ratio = 305 / 555
     export default {
         name: 'player',
-        mixins: [ playerMixin ],
+        mixins: [ playerMixin, playersMixin ],
         components: {
             minisonglist,
-            progressbar,
-            scroll,
-            progresscircle,
-            modal,
             infolist,
-            roller,
-            liner
+            roller
         },
         props: {
 
@@ -157,29 +148,14 @@
         data() {
             return {
                 miniListFlag: false,
-                songReady: false,
-                currentTime: 0,
-                timer: null,
-                progressBarMoving: false,
-                currentLyric: null,
-                showLyric: false,
-                isPureMusic: false,
-                pureMusicLyric: '纯音乐，请欣赏',
-                currentLineNum: 0,
                 touch: {},
                 nextSong: null,
                 preSong: null,
                 switchedSong: null,
-                radius: 32,
                 clientWidth: window.innerWidth,
-                // 音频时长
-                audioDuration: 0,
-                selectSingerList: [],
-                FS: false,
-                currentLyricText: '',
                 infoListFlag: false,
                 longTitle: false,
-                coverMiniPlayer: false
+                defaultSingerPic: 'static/images/default-avatar.png'
             }
         },
         computed: {
@@ -188,7 +164,6 @@
                 'playlist',
                 'playing',
                 'currentIndex',
-                'favoriteSongs',
                 'FMSwitch'
             ]),
             playBtnIcon() {
@@ -210,9 +185,6 @@
                     }
                 }
             },
-            percent() {
-                return this.audioDuration != 0 ? this.currentTime / this.audioDuration : 0
-            },
             infoListTitle() {
                 return `歌曲: ${this.currentSong.name}`
             },
@@ -222,6 +194,9 @@
                 return title
             },
             likeIcon() {
+                if(this.FS) {
+                    bubble(this.$refs.likeBtn)
+                }
                 return this.FS ? 'liked' : 'like'
             }
         },
@@ -267,22 +242,14 @@
                 this.setFullScreen(false)
                 this.showComponent('comment', 'song', this.currentSong)
             },
-            checkFS() {
-                this.FS = !!this.favoriteSongs.find(i => i.id === this.currentSong.id)
-            },
             toggleFS() {
                 this.toggleSongFS(this.currentSong)
                 this.FS = !this.FS
-                favoriteSong(this.currentSong.id, this.FS)
             },
             ...mapMutations({
                 setFullScreen: 'SET_FULL_SCREEN',
-                setPlayingState: 'SET_PLAYING_STATE',
-                setSinger: 'SET_SINGER'
+                setPlayingState: 'SET_PLAYING_STATE'
             }),
-            ...mapActions([
-                'toggleSongFS'
-            ]),
             loadSong(song) {
                 this.songReady = false
                 // 停止歌词
@@ -404,55 +371,12 @@
             toggleFullScreen() {
                 this.setFullScreen(true)
             },
-            audioReady() {
-                // 获取音频时长
-                this.audioDuration = this.$refs.audio.duration
-                this.clearTimer()
-                // 监听 playing 这个事件可以确保慢网速或者快速切换歌曲导致的 DOM Exception
-                this.songReady = true
-                // 如果歌曲的播放晚于歌词的出现，播放的时候需要同步歌词
-                if (this.currentLyric && !this.isPureMusic) {
-                    this.currentLyric.seek(this.currentTime * 1000)
-                }
-            },
             paused() {
                 // 一首歌播放完，先触发了audio的pause，然后是ended
                 this.setPlayingState(false)
                 if (this.currentLyric) {
                     this.currentLyric.stop()
                 }
-            },
-            timeupdate(e) {
-                // 移动进度条时，更新this.currentTime，同时在播放，也会触发更新this.currentTime的这个函数
-                if(this.progressBarMoving) {
-                    return
-                }
-                this.currentTime = e.target.currentTime
-            },
-            progressBarChanging (percent) {
-                this.progressBarMoving = true
-                this.currentTime = this.audioDuration * percent
-                if (this.currentLyric) {
-                    this.currentLyric.seek(this.currentTime * 1000)
-                }
-            },
-            progressBarChange(percent) {
-                const currentTime = this.audioDuration * percent
-                this.currentTime = this.$refs.audio.currentTime = currentTime
-                this.progressBarMoving = false
-                if(this.currentLyric) {
-                    this.currentLyric.seek(this.currentTime * 1000) // 毫秒
-                }
-            },
-            formatTime(interval) {
-                interval = Math.floor(interval)
-                const minute = Math.floor(interval / 60).toString().padStart(2,'0')
-                const second = (interval % 60).toString().padStart(2,'0')
-                return `${minute}:${second}`
-            },
-            clearTimer() {
-                clearTimeout(this.timer)
-                this.timer = null
             },
             touchstart(e) {
                 this.touch.initiated = true
@@ -602,88 +526,10 @@
                     translate(this.$refs.preCdWrapper, -this.clientWidth)
                 })
             },
-            getLyric() {
-                this.currentSong.getLyric().then(lyric => {
-                    this.currentLyric = new Lyric(lyric,this.handleLyric)
-                }).catch(() => {
-                    this.currentLyric = null
-                    this.currentLineNum = 0
-                    this.$nextTick(() => {
-                        let wrapperHeight = this.$refs.lyricWrapper.$el.clientHeight
-                        // 没有歌词时，将noLyric对应的div设置高度，不然区域太小点击不到，不容易切换回cd
-                        if(this.$refs.noLyric) {
-                            this.$refs.noLyric.style.height = wrapperHeight + 'px'
-                        }
-                    })
-                })
-                this.$nextTick(() => {
-                    this.toggleLyric(this.showLyric)
-                })
-            },
-            handleLyric({lineNum, txt}) {
-                if(!this.$refs.lyricLine) {
-                    return
-                }
-                this.currentLineNum = lineNum
-                this.currentLyricText = txt
-                if(lineNum > 5) {
-                    let lineEl = this.$refs.lyricLine[lineNum - 5]
-                    this.$refs.lyricWrapper.scrollToElement(lineEl,1000)
-                } else {
-                    this.$refs.lyricWrapper.scrollTo(0,0,1000)
-                }
-            },
-            toggleLyric(flag) {
-                // 从歌词页面切回cd时，cd需要继续从之前的位置开始旋转，在cdStatus的代码控制暂停
-                // cdWrapper不能用v-show='!showLyric'控制，因为v-show为false时，display：none，就不能切回时继续上次的位置了
-                if(flag) {
-                    // 显示歌词
-                    this.$refs.cdWrapper.style.visibility = 'hidden'
-                    this.$refs.lyricWrapper.$el.style.visibility = 'visible'
-                    this.showLyric = true
-                } else {
-                    // 显示cd
-                    this.$refs.cdWrapper.style.visibility = 'visible'
-                    this.$refs.lyricWrapper.$el.style.visibility = 'hidden'
-                    this.showLyric = false
-                }
-            },
-            // 选择要查看的歌手
-            showSingerDetail() {
-                let singerInfo = this.currentSong.singerInfo
-                if(singerInfo.length == 1) {
-                    // 只有一个歌手
-                    this.triggerSingerDetailPage(singerInfo[0])
-                } else {
-                    // 多个歌手, 触发弹窗选择歌手
-                    this.selectSingerList = singerInfo.slice()
-                }
-            },
-            selectSinger(singer) {
-                this.selectSingerList = []
-                this.triggerSingerDetailPage(singer)
-            },
-            hideModal() {
-                this.selectSingerList = []
-            },
-            triggerSingerDetailPage(singer) {
-                this.setSinger(singer)
-                this.showComponent('singerdetail')
-            },
-            // 切换是否覆盖miniplayer
-            handleCoverMiniPlayer(flag) {
-                // 当前显示comment组件时，隐藏miniplayer
-                this.coverMiniPlayer = flag
-            },
             // insertSong, selectPlayer时，抬高player的zIndex
             liftPlayer() {
                 this.$refs.player.style.zIndex = PopupManager.nextZIndex()
             },
-            liftMiniPlayer() {
-                // 每次用builder创建组件时，抬高miniplayer的zIndex
-                // 使miniplayer的zIndex始终保持在最上层, 如果组件需要覆盖miniplayer，设置coverMiniPlayer控制miniplayer的v-show
-                this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
-            }
         },
         mounted() {
             this.setStylusPosition()
@@ -694,9 +540,7 @@
                     this.togglePlay()
                 }
             })
-            this.$bus.on('coverMiniPlayer', this.handleCoverMiniPlayer)
             this.$bus.on('liftPlayer', this.liftPlayer)
-            this.$bus.on('liftMiniPlayer', this.liftMiniPlayer)
             // 当前歌曲临近的歌曲变化, 需要重新计算side song
             this.$bus.on('playlist-change', this.getSideSong)
         }
@@ -739,6 +583,7 @@
                     flex: 1
                     padding-left: 10px
                     padding-top: 10px
+                    overflow: hidden
                     &-title
                         font-weight: bold
                         font-size: $font-size-medium
@@ -748,9 +593,11 @@
                         color: $color-text-i
                         display: flex
                         align-items: center
-                        transform: scale(0.7)
-                        // scale记得和origin一起用
-                        transform-origin: left
+                        font-size: 8px
+                        margin-right: 15px
+                        text-overflow: ellipsis 
+                        overflow: hidden
+                        white-space: nowrap
                 &-share
                     padding: 0 10px
             .middle
@@ -928,8 +775,8 @@
                 position: relative
                 .circle-button
                     position: absolute
-                    top: 4px
-                    left: 4px
+                    top: 6px
+                    left: 6px
             .list
                 margin-right: 10px
     // 定义cd旋转的rotate

@@ -14,7 +14,7 @@
                     <div class='cd-wrapper' ref='cdWrapper'>
                         <img :src='currentSong.picUrl' class='img' @click='toggleLyric(true)'></img>
                         <div class='name'>{{currentSong.name}}</div>
-                        <div class='singer'>{{currentSong.singer}} ></div>
+                        <div class='singer' @click.stop='showSingerDetail'>{{currentSong.singer}} ></div>
                     </div>
                     <scroll class='lyric-wrapper' ref='lyricWrapper'>
                         <div class='lyric' @click='toggleLyric(false)'>
@@ -66,59 +66,45 @@
             </div>
             <progresscircle :radius='radius' :percent='percent' class='play'>
                 <div @click.stop='togglePlay' class='circle-button'>
-                    <IconSvg :icon-class='miniPlayBtnIcon'></IconSvg>
+                    <IconSvg :icon-class='miniPlayBtnIcon' size='20px'></IconSvg>
                 </div>
             </progresscircle>
             <div class='favorite' @click='toggleFavorite'>
-                <IconImg :imgName='favoriteIcon'></IconImg>
+                <IconImg :imgName='favoriteMiniIcon' size='30px'></IconImg>
             </div>
         </div>
         <audio ref='audio' @playing='audioReady' @timeupdate='timeupdate' @ended='ended' @pause='paused'></audio>
+        <!-- 选择查看的歌手 -->
+        <modal v-if='selectSingerList.length' title='请选择要查看的歌手' :hideBtn='true' @hide='hideModal'>
+            <scroll>
+                <div>
+                    <liner v-for='singer in selectSingerList' :key='singer.id' :showImg='true' :picUrl='singer.picUrl || defaultSingerPic' :main='singer.name' :selectable='true' @select='selectSinger(singer)'></liner>
+                </div>
+            </scroll>
+        </modal>
     </div>
 </template>
 
 <script>
-    import progressbar from 'base/progress-bar/progress-bar'
-    import Lyric from 'lyric-parser'
-    import scroll from 'base/scroll/scroll'
-    import progresscircle from 'base/progress-circle/progress-circle'
-    import { getPersonalFM } from 'api/fm'
-    import { mapGetters, mapActions } from 'vuex'
-
-    import PopupManager from 'common/js/popup-manager'
+    import { getPersonalFM, trash } from 'api/fm'
+    import { mapActions } from 'vuex'
+    import { playersMixin } from 'common/js/mixins'
     export default {
         name: 'fm',
+        mixins: [ playersMixin ],
         components: {
-            progressbar,
-            scroll,
-            progresscircle
         },
         props: {
 
         },
         data() {
             return {
-                songReady: false,
-                currentTime: 0,
-                timer: null,
-                progressBarMoving: false,
-                currentLyric: null,
-                showLyric: false,
-                isPureMusic: false,
-                pureMusicLyric: '纯音乐，请欣赏',
-                currentLineNum: 0,
-                radius: 32,
-                // 音频时长
-                audioDuration: 0,
                 songs: [],
-                currentLyricText: '',
                 songsBuffer: [],
                 currentIndex: null,
                 currentSong: {},
                 playing: false,
-                fullScreen: true,
-                favoriteFS: false,
-                coverMiniPlayer: false
+                fullScreen: true
             }
         },
         computed: {
@@ -128,25 +114,14 @@
             miniPlayBtnIcon() {
                 return this.playing ? 'pause-bare' : 'play-bare'
             },
-            percent() {
-                return this.audioDuration != 0 ? this.currentTime / this.audioDuration : 0
-            },
             favoriteIcon() {
-                return this.favoriteFS ? 'mini-liked' : 'mini-like'
+                return this.FS ? 'liked' : 'like'
             },
-            ...mapGetters([
-                'favoriteSongs'
-            ])
+            favoriteMiniIcon() {
+                return this.FS ? 'mini-liked' : 'mini-like'
+            }
         },
         watch: {
-            fullScreen(val) {
-                // player和miniplayer弹出时，始终保持最高index，如果某组件(comment)想覆盖miniplayer, 可通过PopupManager
-                if(val) {
-                    this.$refs.player.style.zIndex = PopupManager.nextZIndex()
-                } else {
-                    this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
-                }
-            }
         },
         methods: {
             loadSong() {
@@ -172,9 +147,6 @@
                 this.getLyric()
                 this.checkFS()
             },
-            checkFS() {
-                this.FS = !!this.favoriteSongs.find(i => i.id === this.currentSong.id)
-            },
             getFMData() {
                 getPersonalFM().then(res => {
                     this.songs = res
@@ -191,10 +163,6 @@
             getMore() {
                 getPersonalFM().then(res => {
                     this.songsBuffer = res
-                    // console.log('getMore',res)
-                    // res.forEach(i => {
-                    //     console.log('name is ', i.name)
-                    // })
                 })
             },
             showComment() {
@@ -209,6 +177,10 @@
                 if(this.currentLyric) {
                     this.currentLyric.togglePlay()
                 }
+                const audio = this.$refs.audio
+                this.$nextTick(() => {
+                    this.playing ? audio.play() : audio.pause()
+                })
             },
             playNext() {
                 if (!this.songReady) {
@@ -239,31 +211,21 @@
                 this.doPlayNext()
             },
             deleteOne() {
+                trash(this.currentSong.id)
                 if(this.currentSong.favorite) {
                     this.toggleSongFS(this.currentSong)
                 }
                 this.doPlayNext()
             },
             toggleFavorite() {
+                this.FS = !this.FS
                 this.toggleSongFS(this.currentSong)
             },
             ...mapActions([
-                'toggleSongFS',
                 'stopPlaying'
             ]),
             toggleFullScreen() {
                 this.fullScreen = !this.fullScreen
-            },
-            audioReady() {
-                // 获取音频时长
-                this.audioDuration = this.$refs.audio.duration
-                this.clearTimer()
-                // 监听 playing 这个事件可以确保慢网速或者快速切换歌曲导致的 DOM Exception
-                this.songReady = true
-                // 如果歌曲的播放晚于歌词的出现，播放的时候需要同步歌词
-                if (this.currentLyric && !this.isPureMusic) {
-                    this.currentLyric.seek(this.currentTime * 1000)
-                }
             },
             paused() {
                 // 一首歌播放完，先触发了audio的pause，然后是ended
@@ -275,95 +237,6 @@
                 if(audio) {
                     audio.pause()
                 }
-            },
-            timeupdate(e) {
-                // 移动进度条时，更新this.currentTime，同时在播放，也会触发更新this.currentTime的这个函数
-                if(this.progressBarMoving) {
-                    return
-                }
-                this.currentTime = e.target.currentTime
-            },
-            progressBarChanging (percent) {
-                this.progressBarMoving = true
-                this.currentTime = this.audioDuration * percent
-                if (this.currentLyric) {
-                    this.currentLyric.seek(this.currentTime * 1000)
-                }
-            },
-            progressBarChange(percent) {
-                const currentTime = this.audioDuration * percent
-                this.currentTime = this.$refs.audio.currentTime = currentTime
-                this.progressBarMoving = false
-                if(this.currentLyric) {
-                    this.currentLyric.seek(this.currentTime * 1000) // 毫秒
-                }
-            },
-            formatTime(interval) {
-                interval = Math.floor(interval)
-                const minute = Math.floor(interval / 60).toString().padStart(2,'0')
-                const second = (interval % 60).toString().padStart(2,'0')
-                return `${minute}:${second}`
-            },
-            clearTimer() {
-                clearTimeout(this.timer)
-                this.timer = null
-            },
-            getLyric() {
-                this.currentSong.getLyric().then(lyric => {
-                    this.currentLyric = new Lyric(lyric,this.handleLyric)
-                }).catch(() => {
-                    this.currentLyric = null
-                    this.currentLineNum = 0
-                    this.$nextTick(() => {
-                        let wrapperHeight = this.$refs.lyricWrapper.$el.clientHeight
-                        // 没有歌词时，将noLyric对应的div设置高度，不然区域太小点击不到，不容易切换回cd
-                        if(this.$refs.noLyric) {
-                            this.$refs.noLyric.style.height = wrapperHeight + 'px'
-                        }
-                    })
-                })
-                this.$nextTick(() => {
-                    this.toggleLyric(this.showLyric)
-                })
-            },
-            handleLyric({lineNum, txt}) {
-                if(!this.$refs.lyricLine) {
-                    return
-                }
-                this.currentLineNum = lineNum
-                this.currentLyricText = txt
-                if(lineNum > 5) {
-                    let lineEl = this.$refs.lyricLine[lineNum - 5]
-                    this.$refs.lyricWrapper.scrollToElement(lineEl,1000)
-                } else {
-                    this.$refs.lyricWrapper.scrollTo(0,0,1000)
-                }
-            },
-            toggleLyric(flag) {
-                if(flag) {
-                    // 显示歌词
-                    this.$refs.cdWrapper.style.visibility = 'hidden'
-                    this.$refs.lyricWrapper.$el.style.visibility = 'visible'
-                    this.showLyric = true
-                } else {
-                    // 显示cd
-                    this.$refs.cdWrapper.style.visibility = 'visible'
-                    this.$refs.lyricWrapper.$el.style.visibility = 'hidden'
-                    this.showLyric = false
-                }
-            },
-            // 切换是否覆盖miniplayer
-            handleCoverMiniPlayer(flag) {
-                // 当前显示comment组件时，隐藏miniplayer
-                this.coverMiniPlayer = flag
-            },
-            liftPlayer() {
-                this.$refs.player.style.zIndex = PopupManager.nextZIndex()
-            },
-            liftMiniPlayer() {
-                // 每次用builder创建组件时，抬高miniplayer的zIndex
-                // 使miniplayer的zIndex始终保持在最上层, 如果组件需要覆盖miniplayer，设置coverMiniPlayer控制miniplayer的v-show
-                this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
             }
         },
         created() {
@@ -376,8 +249,6 @@
                 this.transitionCompleted = true
             }, 300)
             this.liftPlayer()
-            this.$bus.on('coverMiniPlayer', this.handleCoverMiniPlayer)
-            this.$bus.on('liftMiniPlayer', this.liftMiniPlayer)
         }
     }
 </script>
@@ -554,9 +425,9 @@
                 position: relative
                 .circle-button
                     position: absolute
-                    top: 4px
-                    left: 4px
+                    top: 6px
+                    left: 6px
             .favorite
-                margin-right: 10px
+                margin-right: 15px
                 
 </style>
