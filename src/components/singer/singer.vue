@@ -1,19 +1,18 @@
 <template>
-  <div class="singer">
-    <listview :content="singerList" @click='handleClick' ref='listview'></listview>
+  <div class='singer'>
+    <listview :content='singerList' @click='handleClick' ref='listview'></listview>
   </div>
 </template>
 
 <script>
-    import { getSingerList } from "api/singer"
-    import { ERR_OK } from "api/config"
-    import Singer from "common/js/singer"
+    import { getSingerList } from 'api/singer'
+    import Singer from 'common/js/singer'
     import { isCharacter } from 'common/js/tools'
-    import listview from "base/listview/listview"
+    import listview from 'base/listview/listview'
     import { mapMutations } from 'vuex'
     import { playlistMixin } from 'common/js/mixins'
     const HOT_SINGER_LEN = 10
-    const HOT_NAME = "热门"
+    const HOT_NAME = '热门'
 
     export default {
         name: 'singer',
@@ -92,7 +91,7 @@
     }
 </script>
 
-<style scoped lang="stylus" rel="stylesheet/stylus">
+<style scoped lang='stylus' rel='stylesheet/stylus'>
 .singer
     position: absolute
     width: 100%

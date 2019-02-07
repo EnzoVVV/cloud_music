@@ -10,8 +10,8 @@
     </div>
 </template>
 <script>
-    import roller from 'base/roller/roller'
-    import inputbox from 'base/input-box/input-box'
+    const roller = () => import('base/roller/roller')
+    const inputbox = () => import('base/input-box/input-box')
     export default {
         name: 'FunctionalHeader',
         components: {

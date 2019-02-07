@@ -74,7 +74,7 @@
 </template>
 <script>
     import scroll from 'base/scroll/scroll'
-    import minilist from 'base/mini-list/mini-list'
+    const minilist = () => import('base/mini-list/mini-list')
     import liner from 'base/liner/liner'
     import { rotate } from 'common/js/dom'
     import { playlistMixin } from 'common/js/mixins'

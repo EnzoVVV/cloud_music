@@ -21,7 +21,7 @@
     </div>
 </template>
 <script>
-    import check from 'base/check-box/check-box'
+    const check = () => import ('base/check-box/check-box')
     import { mapGetters } from 'vuex'
     import { getPxValue } from 'common/js/dom'
     export default {

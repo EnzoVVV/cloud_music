@@ -13,8 +13,8 @@
 </template>
 <script>
     import tabs from 'base/tabs/tabs'
-    import search from 'components/search/search'
-    import leftmenu from 'components/left-menu/left-menu'
+    const search = () => import('components/search/search')
+    const leftmenu = () => import('components/left-menu/left-menu')
     export default {
         name: 'Header',
         components: {

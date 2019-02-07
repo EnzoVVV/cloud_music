@@ -23,7 +23,7 @@
 <script>
     import { discMixin } from '../disc-mixin/disc-mixin'
     import { mapGetters, mapMutations, mapActions } from 'vuex'
-    import createdisc from 'components/create-disc/create-disc'
+    const createdisc = () => import('components/create-disc/create-disc')
     export default {
         name: 'CreatedDiscManage',
         mixins: [discMixin],
