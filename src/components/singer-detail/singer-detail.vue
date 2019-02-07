@@ -1,6 +1,6 @@
 <template>
 	<transition name='slide'>
-		<musiclist :songs='songs' :albums='albums' :singer='singer' :brief='brief' @goback='goback' :style='computedStyle'></musiclist>
+		<musiclist :songs='songs' :albums='albums' :singer='singer' :brief='brief' @goback='goback'></musiclist>
 	</transition>
 </template>
 
@@ -17,13 +17,6 @@
 			musiclist
 		},
 		props: {
-			showSingerDetail: {
-				type: Boolean,
-				default: false
-			},
-			zIndex: {
-				type: Number
-			}
 		},
 		data() {
 			return {
@@ -33,14 +26,7 @@
 			};
 		},
 		computed: {
-			...mapGetters(['singer']),
-			computedStyle() {
-				if(this.zIndex != undefined) {
-					return {
-						'z-index': `${this.zIndex} !important`
-					}
-				}
-			}
+			...mapGetters(['singer'])
 		},
 		methods: {
 			check() {

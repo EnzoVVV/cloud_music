@@ -2,65 +2,39 @@
     <div>
         <minilist :title='title' :headerBorder='false' @hide='hide' v-if='!modalFlag' ref='minilist'>
             <ul slot='list'>
-                <li class='line' @click='popUpCreateDisc'>
-                    <IconImg imgName='list-save' class='icon'></IconImg>
-                    <div class='text'>收藏到歌单</div>
-                </li>
-                <li class='line'>
-                    <IconImg imgName='list-singer' class='icon'></IconImg>
-                    <div class='text'>{{singerLine}}</div>
-                </li>
-                <li class='line'>
-                    <IconImg imgName='list-album' class='icon'></IconImg>
-                    <div class='text'>{{albumLine}}</div>
-                </li>
-                <li class='line' v-if='showDelete' @click='popUpDelete'>
+                <li class='line' @click='popUpDelete'>
                     <IconImg imgName='list-delete' class='icon'></IconImg>
                     <div class='text'>删除</div>
                 </li>
             </ul>
         </minilist>
-        <SaveToDisc v-if='modalFlag' :song='song' @hide='hide'></SaveToDisc>
-        <modal v-if='deleteSongFlag' confirmBtnText='删除' title='确认将所选音乐从列表中删除?' @confirm='deleteSong' @hide='deleteSongFlag = false'></modal>
+        <modal v-if='deleteFlag' confirmBtnText='删除' :title='modalTitle' @confirm='deleteOne' @hide='deleteFlag = false'></modal>
     </div>
 </template>
 <script>
     import minilist from 'base/mini-list/mini-list'
-    const SaveToDisc = () => import('components/save-to-disc/save-to-disc')
     const modal = () => import('base/modal/modal')
     export default {
         name: 'infolist',
         components: {
             minilist,
-            SaveToDisc,
             modal
         },
         props: {
-            song: {
-                type: Object
+            title: {
+                type: String
             },
-            // 显示infolist中的删除项
-            showDelete: {
-                type: Boolean,
-                default: false
+            modalTitle: {
+                type: String
             }
         },
         data() {
             return {
                 modalFlag: false,
-                deleteSongFlag: false
+                deleteFlag: false
             }
         },
         computed: {
-            singerLine() {
-                return `歌手: ${this.song.singer}`
-            },
-            albumLine() {
-                return `专辑: ${this.song.album}`
-            },
-            title() {
-                return `歌曲: ${this.song.name}`
-            }
         },
         watch: {
 
@@ -81,15 +55,12 @@
                 }
                 this.$emit('hide')
             },
-            popUpCreateDisc() {
-                this.popUp('modalFlag')
-            },
             popUpDelete() {
-                this.popUp('deleteSongFlag')
+                this.popUp('deleteFlag')
             },
-            deleteSong() {
+            deleteOne() {
                 // 连续emit两个事件，父组件执行完第一个事件的处理函数后，再执行第二个事件的处理函数
-                this.$emit('deleteSong')
+                this.$emit('deleteOne')
                 this.$emit('hide')
             }
         },

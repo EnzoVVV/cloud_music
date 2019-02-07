@@ -34,7 +34,7 @@
         },
         methods: {
             selectAlbum(album) {
-                this.showComponent('albumDetail',album)
+                this.showComponent('albumdetail',album)
             }
         },
         created() {

@@ -10,23 +10,23 @@
                 <div class='basic'>
                     <ul>
                         <li class='item'>
-                            <IconImg imgName='mine' class='icon'></IconImg>
+                            <IconImg imgName='mine-local' class='icon'></IconImg>
                             <div class='text'>本地音乐</div>
                         </li>
                         <li class='item'>
-                            <IconImg imgName='mine' class='icon'></IconImg>
+                            <IconImg imgName='mine-recent' class='icon'></IconImg>
                             <div class='text'>最近播放</div>
                         </li>
                         <li class='item'>
-                            <IconImg imgName='mine' class='icon'></IconImg>
+                            <IconImg imgName='mine-download' class='icon'></IconImg>
                             <div class='text'>下载管理</div>
                         </li>
                         <li class='item'>
-                            <IconImg imgName='mine' class='icon'></IconImg>
+                            <IconImg imgName='mine-radio' class='icon'></IconImg>
                             <div class='text'>我的电台</div>
                         </li>
                         <li class='item' @click.stop='showCollection'>
-                            <IconImg imgName='mine' class='icon'></IconImg>
+                            <IconImg imgName='mine-collection' class='icon'></IconImg>
                             <div class='text'>我的收藏</div>
                         </li>
                     </ul>
@@ -51,7 +51,7 @@
                     </div>
                     <transition-group name='lists' tag='ul' class='lists'>
                         <li class='list' v-for='disc in fdiscs' :key='disc.id' v-show='!flistFold' @click='showDiscDetail(disc)'>
-                            <liner :picUrl='disc.picUrl' :main='disc.name' :sub='flistInfo(disc)' :showImg='true' icon='uj' @iconClick='showListControl(disc,1)'></liner>
+                            <liner :picUrl='disc.picUrl' :main='disc.name' :sub='flistInfo(disc)' :showImg='true' icon='um' @iconClick='showListControl(disc,1)'></liner>
                         </li>
                     </transition-group>
                 </div>
@@ -79,7 +79,6 @@
     import { rotate } from 'common/js/dom'
     import { playlistMixin } from 'common/js/mixins'
     import { mapGetters, mapActions } from 'vuex'
-    import { favoriteDisc } from 'api/disc'
     export default {
         name: 'mine',
         mixins: [playlistMixin],
@@ -122,7 +121,7 @@
         },
         methods: {
             clistIcon(index) {
-                return index == 0 ? null : 'uj'
+                return index == 0 ? null : 'um'
             },
             // TODO，精简
             toggleCList() {
@@ -180,7 +179,6 @@
                 })
                 this.listControl.show = false
                 this.$message('已删除')
-                favoriteDisc(disc.id, false)
                 if(this.listControl.type == 0) {
                     // 恢复歌单，暂存删除的自创歌单
                     this.storeDiscardDisc(disc)

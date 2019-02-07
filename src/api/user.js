@@ -1,12 +1,13 @@
 import { HOST } from './config'
-import { success } from './shared'
+import { success, getEvents, getGender } from './shared'
 import axios from 'axios'
 import { formatTimestamp } from 'common/js/tools'
 import { getSong } from 'common/js/song'
 
 
 export function getUserInfo(id) {
-    const url = HOST + `/user/detail?uid=${id}`
+    const date = new Date()
+    const url = HOST + `/user/detail?uid=${id}&timestamp=${date}`
     return axios.get(url).then(res => {
         let result = {}
         if(success(res.status)) {
@@ -20,6 +21,7 @@ export function getUserInfo(id) {
                 bgUrl: profile.backgroundUrl,
                 birthday: formatTimestamp(profile.birthday),
                 gender: getGender(profile.gender),
+                followed: profile.followed,
                 followings: profile.follows,
                 followers: profile.followeds,
                 eventCount: profile.eventCount,
@@ -33,9 +35,6 @@ export function getUserInfo(id) {
     })
 }
 
-function getGender(code) {
-    return code == 1 ? 'boy' : 'girl'
-}
 
 export function getUserPlaylist(id) {
     const url = HOST + `/user/playlist?uid=${id}`
@@ -62,30 +61,7 @@ export function getUserPlaylist(id) {
 
 export function getUserEvent(id) {
     const url = HOST + `/user/event?uid=${id}`
-    return axios.get(url).then(res => {
-        let result = []
-        if(success(res.status)) {
-            const events = res.data.events
-            result = events.map(event => {
-                const json = JSON.parse(event.json)
-                const pics = event.pics.map(pic => pic.originUrl)
-                const sharedObj = {
-                    id: event.id,
-                    msg: json.msg,
-                    pics: pics,
-                    time: formatTimestamp(event.eventTime)
-                }
-                if(event.type == 18) {
-                    return Object.assign(sharedObj, {
-                        song: getSong(json.song)
-                    })
-                } else if(event.type == 22) {
-                    // 转发
-                }
-            })
-        }
-        return result
-    })
+    return getEvents(url)
 }
 
 export function getUserRecord(id, type) {
@@ -141,6 +117,7 @@ function getFollowData(item) {
 // 关注用户
 export function followUser(id, status) {
     const code = status ? 1 : 2
-    const url = HOST + `/follow?id=${id}&t=${code}`
+    const date = new Date()
+    const url = HOST + `/follow?id=${id}&t=${code}&timestamp=${date}`
     return axios.get(url)
 }

@@ -171,6 +171,8 @@ export const restoreSearchHistory = function ({commit}) {
 import { addToDisc, getDiscs, saveDisc, deleteDisc as deleteADisc, deleteSongFromDisc as deleteSongFromADisc, toggleSongFS as toggleTheSongFS } from 'common/js/cache'
 import { createDisc as createADisc } from 'common/js/disc'
 import Disc from 'common/js/disc'
+import { favoriteDisc as favoriteDiscApi } from 'api/disc'
+import { favoriteSong as favoriteSongApi } from 'api/song'
 
 // 将歌曲添加到歌单, 入参为类的实例
 export const addSongToDisc = function ({commit}, {song, disc}) {
@@ -216,6 +218,8 @@ export const deleteDisc = function ({commit}, {disc, type}) {
     deleteADisc(disc, type)
     const mutationType = type === 0 ? types.SET_DISCS : types.SET_F_DISCS
     commit(mutationType, getDiscs(type))
+    // 服务端删除歌单
+    favoriteDiscApi(disc.id, false)
 }
 
 // 从歌单中删除一首歌
@@ -239,12 +243,15 @@ export const favoriteDisc = function ({commit}, {disc, status}) {
         deleteADisc(disc, 1)
     }
     commit(types.SET_F_DISCS, getDiscs(1))
+    // 服务端收藏歌单
+    favoriteDiscApi(disc.id, status)
 }
 
 // 添加/移除歌曲到“我喜欢的音乐”歌单
 export const toggleSongFS = function ({commit}, song) {
     toggleTheSongFS(song)
     commit(types.SET_DISCS, getDiscs(0))
+    favoriteSongApi(song.id, song.favorite)
 }
 
 
@@ -269,7 +276,8 @@ export const restoreAlbums = function ({commit}) {
 
 // ---------------------收藏歌手------------------------------------
 import { saveSinger, deleteSinger, getSingers } from 'common/js/cache'
-// 收藏/取消收藏 歌手
+import { favoriteSinger as favoriteSingerApi } from 'api/singer'
+// 收藏/取消收藏 歌手, singer不要求是Singer实例，有id的Object就行
 export const favoriteSinger = function ({commit}, {singer, status}) {
     if(status) {
         saveSinger(singer)
@@ -277,6 +285,7 @@ export const favoriteSinger = function ({commit}, {singer, status}) {
         deleteSinger(singer)
     }
     commit(types.SET_FAVORITE_SINGERS, getSingers())
+    favoriteSingerApi(singer.id, status)
 }
 
 // 从storage中恢复收藏的歌手

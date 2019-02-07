@@ -12,7 +12,7 @@
             </div>
             <ul>
                 <li v-for='(song,index) in songs' :key='song.id' class='item' @click='handleClick(song,index)'>
-                    <liner :showImg='showImg' :showIndex='showIndex' :picUrl='song.picUrl' :main='song.name' :sub='getDesc(song)' :index='index+1' :speaker='true' :itemId='song.id' :icon='settingIcon' @iconClick='iconClick'></liner>
+                    <liner :showImg='showImg' :showIndex='showIndex' :picUrl='song.picUrl' :main='song.name' :sub='getDesc(song)' :index='index+1' :speaker='speaker' :itemId='song.id' :icon='settingIcon' @iconClick='iconClick'></liner>
                 </li>
             </ul>
         </div>
@@ -72,8 +72,11 @@
             setting: {
                 type: Boolean,
                 default: false
+            },
+            speaker: {
+                type: Boolean,
+                default: true
             }
-
         },
         data() {
             return {
@@ -96,7 +99,7 @@
                 return ''
             },
             settingIcon() {
-                return this.setting ? 'uj' : ''
+                return this.setting ? 'um' : ''
             }
         },
         watch: {
