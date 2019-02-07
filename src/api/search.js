@@ -1,7 +1,7 @@
 import axios from 'axios'
 import jsonp from 'common/js/jsonp'
 import { HOST, commonParams, ERR_FREE } from 'api/config'
-import { success } from 'api/shared'
+import { success, getGender } from 'api/shared'
 import { getSongUrl } from 'api/song'
 import { getSongs } from 'common/js/song'
 import { getAlbums } from 'common/js/album'
@@ -47,6 +47,48 @@ export function searchAlbum(query) {
         let result = []
         if(success(res.status)) {
             result = getAlbums(res.data.result.albums)
+        }
+        return result
+    })
+}
+
+
+export function searchUser(query) {
+    return search(query, 1002).then(res => {
+        let result = []
+        if(success(res.status)) {
+            const profiles = res.data.result.userprofiles
+            result = profiles.map(profile => {
+                return {
+                    id: profile.userId,
+                    name: profile.nickname,
+                    signature: profile.signature,
+                    picUrl: profile.avatarUrl,
+                    gender: getGender(profile.gender),
+                    followed: profile.followed
+                }
+            })
+        }
+        return result
+    })
+}
+
+export function searchDisc(query) {
+    return search(query, 1000).then(res => {
+        let result = []
+        if(success(res.status)) {
+            result = res.data.result.playlists.map(playlist => {
+                return {
+                    id: playlist.id,
+                    name: playlist.name,
+                    picUrl: playlist.coverImgUrl,
+                    trackCount: playlist.trackCount,
+                    playCount: playlist.playCount,
+                    creator: {
+                        name: playlist.creator.nickname
+                    }
+                }
+            })
         }
         return result
     })

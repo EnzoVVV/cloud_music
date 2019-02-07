@@ -24,7 +24,6 @@
     import { discMixin } from '../disc-mixin/disc-mixin'
     import { mapGetters, mapMutations, mapActions } from 'vuex'
     import createdisc from 'components/create-disc/create-disc'
-    import { favoriteDisc } from 'api/disc'
     export default {
         name: 'CreatedDiscManage',
         mixins: [discMixin],
@@ -53,13 +52,11 @@
                 list.forEach(disc => {
                     // 把被删除的歌单存起来, 给'恢复歌单'用
                     this.storeDiscardDisc(disc)
-                    // 本地删除歌单
+                    // 删除歌单
                     this.deleteDisc({
                         disc: disc,
                         type: 0
                     })
-                    // 服务端删除歌单
-                    favoriteDisc(disc.id, false)
                 })
             },
             finish(list) {

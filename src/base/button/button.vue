@@ -1,5 +1,5 @@
 <template>
-    <div class='button' :style='computedStyle' @click='handleClick'>
+    <div class='button' :style='computedStyle' @click.stop='handleClick'>
         <IconSvg :icon-class='icon' :size='iconSize'></IconSvg>
         <span class='text'>{{text}}</span>
     </div>
@@ -95,6 +95,7 @@
         display: flex
         align-items: center
         justify-content: center
+        background: $color-text-lighter
         .text
             padding: 0 3px
 </style>

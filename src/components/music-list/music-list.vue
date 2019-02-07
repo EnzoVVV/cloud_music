@@ -3,17 +3,17 @@
         <div class='header' ref='header'>
             <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
             <div class='header-title'>{{title}}</div>
-            <ibutton v-if='!singerFS && reachTop' icon='add' text='收藏' :red='true' size='small' class='header-favorite' @click='toggleSingerFS(singer, true)'></ibutton>
+            <ibutton v-if='!singerFS && reachTop' icon='add' text='收藏' :red='true' size='small' class='header-favorite' @click='toggleSingerFS(true)'></ibutton>
             <IconSvg icon-class='share' size='23px' class='header-share'></IconSvg>
         </div>
         <div class='bg-img' :style='bgStyle' ref='img'></div>
         <div class='info' ref='info'>
             <div class='name'>{{singer.name}}</div>
             <div class='wrapper'>
-                <div class='other'>test</div>
+                <div class='other'>音乐人</div>
                 <ibutton icon='person' text='个人主页'></ibutton>
-                <ibutton v-if='!singerFS' icon='add' text='收藏' :red='true' class='favorite' @click='toggleSingerFS(singer, true)'></ibutton>
-                <ibutton v-else icon='bingo-light' text='已收藏' class='favorite' @click='toggleSingerFS(singer, false)'></ibutton>
+                <ibutton v-if='!singerFS' icon='add' text='收藏' :red='true' class='favorite' @click='toggleSingerFS(true)'></ibutton>
+                <ibutton v-else icon='bingo-white' text='已收藏' class='favorite' @click='toggleSingerFS(false)'></ibutton>
             </div>
         </div>
         <div class='fixed-tab' v-show='showFixedTab'>
@@ -32,7 +32,7 @@
                 <albumlist :albums='albums' ref='albumlist' v-show='activeTab == 1'></albumlist>
                 <div v-show='activeTab == 2'>
                 </div>
-                <brief v-show='activeTab == 3' ref='brief' :brief='brief' :singer='singer'>
+                <brief v-show='activeTab == 3' ref='brief' :brief='brief' :singer='singerCopy'>
                 </brief>
             </div>
         </scroll>
@@ -45,6 +45,7 @@
     import albumlist from 'components/album-list/album-list'
     import brief from 'components/brief/brief'
     import { transform, translate } from 'common/js/dom'
+    import { deepCopy } from 'common/js/tools'
     import { mapGetters, mapActions } from 'vuex'
     import { playlistMixin } from 'common/js/mixins'
     import { favoriteSinger, getSingerDetail } from 'api/singer'
@@ -58,7 +59,6 @@
             songlist,
             albumlist,
             brief
-            
         },
         props: {
             songs: {
@@ -106,7 +106,8 @@
                     },
                 ],
                 reachTop: false,
-                singerFS: false
+                singerFS: false,
+                singerCopy: deepCopy(this.singer)
             }
         },
         computed: {
@@ -124,13 +125,13 @@
             checkSingerFS() {
                 this.singerFS = !!this.fsingers.find(i => i.id === this.singer.id)
             },
-            toggleSingerFS(singer, status) {
+            toggleSingerFS(status) {
                 this.singerFS = status
                 this.favoriteSinger({
-                    singer: singer,
+                    singer: this.singerCopy,
                     status: status
                 })
-                favoriteSinger(singer.id, status)
+                favoriteSinger(this.singerCopy.id, status)
             },
             goBack() {
                 this.$emit('goback')
@@ -181,20 +182,21 @@
                 }
             },
             loadImg() {
-                if(!this.singer.picUrl) {
+                if(!this.singerCopy.picUrl) {
                     // song里的singer可能没有picUrl
                     getSingerDetail(this.singer.id).then(res => {
-                        this.imgLoad(res.picUrl)
+                        this.singerCopy.picUrl = res.picUrl
+                        this.imgLoad()
                     })
                 } else {
-                    this.imgLoad(this.singer.picUrl)
+                    this.imgLoad()
                 }
             },
-            imgLoad(src) {
+            imgLoad() {
                 let img = new Image()
-                img.src = src
+                img.src = this.singerCopy.picUrl
                 img.onload = () => {
-                    this.bgStyle = `background-image: url(${src})`
+                    this.bgStyle = `background-image: url(${this.singerCopy.picUrl})`
                     this.$nextTick(() => {
                         this.imgHeight = this.$refs.img.clientHeight
                         // $refs.name如果取的是组件，那么是获取到了vue实例，取得dom还要$refs.name.$el
@@ -300,6 +302,7 @@
                 .other
                     flex: 1
                     color: $color-text-ll
+                    font-size: $font-size-medium
             .favorite
                 margin-left: 10px
         .list

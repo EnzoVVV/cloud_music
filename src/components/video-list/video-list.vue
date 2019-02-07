@@ -10,7 +10,7 @@
                         <div class='artist'>{{video.artists[0].name}}</div>
                         <div class='btn' @click='toggleFS'><IconImg imgName='like'></IconImg></div>
                         <div class='btn' @click='showComment(video.id)'><IconImg imgName='comment'></IconImg></div>
-                        <div class='btn' @click='infoListFlag = true'><IconImg imgName='uj'></IconImg></div>
+                        <div class='btn' @click='infoListFlag = true'><IconImg imgName='um'></IconImg></div>
                     </div>
                 </li>
             </ul>

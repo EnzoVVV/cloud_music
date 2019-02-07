@@ -39,13 +39,11 @@
                 list.forEach(disc => {
                     // 把被删除的歌单存起来, 给'恢复歌单'用
                     this.storeDiscardDisc(disc)
-                    // 本地删除歌单
+                    // 删除歌单
                     this.deleteDisc({
                         disc: disc,
                         type: 1
                     })
-                    // 服务端删除歌单
-                    favoriteDisc(disc.id, false)
                 })
             },
             finish(list) {

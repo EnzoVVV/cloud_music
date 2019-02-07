@@ -11,7 +11,8 @@
             <div class='wrapper'>
                 <img :src='info.picUrl' class='avatar'></img>
                 <div class='empty'></div>
-                <ibutton v-if='!self' icon='add' text='关注' :red='true' class='favorite'></ibutton>
+                <ibutton v-if='!isSelf && !followed' icon='add' text='关注' :red='true' class='favorite' @click='toggleFollow'></ibutton>
+                <ibutton v-else-if='!isSelf && followed' icon='bingo-light' text='已关注' class='favorite' @click='toggleFollow'></ibutton>
             </div>
             <div class='name'>{{info.name}}</div>
             <div class='follow'>
@@ -51,15 +52,7 @@
                     <liner v-for='playlist in favoritePlaylists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
                 </div>
                 <div v-show='activeTab == 1' ref='event' class='list-event'>
-                    <div v-if='events.length'>
-                        <div v-for='event in events' :key='event.id' class='event'>
-                            <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='info.picUrl' :main='eventMain(event)' :sub='event.time' height='40px' :showImg='true'></liner>
-                            <div class='msg'>{{event.msg}}</div>
-                            <div class='song-wrapper' v-if='event.song'>
-                                <liner :hasBorder='false' :picUrl='event.song.picUrl' :main='event.song.name' :sub='event.song.singer' height='40px' :showImg='true' :selectable='true' @select='selectSong(event.song)'></liner>
-                            </div>
-                        </div>
-                    </div>
+                    <event :events='events' v-if='events.length'></event>
                     <div v-else class='event-empty'>暂无动态</div>
                 </div>
                 <div v-show='activeTab == 2' ref='brief' class='list-brief'>
@@ -81,10 +74,11 @@
     import ibutton from 'base/button/button'
     import { transform, translate } from 'common/js/dom'
     import { playlistMixin, homepageMixin } from 'common/js/mixins'
-    import { getUserInfo, getUserDetail, getUserPlaylist, getUserEvent } from 'api/user'
+    import { getUserInfo, getUserDetail, getUserPlaylist, getUserEvent, followUser } from 'api/user'
     import { mapGetters, mapMutations } from 'vuex'
     const record = () => import('./sub/record/record')
     const follow = () => import('./sub/follow/follow')
+    const event = () => import('components/event/event')
 
     const radius = 10
     export default {
@@ -93,7 +87,8 @@
         components: {
             ibutton,
             record,
-            follow
+            follow,
+            event
         },
         props: {
             userId: {
@@ -137,7 +132,9 @@
                 events: [],
                 recordFlag: false,
                 followFlag: false,
-                followIndex: 0
+                followIndex: 0,
+                followed: false,
+                isSelf: false
             }
         },
         computed: {
@@ -166,7 +163,7 @@
                 return this.info.level != undefined ? `Lv.${this.info.level}` : null
             },
             recordMain() {
-                return this.self ? '我的听歌排行' : `${this.info.name}的听歌排行`
+                return this.isSelf ? '我的听歌排行' : `${this.info.name}的听歌排行`
             },
             recordSub() {
                 return `累计听歌${this.info.listenSongs}首`
@@ -177,7 +174,10 @@
                     count += playlist.subscribedCount
                 })
                 return count
-            }
+            },
+            ...mapGetters([
+                'loginUser'
+            ])
         },
         watch: {
             activeTab() {
@@ -191,6 +191,7 @@
             getInfo() {
                 getUserInfo(this.userId).then(res => {
                     this.info = res
+                    this.followed = res.followed
                     this.setHomepage(this.info)
                     this.loadImg()
                 })
@@ -204,7 +205,7 @@
                             this.favoritePlaylists.push(playlist)
                         }
                     })
-                    if(this.self) {
+                    if(this.isSelf) {
                         this.createdPlaylists[0].name = '我喜欢的音乐'
                     }
                 })
@@ -237,6 +238,10 @@
             },
             selectPlaylist(playlist) {
                 this.showComponent('discdetail', playlist)
+            },
+            toggleFollow() {
+                this.followed = !this.followed
+                followUser(this.userId, this.followed)
             },
             goBack() {
                 this.$emit('back')
@@ -319,6 +324,12 @@
                 let tabHeight = this.$refs.tab.clientHeight
                 this.minHeight = viewerHeight - this.headerHeight - tabHeight + 1
             },
+            checkSelf() {
+                if(this.self) {
+                    this.isSelf = true
+                }
+                this.isSelf = this.userId === this.loginUser.id
+            },
             ...mapMutations({
                 'setHomepage': 'SET_HOMEPAGE'
             })
@@ -327,6 +338,7 @@
             this.getInfo()
             this.getPlaylist()
             this.getEvent()
+            this.checkSelf()
         },
         mounted() {
             this.getHeight()
@@ -476,7 +488,7 @@
                         .msg
                             font-size: 13px
                             line-height: 20px
-                            margin: 5px 0 5px 50px
+                            margin: 5px 5px 5px 50px
                         .song-wrapper
                             background: rgba(144,144,144,0.1)
                             margin: 0 10px 10px 50px
@@ -489,7 +501,7 @@
                         padding-top: 50px
                 .list-brief
                     background: $color-background
-                    padding-left: 10px
+                    padding: 0 10px
                     .brief-title
                         font-weight: bold
                         padding-top: 20px

@@ -49,7 +49,6 @@
                     status: status
                 })
                 this.favoriteStatus = status
-                favoriteDisc(this.disc.id, status)
             },
             ...mapActions([
                 'favoriteDisc'

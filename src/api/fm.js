@@ -16,3 +16,8 @@ export function getPersonalFM() {
         return result
     })
 }
+
+export function trash(id) {
+    const url = HOST + `/fm_trash?id=${id}`
+    return axios.get(url)
+}

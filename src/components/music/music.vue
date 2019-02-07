@@ -6,7 +6,7 @@
 <script>
     import recommend from 'components/recommend/recommend'
     const singer = () => import('components/singer/singer')
-    const radio = () => import('components/radio/radio')
+    const feeds = () => import('components/feeds/feeds')
     import tabswiper from 'base/swiper/tabswiper'
     const componentList = [
         {
@@ -14,12 +14,12 @@
             component: recommend
         },
         {
-            name: 'singer',
-            component: singer
+            name: 'feeds',
+            component: feeds
         },
         {
-            name: 'radio',
-            component: radio
+            name: 'singer',
+            component: singer
         }
     ]
     export default {
@@ -37,10 +37,10 @@
                         text: '推荐'
                     },
                     {
-                        text: '歌手'
+                        text: '动态'
                     },
                     {
-                        text: '电台'
+                        text: '歌手'
                     }
                 ],
                 componentList: componentList,

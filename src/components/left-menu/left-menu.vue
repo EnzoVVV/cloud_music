@@ -55,15 +55,15 @@
             </scroll>
             <div class='bottom'>
                 <div class='item'>
-                    <IconSvg icon-class='night-mode'></IconSvg>
+                    <IconImg imgName='night'></IconImg>
                     <span>夜间模式</span>
                 </div>
                 <div class='item'>
-                    <IconSvg icon-class='setting'></IconSvg>
+                    <IconImg imgName='setting'></IconImg>
                     <span>设置</span>
                 </div>
                 <div class='item'>
-                    <IconSvg icon-class='exit'></IconSvg>
+                    <IconImg imgName='exit'></IconImg>
                     <span>退出</span>
                 </div>
             </div>

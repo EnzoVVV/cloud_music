@@ -96,7 +96,7 @@
                     disc: this.rankinfo,
                     status: status
                 })
-                this.favoriteStatus = !this.favoriteStatus
+                this.favoriteStatus = status
             },
             ...mapActions([
                 'favoriteDisc'

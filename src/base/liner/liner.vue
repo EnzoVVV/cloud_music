@@ -1,5 +1,5 @@
 <template>
-    <div class='liner' :style='computedStyle' @click='handleSelect'>
+    <div class='liner' :style='computedStyle' @click='handleSelect' ref='liner'>
         <check v-if='showCheck && !showSpeaker' :circle='circleCheck' @check='check' class='check' ref='check'></check>
         <div class='img-wrapper' v-if='showImg && !showSpeaker' :style='imgWrapperStyle' @click='imgClick'>
             <img :src='picUrl' class='img' :style='imgStyle'></img>
@@ -7,15 +7,16 @@
         </div>
         <div class='index' v-if='showIndex && !showSpeaker'>{{index}}</div>
         <div class='speaker' v-if='showSpeaker' :style='speakerStyle'><IconImg imgName='speaker'></IconImg></div>
-        <div class='content-wrapper' :style='contentStyle'>
+        <div class='content-wrapper' :style='contentStyle' ref='wrapper'>
             <div class='content'>
-                <div class='name' ref='main' :style='mainStyle'>{{main}}</div>
+                <div class='name' ref='main' :style='mainStyle' v-html='main'></div>
                 <div class='desc' ref='sub' :style='subStyle' v-if='sub.length'>{{sub}}</div>
             </div>
             <div class='icon' v-if='sort' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
                 <IconSvg icon-class='menu'></IconSvg>
             </div>
-            <div class='icon' v-if='icon' @click.stop='iconClick'><IconSvg :icon-class='icon'></IconSvg></div>
+            <div class='icon' v-if='icon' @click.stop='iconClick'><IconImg :imgName='icon'></IconImg></div>
+            <slot name='button'></slot>
         </div>
     </div>
 </template>
@@ -258,19 +259,22 @@
         .content-wrapper
             margin-left: 10px
             display: flex
+            align-items: center
             height: 100%
             flex: 1
+            // 如果子元素内容太长, flex元素会被子元素撑大而超出父容器的剩余空间, 需要设置overflow: hidden
+            overflow: hidden
             .content
                 flex-direction: column
                 display: flex
                 justify-content: center
                 flex: 1
+                overflow: hidden
                 div
-                    width: 100%
-                    max-width: calc(100% - 30px)
                     text-overflow: ellipsis 
                     overflow: hidden
                     white-space: nowrap
+                    padding-right: 10px
                 .name
                     font-size: $font-size-medium
                     color: $color-text
@@ -284,5 +288,4 @@
                 display: flex
                 align-items: center
                 justify-content: center
-
 </style>
