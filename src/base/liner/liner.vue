@@ -2,7 +2,7 @@
     <div class='liner' :style='computedStyle' @click='handleSelect' ref='liner'>
         <check v-if='showCheck && !showSpeaker' :circle='circleCheck' @check='check' class='check' ref='check'></check>
         <div class='img-wrapper' v-if='showImg && !showSpeaker' :style='imgWrapperStyle' @click='imgClick'>
-            <img :src='picUrl' class='img' :style='imgStyle'></img>
+            <img :src='picUrl' class='img' :style='imgStyle'/>
             <IconImg imgName='cd-decorate' class='cd' v-if='cd'></IconImg>
         </div>
         <div class='index' v-if='showIndex && !showSpeaker'>{{index}}</div>

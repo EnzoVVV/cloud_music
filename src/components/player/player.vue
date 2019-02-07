@@ -3,7 +3,7 @@
         <transition name='normal'>
             <div class='normal-player' v-show='fullScreen' ref='player'>
                 <div class='background'>
-                    <img :src='currentSong.picUrl' class='background-img'></img>
+                    <img :src='currentSong.picUrl' class='background-img'/>
                 </div>
                 <div class='header' ref='header'>
                     <div @click='goBack' class='header-back'><IconSvg icon-class='back'></IconSvg></div>
@@ -20,17 +20,17 @@
                     <!-- 移动端，touch事件之后是click事件，为了click所以此处不能touchstart.prevent，如必须，则可以在touch处理函数中e.preventDefault -->
                     <div class='cd-wrapper' ref='cdWrapper' @touchstart.stop='touchstart' @touchmove.stop='touchmove' @touchend.stop='touchend'>
                         <div class='cd' :class='cdStatus' ref='cd'>
-                            <img :src='currentSong.picUrl' class='cd-img' ref='cdImg'></img>
+                            <img :src='currentSong.picUrl' class='cd-img' ref='cdImg'/>
                         </div>
                     </div>
                     <div class='next-cd-wrapper' ref='nextCdWrapper' v-if='nextSong'>
                         <div class='next-cd'>
-                            <img :src='nextSong.picUrl' class='next-cd-img'></img>
+                            <img :src='nextSong.picUrl' class='next-cd-img'/>
                         </div>
                     </div>
                     <div class='pre-cd-wrapper' ref='preCdWrapper' v-if='preSong'>
                         <div class='pre-cd'>
-                            <img :src='preSong.picUrl' class='pre-cd-img'></img>
+                            <img :src='preSong.picUrl' class='pre-cd-img'/>
                         </div>
                     </div>
                     <scroll class='lyric-wrapper' ref='lyricWrapper'>
@@ -82,7 +82,7 @@
             </div>
         </transition>
         <div class='mini-player' v-show='!fullScreen && !coverMiniPlayer' @click='toggleFullScreen' ref='miniplayer'>
-            <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'></img></div>
+            <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'/></div>
             <div class='info'>
                 <div class='name'>{{currentSong.name}}</div>
                 <div class='lyric' v-if='currentLyricText.length'>{{currentLyricText}}</div>

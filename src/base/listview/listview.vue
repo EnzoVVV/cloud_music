@@ -5,7 +5,7 @@
                 <h2 class='group-title'>{{group.title}}</h2>
                 <ul>
                     <li v-for='item in group.items' :key='item.id' class='group-item' @click='handleClick(item)'>
-                        <img v-lazy='item.picUrl' class='group-item-img needsclick'></img>
+                        <img v-lazy='item.picUrl' class='group-item-img needsclick'/>
                         <span class='group-item-name'>{{item.name}}</span>
                     </li>
                 </ul>
@@ -91,6 +91,7 @@
                     // 向下滑动超出了下部
                     index = this.groupHeight.length -2
                 }
+                debugger
                 // this.$refs.group是一个数组（li是v-for循环的），因此可以用this.$refs.group[index]来选中第index个元素
                 this.$refs.listview.scrollToElement(this.$refs.group[index], 200)
                 this.scrollY = this.$refs.listview.scroll.y

@@ -7,7 +7,7 @@
                 <div>
                     <div class='header' ref='header'>
                         <div class='header-wrapper'>
-                            <img class='avatar' :src='userInfo.picUrl'></img>
+                            <img class='avatar' :src='userInfo.picUrl'/>
                             <div class='info'>
                                 <span @click='showHomepage'>{{userInfo.name}}</span>
                             </div>

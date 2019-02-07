@@ -6,7 +6,7 @@
             <div class='like-btn' @click='toggleLike' ref='likeBtn'><IconImg :imgName='likeIcon' size='15px'></IconImg></div>
         </div>
         <div class='content'>
-            <div class='comment'>{{comment.content}}</div>
+            <span class='comment'>{{comment.content}}</span>
             <span class='reply' v-if='!hideReply && comment.reply && comment.reply.length' @click='showReply(comment)'>{{comment.reply.length}}条回复 ></span>
         </div>
     </div>
@@ -90,8 +90,7 @@
         .like-btn
             padding: 0 10px
     .content
-        margin-left: 45px
-        padding: 5px 5px 10px 0
+        padding: 5px 5px 10px 55px
         display: flex
         flex-direction: column
         border-bottom: 1px solid $color-light

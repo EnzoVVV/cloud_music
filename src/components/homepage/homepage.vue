@@ -9,7 +9,7 @@
         <div class='bg-img' :style='bgStyle' ref='img'></div>
         <div class='info' ref='info'>
             <div class='wrapper'>
-                <img :src='info.picUrl' class='avatar'></img>
+                <img :src='info.picUrl' class='avatar'/>
                 <div class='empty'></div>
                 <ibutton v-if='!isSelf && !followed' icon='add' text='关注' :red='true' class='favorite' @click='toggleFollow'></ibutton>
                 <ibutton v-else-if='!isSelf && followed' icon='bingo-light' text='已关注' class='favorite' @click='toggleFollow'></ibutton>

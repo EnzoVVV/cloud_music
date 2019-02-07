@@ -1,5 +1,5 @@
 <template>
-    <img :src='path' :style='computedStyle'></img>
+    <img :src='path' :style='computedStyle'/>
 </template>
 <script>
     export default {
