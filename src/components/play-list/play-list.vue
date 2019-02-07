@@ -1,7 +1,7 @@
 <template>
     <detailboard headerTitle='歌单' :cover='cover' :cusList='true' :cusInfo='true' :showSearch='false' :showFunc='false' @back='goback' class='playlist'>
         <div slot='info'>
-            <img class='img' :src='cover'></img>
+            <img class='img' :src='cover'/>
             <div class='title'>test</div>
         </div>
         <div slot='list'>

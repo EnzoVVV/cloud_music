@@ -7,7 +7,7 @@
                     <div class='text'>新建歌单</div>
                 </li>
                 <li class='list' v-for='disc in discs' :key='disc.name' @click='add(disc)'>
-                    <img class='img' v-lazy='disc.picUrl'></img>
+                    <img class='img' v-lazy='disc.picUrl'/>
                     <div class='text'>
                         <p class='name'>{{disc.name}}</p>
                         <p class='info'>{{clistInfo(disc)}}</p>

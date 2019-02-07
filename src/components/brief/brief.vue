@@ -6,7 +6,7 @@
         <scroll class='similar' :scrollX='true' ref='slider'>
             <div class='wrapper' ref='wrapper'>
                 <div v-for='singer of similarSingers' :key='singer.id' class='singer' @click='handleClick(singer)'>
-                    <img v-lazy='singer.picUrl' class='img'></img>
+                    <img v-lazy='singer.picUrl' class='img'/>
                     <span class='text'>{{singer.name}}</span>
                 </div>
             </div>

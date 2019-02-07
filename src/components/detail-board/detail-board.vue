@@ -15,17 +15,17 @@
             <scroll class='scroll' ref='scroll' :listen-scroll='listenScroll' :probe-type='probeType' @scroll='handleScroll'>
                 <div>
                     <div class='bg' ref='bg'>
-                        <img :src='cover' class='bg-img' :class='{"blur": blur}' ref='bgImg'></img>
+                        <img :src='cover' class='bg-img' :class='{"blur": blur}' ref='bgImg'/>
                     </div>
                     <div class='info' ref='info'>
                         <slot v-if='cusInfo' name='info'></slot>
                         <div v-else>
-                            <img class='info-img' :src='cover'></img>
+                            <img class='info-img' :src='cover'/>
                             <div class='info-title-wrapper'>
                                 <div class='info-main-title'>{{headerScrollTitle}}</div>
                                 <div class='info-sub-title' v-if='subTitle.length'>{{subTitle}}</div>
                                 <div class='info-creator' v-if='type == "disc" && creator' @click='showHomepage'>
-                                    <img class='info-creator-avatar' :src='creator.picUrl'></img>
+                                    <img class='info-creator-avatar' :src='creator.picUrl'/>
                                     <span class='info-creator-name'>{{creator.name}} ></span>
                                 </div>
                                 <div class='info-album' v-if='type == "album" && subject'>
@@ -54,7 +54,7 @@
                 </div>
             </scroll>
             <div class='fixed-background' v-show='showFixedBG' ref='fbg'>
-                <img :src='cover' class='bg-img' :class='{"blur": blur}' ref='fbgImg'></img>
+                <img :src='cover' class='bg-img' :class='{"blur": blur}' ref='fbgImg'/>
             </div>
             <infolist v-if='infoListFlag' :song='infoSong' :showDelete='showDelete' @deleteSong='deleteSong' @hide='infoListFlag = false'></infolist>
         </div>

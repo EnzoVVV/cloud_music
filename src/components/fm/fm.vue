@@ -3,7 +3,7 @@
         <transition name='normal'>
             <div class='normal-player' v-show='fullScreen' ref='player'>
                 <div class='background'>
-                    <img :src='currentSong.picUrl' class='background-img'></img>
+                    <img :src='currentSong.picUrl' class='background-img'/>
                 </div>
                 <div class='header' ref='header'>
                     <div @click='toggleFullScreen' class='header-back'><IconSvg icon-class='back'></IconSvg></div>
@@ -12,7 +12,7 @@
                 </div>
                 <div class='middle'>
                     <div class='cd-wrapper' ref='cdWrapper'>
-                        <img :src='currentSong.picUrl' class='img' @click='toggleLyric(true)'></img>
+                        <img :src='currentSong.picUrl' class='img' @click='toggleLyric(true)'/>
                         <div class='name'>{{currentSong.name}}</div>
                         <div class='singer' @click.stop='showSingerDetail'>{{currentSong.singer}} ></div>
                     </div>
@@ -59,7 +59,7 @@
             </div>
         </transition>
         <div class='mini-player' v-show='!fullScreen && !coverMiniPlayer' @click='toggleFullScreen' ref='miniplayer'>
-            <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'></img></div>
+            <div class='img-wrapper'><img :src='currentSong.picUrl' class='img'/></div>
             <div class='info'>
                 <div class='name'>{{currentSong.name}}</div>
                 <div class='lyric' v-if='currentLyricText.length'>{{currentLyricText}}</div>

@@ -3,7 +3,7 @@
         <scroll class='scroll' ref='scroll'>
             <div class='mine'>
                 <div class='user-info' @click='showHomepage'>
-                    <img :src='avatar' class='avatar'></img>
+                    <img :src='avatar' class='avatar'/>
                     <div class='user-name'>{{userName}}</div>
                 </div>
                 <div class='decorate'></div>

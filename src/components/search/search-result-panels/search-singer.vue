@@ -4,7 +4,7 @@
             <div>
                 <ul v-if='singers.length'>
                     <li v-for='singer in singers' :key='singer.name' class='line' @click='selectSinger(singer)'>
-                        <div class='img-wrapper'><img v-lazy='singer.picUrl' class='img'></img></div>
+                        <div class='img-wrapper'><img v-lazy='singer.picUrl' class='img'/></div>
                         <div class='info'>
                             <span class='name'>{{singer.name}}</span>
                             <span class='alias' v-if='singer.alias'>({{singer.alias}})</span>

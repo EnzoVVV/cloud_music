@@ -6,7 +6,7 @@
                     <vplayer :subject='video'></vplayer>
                     <div class='title'>{{video.name}}</div>
                     <div class='info'>
-                        <img class='avatar' :src='video.picUrl'></img>
+                        <img class='avatar' :src='video.picUrl'/>
                         <div class='artist'>{{video.artists[0].name}}</div>
                         <div class='btn' @click='toggleFS'><IconImg imgName='like'></IconImg></div>
                         <div class='btn' @click='showComment(video.id)'><IconImg imgName='comment'></IconImg></div>
