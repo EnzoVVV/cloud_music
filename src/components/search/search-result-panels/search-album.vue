@@ -1,6 +1,6 @@
 <template>
     <div class='album'>
-        <scroll class='list'>
+        <scroll class='list' ref='scroll'>
             <div>
                 <albumlist :albums='albums' v-if='albums.length'></albumlist>
                 <loading v-else class='loading'></loading>
@@ -11,10 +11,10 @@
 <script>
     import albumlist from 'components/album-list/album-list'
     import { searchAlbum } from 'api/search'
-    import { resultMixin } from 'common/js/mixins'
+    import { playlistMixin, resultMixin } from 'common/js/mixins'
     export default {
         name: 'searchAlbum',
-        mixins: [resultMixin],
+        mixins: [ playlistMixin, resultMixin ],
         components: {
             albumlist
         },

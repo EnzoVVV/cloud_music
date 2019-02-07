@@ -1,6 +1,6 @@
 <template>
     <div class='singer'>
-        <scroll class='list'>
+        <scroll class='list' ref='scroll'>
             <div>
                 <ul v-if='singers.length'>
                     <li v-for='singer in singers' :key='singer.name' class='line' @click='selectSinger(singer)'>
@@ -18,11 +18,11 @@
 </template>
 <script>
     import { searchSinger } from 'api/search'
-    import { resultMixin } from 'common/js/mixins'
+    import { playlistMixin, resultMixin } from 'common/js/mixins'
     import { mapMutations } from 'vuex'
     export default {
         name: 'searchSinger',
-        mixins: [resultMixin],
+        mixins: [ playlistMixin, resultMixin ],
         components: {
         },
         props: {
