@@ -7,8 +7,8 @@
 <script>
     import FunctionalHeader from 'base/functional-header/functional-header'
     import tabswiper from 'base/swiper/tabswiper'
-    import weekrecord from './week-record.vue'
-    import allrecord from './all-record.vue'
+    const weekrecord = () => import('./week-record.vue')
+    const allrecord = () => import('./all-record.vue')
     import PopupManager from 'common/js/popup-manager'
     const componentList = [
         {

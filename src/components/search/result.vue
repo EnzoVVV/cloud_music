@@ -1,13 +1,13 @@
 <template>
     <div>
-        <tabswiper :tabContent='tabContent' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight'></tabswiper>
+        <tabswiper :tabContent='tabContent' :componentList='componentList' :defaultIndex='0' :swiperHeight='swiperHeight'></tabswiper>
     </div>
 </template>
 <script>
     import tabswiper from 'base/swiper/tabswiper'
     import searchSong from './search-result-panels/search-song'
-    import searchSinger from './search-result-panels/search-singer'
-    import searchAlbum from './search-result-panels/search-album'
+    const searchSinger = () => import('./search-result-panels/search-singer')
+    const searchAlbum = () => import('./search-result-panels/search-album')
     const searchUser = () => import('./search-result-panels/search-user')
     const searchDisc = () => import('./search-result-panels/search-disc')
     const componentList = [
@@ -58,8 +58,7 @@
             return {
                 componentList: componentList,
                 tabContent: tabContent,
-                swiperHeight: window.innerHeight - 44,
-                defaultIndex: 0
+                swiperHeight: window.innerHeight - 44
             }
         }
     }

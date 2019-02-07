@@ -48,7 +48,7 @@
     import scroll from 'base/scroll/scroll'
     import { mapMutations } from 'vuex'
     import { playlistMixin } from 'common/js/mixins'
-    import rankdetail from 'components/rank-detail/rank-detail'
+    const rankdetail = () => import('components/rank-detail/rank-detail')
     export default {
         name: 'rank',
         mixins: [playlistMixin],

@@ -29,11 +29,11 @@
     </div>
 </template>
 <script>
-    import result from './result'
     import inputbox from 'base/input-box/input-box'
-    import suggest from 'base/suggest/suggest'
-    import searchlist from 'base/search-list/search-list'
-    import confirm from 'base/confirm/confirm'
+    const result = () => import('./result')
+    const suggest = () => import('base/suggest/suggest')
+    const searchlist = () => import('base/search-list/search-list')
+    const confirm = () => import('base/confirm/confirm')
     import { mapMutations, mapGetters, mapActions } from 'vuex'
     import { getHotKey } from 'api/search'
     export default {

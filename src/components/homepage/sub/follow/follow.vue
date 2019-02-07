@@ -7,8 +7,8 @@
 <script>
     import FunctionalHeader from 'base/functional-header/functional-header'
     import tabswiper from 'base/swiper/tabswiper'
-    import following from './following.vue'
-    import follower from './follower.vue'
+    const following = () => import('./following.vue')
+    const follower = () => import('./follower.vue')
     const componentList = [
         {
             name: 'following',

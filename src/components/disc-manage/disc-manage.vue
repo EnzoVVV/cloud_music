@@ -1,6 +1,6 @@
 <script>
-    import CreatedDiscManage from './components/created-disc-manage'
-    import FavoriteDiscManage from './components/favorite-disc-manage'
+    const CreatedDiscManage = () => import('./components/created-disc-manage')
+    const FavoriteDiscManage = () => import('./components/favorite-disc-manage')
     export default {
         name: 'discmanage',
         components: {

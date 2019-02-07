@@ -7,7 +7,6 @@
 <script>
 	import { mapGetters } from 'vuex';
 	import { getSingerDetail } from 'api/singer'
-	import { ERR_OK } from 'api/config'
 	import { createSong, createAlbum, processSongsUrl } from 'common/js/song'
 	import musiclist from 'components/music-list/music-list'
 

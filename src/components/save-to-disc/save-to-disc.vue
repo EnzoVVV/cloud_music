@@ -20,7 +20,7 @@
 </template>
 <script>
     import modal from 'base/modal/modal'
-    import createdisc from 'components/create-disc/create-disc'
+    const createdisc = () => import('components/create-disc/create-disc')
     import { mapGetters, mapActions } from 'vuex'
     import { addSongsToDisc } from 'api/disc'
     export default {

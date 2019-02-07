@@ -1,5 +1,5 @@
 import minilist from 'base/mini-list/mini-list'
-import sort from 'components/sort/sort'
+const sort = () => import('components/sort/sort')
 export const discMixin = {
     components: {
         minilist,
