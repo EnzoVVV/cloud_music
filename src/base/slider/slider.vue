@@ -52,13 +52,13 @@
       setTimeout(() => {
         this.init()
       },20)
-      window.addEventListener('resize',() => {
-        if(!this.slider) {
-          return
-        }
-        this.initSlotContentStyle(true)
-        this.slider.refresh()
-      })
+      // window.addEventListener('resize',() => {
+      //   if(!this.slider) {
+      //     return
+      //   }
+      //   this.initSlotContentStyle(true)
+      //   this.slider.refresh()
+      // })
     },
     methods: {
       init() {

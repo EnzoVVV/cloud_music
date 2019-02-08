@@ -72,6 +72,7 @@ export function likeComment(id, cid, status, type) {
 
 const typeCodeMapping = {
     song: 0,
+    mv: 1,
     disc: 2,
     album: 3
 }
@@ -79,5 +80,6 @@ const typeCodeMapping = {
 const typeNameMapping = {
     song: 'music',
     disc: 'playlist',
-    album: 'album'
+    album: 'album',
+    mv: 'mv'
 }

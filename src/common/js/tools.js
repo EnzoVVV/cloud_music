@@ -219,7 +219,7 @@ export function mock(key) {
 }
 
 export function formatNumber(num) {
-    let s = num.toString()
+    let s = parseInt(num).toString()
     if(s.length <= 5) {
         return s
     } else if(s.length <= 8) {

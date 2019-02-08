@@ -1,5 +1,4 @@
 import { getSongsUrl } from 'api/song'
-import { ERR_OK } from 'api/config'
 import { getLyric } from 'api/song'
 
 export default class Song {

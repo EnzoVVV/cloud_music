@@ -205,6 +205,9 @@
                             this.favoritePlaylists.push(playlist)
                         }
                     })
+                    this.$nextTick(() => {
+                        this.$refs.scroll.refresh()
+                    })
                     if(this.isSelf) {
                         this.createdPlaylists[0].name = '我喜欢的音乐'
                     }
@@ -389,7 +392,7 @@
             position: absolute
             left: 15px
             right: 15px
-            top: 50px
+            top: 70px
             .wrapper
                 display: flex
                 align-items: center

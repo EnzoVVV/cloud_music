@@ -5,9 +5,7 @@
         <DailyRecommend v-if='dailyFlag' @back='dailyFlag = false'></DailyRecommend>
         <discmanage v-if='discManageFlag' :type='discManageType' @hide='discManageFlag = false'></discmanage>
         <playlist v-if='flags.playlist' @back='flags.playlist = false'></playlist>
-        <fm v-if='flags.FM'></fm>
-        <collection v-if='flags.collection' @back='flags.collection = false'></collection>
-        <songselect v-if='flags.songselect' :songs='songselect.songs' @back='flags.songselect = false'></songselect>
+        <fm v-if='flags.FM' ref='fm'></fm>
         <follow v-if='flags.follow' :title='follow.title'></follow>
     </div>
 </template>
@@ -18,8 +16,6 @@
     const discmanage = () => import('components/disc-manage/disc-manage')
     const playlist = () => import('components/play-list/play-list')
     const fm = () => import('components/fm/fm')
-    const collection = () => import('components/collection/collection')
-    const songselect = () => import('components/song-select/song-select')
     const follow = () => import('components/homepage/sub/follow/follow')
     import Vue from 'vue'
     import builder from 'common/js/comp-builder'
@@ -34,8 +30,6 @@
             discmanage,
             playlist,
             fm,
-            collection,
-            songselect,
             follow
         },
         props: {
@@ -56,12 +50,7 @@
                 flags: {
                     playlist: false,
                     FM: false,
-                    collection: false,
-                    songselect: false,
                     follow: false
-                },
-                songselect: {
-                    songs: []
                 },
                 follow: {
                     title: 'TA的好友'
@@ -108,9 +97,15 @@
                 this.flags.playlist = true
             },
             showFM(flag = true) {
-                this.flags.FM = flag
-                // 记录FM是否开启状态到vuex
-                this.setFMSwitch(flag)
+                if(this.flags.FM) {
+                    // FM已开时, 再点击FM入口按钮，则全屏并播放
+                    this.$refs.fm.show()
+                } else {
+                    // FM未开，则开启
+                    this.flags.FM = flag
+                    // 记录FM是否开启状态到vuex
+                    this.setFMSwitch(flag)
+                }
             },
             showComment(type, subject) {
                 builder('comment', {
@@ -119,11 +114,12 @@
                 })
             },
             showCollection() {
-                this.flags.collection = true
+                builder('collection')
             },
             showSongSelect(songs) {
-                this.flags.songselect = true
-                this.songselect.songs = songs
+                builder('songselect', {
+                    songs: songs
+                })
             },
             showHomepage(id, self = false) {
                 builder('homepage', {
@@ -172,19 +168,15 @@
             }
         },
         mounted() {
-            this.$bus.on('showComponent', this.showComponent)
-            this.$bus.on('unrevealed', this.showUnrevealedMessage)
-            this.$bus.on('showMessage', this.showMessage)
-
             const self = this
             Vue.prototype.showComponent = function() {
-                self.$bus.emit('showComponent', ...arguments)
+                self.showComponent(...arguments)
             }
             Vue.prototype.$unrevealed = function() {
-                self.$bus.emit('unrevealed')
+                self.showUnrevealedMessage()
             }
             Vue.prototype.$message = function(content) {
-                self.$bus.emit('showMessage', content)
+                self.showMessage(content)
             }
             Vue.prototype.$modal = function(instance, content, onConfirm, onCancel) {
                 Object.assign(self.modalInfo, content)
@@ -194,15 +186,8 @@
                 self.modalCallerOnCancel = onCancel
             }
 
-            // 为了js文件中能emit事件, 添加一个轻量bus到全局
-            new Vue({
-                render() {
-                    return ''
-                },
-                mounted() {
-                    window.hub = this
-                }
-            }).$mount()
+            // 为了js文件中能emit事件, 添加vue-bus到全局
+            window.$bus = this.$bus
         }
     }
 </script>

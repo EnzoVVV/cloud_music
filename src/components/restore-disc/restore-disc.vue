@@ -5,11 +5,12 @@
             <span class='title'>恢复歌单</span>
         </div>
         <scroll ref='scroll' class='scroll'>
-            <ul>
+            <ul v-if='discs.length'>
                 <li v-for='disc in discs' :key='disc.id' :ref='disc.id'>
                     <liner :picUrl='disc.picUrl' :main='disc.name' :sub='disc.singer' :showCheck='true' :itemId='disc.id' :circleCheck='true' @check='check'></liner>
                 </li>
             </ul>
+            <div class='empty'>暂无可恢复歌单</div>
         </scroll>
         <div class='bottom'>
             <div @click='restore'>
@@ -82,7 +83,6 @@
             this.discs = deepCopy(this.discardDiscs)
         },
         mounted() {
-
         }
     }
 </script>
@@ -117,6 +117,10 @@
             top: 44px
             right: 0
             bottom: 60px
+            .empty
+                margin: 30px
+                color: $color-text-ii
+                text-align: center
         .bottom
             position: absolute
             bottom: 0

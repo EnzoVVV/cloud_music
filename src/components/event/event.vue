@@ -9,11 +9,17 @@
             <div class='song-wrapper' v-if='event.song'>
                 <liner :hasBorder='false' :picUrl='event.song.picUrl' :main='event.song.name' :sub='event.song.singer' height='40px' :showImg='true' :selectable='true' @select='selectSong(event.song)'></liner>
             </div>
+            <!-- <div class='operation'>
+                <span class='empty'></span>
+                <div class='operation-btn' @click='showComment(event)'><IconImg imgName='comment' class='comment-btn' size='20px'></IconImg><span>{{commentText(event)}}</span></div>
+                <div class='operation-btn' @click='toggleLike(event)'><IconImg :imgName='likeIcon(event)' size='20px' :ref='event.id'></IconImg><span>{{likeText(event)}}</span></div>
+            </div> -->
         </div>
     </div>
 </template>
 <script>
     import { mapActions, mapGetters } from 'vuex'
+    // import { bubble } from 'common/js/dom'
     import liner from 'base/liner/liner'
     export default {
         name: 'event',
@@ -28,9 +34,11 @@
         },
         data() {
             return {
+                // likedEvents: []
             }
         },
         computed: {
+            
         },
         watch: {
 
@@ -46,6 +54,32 @@
             picStyle(pic) {
                 return `background-image:url(${pic})`
             },
+            // commentText(event) {
+            //     return event.commentCount > 0 ? event.commentCount : '评论'
+            // },
+            // likeText(event) {
+            //     const liked = this.likedEvents.find(i => i == event.id) ? 1 : 0
+            //     const total = event.likedCount + liked
+            //     return total > 0 ? total : '点赞'
+            // },
+            // likeIcon(event) {
+            //     const liked = !!this.likedEvents.find(i => i == event.id)
+            //     return liked ? 'note-liked' : 'note-like'
+            // },
+            // toggleLike(event) {
+            //     const index = this.likedEvents.findIndex(i => i == event.id)
+            //     if(index > -1) {
+            //         // 取消
+            //         this.likedEvents.splice(index, 1)
+            //     } else {
+            //         // 点赞
+            //         bubble(this.$refs[event.id][0].$el)
+            //         this.likedEvents.push(event.id)
+            //     }
+            // },
+            // showComment(event) {
+
+            // },
             selectSong(song) {
                 this.insertSong(song)
             },
@@ -56,7 +90,6 @@
         created() {
         },
         mounted() {
-
         }
     }
 </script>
@@ -91,6 +124,22 @@
                 background: rgba(144,144,144,0.1)
                 margin: 0 10px 10px 50px
                 border-radius: 5px
+            // .operation
+            //     display: flex
+            //     align-items: center
+            //     padding-bottom: 10px
+            //     .empty
+            //         flex: 1
+            //     .operation-btn
+            //         margin: 0 15px
+            //         display: flex
+            //         align-items: center
+            //         .comment-btn
+            //             filter: brightness(40%)
+            //         span
+            //             font-size: $font-size-small-s
+            //             color: $color-text-ii
+            //             margin-left: 5px
         .event-empty
             font-size: $font-size-medium-x
             color: $color-text-ii

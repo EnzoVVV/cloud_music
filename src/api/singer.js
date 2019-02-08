@@ -63,10 +63,14 @@ export function getSingerDetail(singerId) {
 		return axios.get(url).then(res => {
 			let result = {}
 			if(success(res.status)) {
-				result.name = res.data.artist.name
-				result.picUrl = res.data.artist.picUrl
-				result.songs = getSongs(res.data.hotSongs)
-				result.brief = res.data.artist.briefDesc
+				result = {
+					name: res.data.artist.name,
+					picUrl: res.data.artist.picUrl,
+					songs: getSongs(res.data.hotSongs),
+					brief: res.data.artist.briefDesc,
+					// 歌手的个人主页
+					userId: res.data.artist.accountId
+				}
 			}
 			return result
 		})

@@ -21,7 +21,7 @@
                 <div class='text'>添加到歌单</div>
             </div>
         </div>
-        <SaveToDisc v-if='stdFlag' :songs='selectedSongs' @hide='hide'></SaveToDisc>
+        <SaveToDisc v-if='stdFlag' :songs='selectedSongs' @hide='stdFlag = false'></SaveToDisc>
     </div>
 </template>
 <script>
@@ -52,7 +52,10 @@
         computed: {
             title() {
                 return `已选择${this.checkedCount}项`
-            }
+            },
+            ...mapGetters([
+                'playlist'
+            ])
         },
         watch: {
 
@@ -73,13 +76,22 @@
                 this.$emit('back')
             },
             ...mapActions([
-                'insertSongsToPlayNext'
+                'insertSongsToPlayNext',
+                'selectPlay'
             ]),
             addToDisc() {
                 this.stdFlag = true
             },
             addToPlayNext() {
-                this.insertSongsToPlayNext(this.selectedSongs)
+                if(this.playlist.length == 0) {
+                    // 如果当前播放列表为空，则直接设置播放列表并播放
+                    this.selectPlay({
+                        list: this.selectedSongs,
+                        index: 0
+                    })
+                } else {
+                    this.insertSongsToPlayNext(this.selectedSongs)
+                }
             },
             handleClick(type) {
                 if(this.checkList.length === 0) {
@@ -107,7 +119,7 @@
             this.checkList = []
         },
         mounted() {
-
+            this.$emit('mountedCalled')
         }
     }
 </script>

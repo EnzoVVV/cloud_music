@@ -12,10 +12,10 @@ const videolist = () => import('components/video-list/video-list')
 const modal = () => import('base/modal/modal')
 import progressbar from 'base/progress-bar/progress-bar'
 import progresscircle from 'base/progress-circle/progress-circle'
-import Lyric from 'lyric-parser'
+import Lyric from 'common/js/lyric'
 
 // ---------- API -------------------
-
+import { getSingerDetail } from 'api/singer'
 
 // ---------- Mixins -------------------
 export const playerMixin = {
@@ -190,8 +190,49 @@ export const homepageMixin = {
 
 // 播放记录
 export const recordMixin = {
+    render(h) {
+        const self = this
+        let child = null
+        if(this.records.length) {
+            const grandChild = []
+            this.records.forEach((song, index) => {
+                const curSong = song
+                const liner = h('liner', {
+                    props: {
+                        main: song.name,
+                        sub: song.singer,
+                        index: index + 1,
+                        showIndex: true,
+                        selectable: true
+                    },
+                    on: {
+                        // 不能写成select: self.selectSong(curSong)
+                        // on下key对应的value必须是function的定义, 有参数时可以再封装一层
+                        select: function() {
+                            self.selectSong(curSong)
+                        }
+                    }
+                })
+                grandChild.push(liner)
+            })
+            child = h('ul', null, grandChild)
+        } else if(this.denied) {
+            child = h('div', {
+                class: 'empty'
+            }, '由于对方设置, 无权限查看')
+        } else {
+            child = h('div', {
+                class: 'empty'
+            }, '暂无数据')
+        }
+        return h('scroll', {
+            class: 'scroll',
+            ref: 'scroll'
+        }, [child])
+    },
     data() {
         return {
+            denied: false,
             records: []
         }
     },
@@ -422,6 +463,14 @@ export const playersMixin = {
             } else {
                 // 多个歌手, 触发弹窗选择歌手
                 this.selectSingerList = singerInfo.slice()
+                if(!this.selectSingerList[0].picUrl) {
+                    // 没有歌手picUrl时
+                    this.selectSingerList.forEach(singer => {
+                        getSingerDetail(singer.id).then(res => {
+                            singer.picUrl = res.picUrl
+                        })
+                    })
+                }
             }
         },
         selectSinger(singer) {
@@ -439,6 +488,10 @@ export const playersMixin = {
         handleCoverMiniPlayer(flag) {
             // 当前显示comment组件时，隐藏miniplayer
             this.coverMiniPlayer = flag
+        },
+        // insertSong, selectPlayer时，抬高player的zIndex
+        liftPlayer() {
+            this.$refs.player.style.zIndex = PopupManager.nextZIndex()
         },
         liftMiniPlayer() {
             // 每次用builder创建组件时，抬高miniplayer的zIndex

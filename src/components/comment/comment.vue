@@ -45,7 +45,7 @@
                 type: String,
                 default: 'song',
                 validator: (value) => {
-                    return ['song', 'album', 'disc'].indexOf(value) > -1
+                    return ['song', 'album', 'disc', 'mv'].indexOf(value) > -1
                 }
             },
             subject: {
@@ -112,7 +112,7 @@
                 id: this.subject.id,
                 picUrl: this.subject.picUrl,
                 main: this.subject.name,
-                sub: this.subject.singer || this.subject.creator.name || this.subject.creator || ''
+                sub: this.subject.singer || (this.subject.creator && this.subject.creator.name) || this.subject.artistName || ''
             }
         },
         mounted() {

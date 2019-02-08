@@ -83,8 +83,8 @@
             width: 100%
             .date
                 position: absolute 
-                left: 53px
-                bottom: 45px
+                left: 63px
+                bottom: 47px
                 font-size: $font-size-large-e
                 color: $color-text-a
             .tip
