@@ -20,6 +20,7 @@ export function getEvents(url) {
 				const json = JSON.parse(event.json)
 				const pics = event.pics.map(pic => pic.originUrl)
 				const user = event.user
+				const info = event.info
 				const sharedObj = {
 					id: event.id,
 					msg: json.msg,
@@ -30,6 +31,9 @@ export function getEvents(url) {
 						picUrl: user.avatarUrl,
 						followed: user.followed
 					},
+					liked: info.liked,
+					likedCount: info.likedCount,
+					commentCount: info.commentCount,
 					time: formatTimestamp(event.eventTime)
 				}
 				if(event.type == 18) {

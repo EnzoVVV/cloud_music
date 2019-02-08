@@ -100,7 +100,7 @@
         <minisonglist v-if='miniListFlag' @hide='miniListFlag = false'></minisonglist>
         <!-- 选择查看的歌手 -->
         <modal v-if='selectSingerList.length' title='请选择要查看的歌手' :hideBtn='true' @hide='hideModal'>
-            <scroll>
+            <scroll class='selected-singer-list'>
                 <div>
                     <liner v-for='singer in selectSingerList' :key='singer.id' :showImg='true' :picUrl='singer.picUrl || defaultSingerPic' :main='singer.name' :selectable='true' @select='selectSinger(singer)'></liner>
                 </div>
@@ -194,7 +194,8 @@
                 return title
             },
             likeIcon() {
-                if(this.FS) {
+                if(this.FSToggled && this.FS) {
+                    // 手动点击按钮才有bubble效果，渲染时执行到这里没有动画效果
                     bubble(this.$refs.likeBtn)
                 }
                 return this.FS ? 'liked' : 'like'
@@ -243,6 +244,7 @@
                 this.showComponent('comment', 'song', this.currentSong)
             },
             toggleFS() {
+                this.FSToggled = true
                 this.toggleSongFS(this.currentSong)
                 this.FS = !this.FS
             },
@@ -525,11 +527,7 @@
                     translate(this.$refs.nextCdWrapper, this.clientWidth)
                     translate(this.$refs.preCdWrapper, -this.clientWidth)
                 })
-            },
-            // insertSong, selectPlayer时，抬高player的zIndex
-            liftPlayer() {
-                this.$refs.player.style.zIndex = PopupManager.nextZIndex()
-            },
+            }
         },
         mounted() {
             this.setStylusPosition()
@@ -779,6 +777,9 @@
                     left: 6px
             .list
                 margin-right: 10px
+        .selected-singer-list
+            overflow: hidden
+            max-height: 400px
     // 定义cd旋转的rotate
     @keyframes rotate
         0%

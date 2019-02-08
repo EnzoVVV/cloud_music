@@ -11,7 +11,7 @@
             <div class='name'>{{singer.name}}</div>
             <div class='wrapper'>
                 <div class='other'>音乐人</div>
-                <ibutton icon='person' text='个人主页'></ibutton>
+                <ibutton icon='person' text='个人主页' v-if='userId !== undefined && userId !== null' @click='showHomepage'></ibutton>
                 <ibutton v-if='!singerFS' icon='add' text='收藏' :red='true' class='favorite' @click='toggleSingerFS(true)'></ibutton>
                 <ibutton v-else icon='bingo-white' text='已收藏' class='favorite' @click='toggleSingerFS(false)'></ibutton>
             </div>
@@ -73,6 +73,10 @@
             brief: {
                 type: String,
                 default: ''
+            },
+            // 如果有userId，说明歌手已有个人主页
+            userId: {
+                type: Number
             }
         },
         data() {
@@ -234,6 +238,9 @@
                     list: this.songs,
                     index
                 })
+            },
+            showHomepage() {
+                this.showComponent('homepage', this.userId)
             },
             ...mapActions([
                 'selectPlay',

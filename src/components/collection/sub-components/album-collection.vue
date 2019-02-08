@@ -3,7 +3,7 @@
         <scroll class='scroll' v-if='curAlbums.length'>
             <ul>
                 <li v-for='album in curAlbums' :key='album.id'>
-                    <liner :picUrl='album.picUrl' :main='album.name' :sub='album.singer' :showImg='true' :cd='true' icon='um' :itemId='album.id' @iconClick='showSetting'></liner>
+                    <liner :picUrl='album.picUrl' :main='album.name' :sub='album.singer' :showImg='true' :cd='true' icon='um' @iconClick='showSetting(album)' :selectable='true' @select='showAlbumDetail(album)'></liner>
                 </li>
             </ul>
         </scroll>
@@ -39,8 +39,8 @@
             search(query) {
                 this.curAlbums = this.albums.filter(i => i.name.indexOf(query) > -1)
             },
-            showSetting(id) {
-                this.selectedAlbum = this.curAlbums.find(i => i.id == id)
+            showSetting(album) {
+                this.selectedAlbum = album
                 this.$bus.emit('showCollectionSetting', 'album', this.selectedAlbum)
             },
             deleteAlbum() {
@@ -51,6 +51,9 @@
                     status: false
                 })
                 this.$message('已取消收藏')
+            },
+            showAlbumDetail(album) {
+                this.showComponent('albumdetail', album)
             },
             ...mapActions([
                 'favoriteAlbum'

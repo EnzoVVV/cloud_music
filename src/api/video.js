@@ -1,6 +1,5 @@
 import { HOST } from './config'
 import axios from 'axios'
-
 import { success } from './shared'
 import { getSingerDetail } from './singer'
 
@@ -10,6 +9,7 @@ export function getVideo(limit = 10) {
         let result = []
         if(success(res.status)) {
             result = res.data.data.map(item => {
+                // TODO, 增加liked
                 return {
                     id: item.id,
                     name: item.name,
@@ -21,7 +21,8 @@ export function getVideo(limit = 10) {
                     }),
                     picUrl: item.cover,
                     artistName: item.artistName,
-                    playCount: item.playCount
+                    playCount: item.playCount,
+                    liked: item.subed
                 }
             })
         }
@@ -46,7 +47,8 @@ export function getRecommendMV() {
                     }),
                     picUrl: item.picUrl,
                     artistName: item.artistName,
-                    playCount: item.playCount
+                    playCount: item.playCount,
+                    liked: item.subed
                 }
             })
         }
@@ -82,3 +84,9 @@ export function getMVAddress(id) {
     })
 }
 
+
+export function likeVideo(id, status) {
+    const code = status ? 1 : 0
+    const url = HOST + `/resource/like?t=${code}&type=1&id=${id}`
+	return axios.get(url)
+}

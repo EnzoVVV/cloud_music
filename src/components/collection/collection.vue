@@ -93,6 +93,7 @@
 
         },
         mounted() {
+            this.$emit('mountedCalled')
             this.$bus.on('showCollectionSetting', this.showCollectionSetting)
         }
     }

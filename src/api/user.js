@@ -75,6 +75,8 @@ export function getUserRecord(id, type) {
             })
         }
         return result
+    }).catch(() => {
+        return false
     })
 }
 

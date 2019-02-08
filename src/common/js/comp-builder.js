@@ -7,6 +7,8 @@ const homepage = () => import('components/homepage/homepage')
 const discdetail = () => import('components/disc-detail/disc-detail')
 const albumdetail = () => import('components/album-detail/album-detail')
 const singerdetail = () => import('components/singer-detail/singer-detail')
+const songselect = () => import('components/song-select/song-select')
+const collection = () => import('components/collection/collection')
 
 const message = () => import('base/message/message')
 
@@ -15,6 +17,8 @@ Vue.component('homepage', homepage)
 Vue.component('discdetail', discdetail)
 Vue.component('albumdetail', albumdetail)
 Vue.component('singerdetail', singerdetail)
+Vue.component('songselect', songselect)
+Vue.component('collection', collection)
 
 Vue.component('message', message)
 

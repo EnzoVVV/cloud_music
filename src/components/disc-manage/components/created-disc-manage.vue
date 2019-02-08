@@ -1,6 +1,6 @@
 <template>
     <div>
-        <minilist title='创建的歌单' @hide='hide' v-if='!modalFlag' ref='minilist'>
+        <minilist title='创建的歌单' @hide='hide' v-if='!modalFlag && !restoreFlag' ref='minilist'>
             <ul slot='list'>
                 <li class='line' @click='popUpCreateDisc'>
                     <IconImg imgName='list-add' class='icon'></IconImg>
@@ -10,7 +10,7 @@
                     <IconImg imgName='list-manage' class='icon'></IconImg>
                     <div class='text'>歌单管理</div>
                 </li>
-                <li class='line'>
+                <li class='line' @click='showRestoreDisc'>
                     <IconImg imgName='list-restore' class='icon'></IconImg>
                     <div class='text'>恢复歌单</div>
                 </li>
@@ -18,17 +18,20 @@
         </minilist>
         <createdisc v-if='modalFlag' @hide='hide'></createdisc>
         <sort v-if='sortFlag' :list='discList' :emitDeletedList='true' @back='finish' @deleted='handleDelete'></sort>
+        <restoredisc v-if='restoreFlag' @back='hide'></restoredisc>
     </div>
 </template>
 <script>
     import { discMixin } from '../disc-mixin/disc-mixin'
     import { mapGetters, mapMutations, mapActions } from 'vuex'
     const createdisc = () => import('components/create-disc/create-disc')
+    const restoredisc = () => import('components/restore-disc/restore-disc')
     export default {
         name: 'CreatedDiscManage',
         mixins: [discMixin],
         components: {
-            createdisc
+            createdisc,
+            restoredisc
         },
         props: {
 
@@ -36,7 +39,8 @@
         data() {
             return {
                 modalFlag: false,
-                discList: []
+                discList: [],
+                restoreFlag: false
             }
         },
         computed: {
@@ -75,6 +79,9 @@
             ]),
             popUpCreateDisc() {
                 this.modalFlag = true
+            },
+            showRestoreDisc() {
+                this.restoreFlag = true
             }
         },
         created() {

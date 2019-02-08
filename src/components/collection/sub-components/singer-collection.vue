@@ -3,7 +3,7 @@
         <scroll class='scroll' v-if='curSingers.length'>
             <ul>
                 <li v-for='singer in curSingers' :key='singer.id'>
-                    <liner :picUrl='singer.picUrl' :main='singer.name' :showImg='true' icon='um' :itemId='singer.id' @iconClick='showSetting'></liner>
+                    <liner :picUrl='singer.picUrl' :main='singer.name' :showImg='true' icon='um' @iconClick='showSetting(singer)' :selectable='true' @select='showSingerDetail(singer)'></liner>
                 </li>
             </ul>
         </scroll>
@@ -11,7 +11,7 @@
     </div>
 </template>
 <script>
-    import { mapGetters, mapActions } from 'vuex'
+    import { mapGetters, mapActions, mapMutations } from 'vuex'
     import { collectionMixin } from 'common/js/mixins'
     export default {
         name: 'singerCollection',
@@ -43,8 +43,8 @@
             search(query) {
                 this.curSingers = this.fsingers.filter(i => i.name.indexOf(query) > -1)
             },
-            showSetting(id) {
-                this.selectedSinger = this.curSingers.find(i => i.id == id)
+            showSetting(singer) {
+                this.selectedSinger = singer
                 this.$bus.emit('showCollectionSetting', 'singer', this.selectedSinger)
             },
             deleteSinger() {
@@ -56,9 +56,16 @@
                 this.curSingers.splice(index, 1)
                 this.$message('已取消收藏')
             },
+            showSingerDetail(singer) {
+                this.setSinger(singer)
+                this.showComponent('singerdetail')
+            },
             ...mapActions([
                 'favoriteSinger'
-            ])
+            ]),
+            ...mapMutations({
+                setSinger: 'SET_SINGER'
+            })
         },
         created() {
             this.curSingers = this.fsingers

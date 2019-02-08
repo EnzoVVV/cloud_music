@@ -28,7 +28,7 @@
                     // height: '232px',
                     // width: window.innerWidth,
                     fluid: true,
-                    muted: true,
+                    muted: false,
                     language: 'en',
                     playbackRates: [0.7, 1.0, 1.5, 2.0],
                     sources: [{

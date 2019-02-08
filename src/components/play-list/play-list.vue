@@ -2,7 +2,7 @@
     <detailboard headerTitle='歌单' :cover='cover' :cusList='true' :cusInfo='true' :showSearch='false' :showFunc='false' @back='goback' class='playlist'>
         <div slot='info'>
             <img class='img' :src='cover'/>
-            <div class='title'>test</div>
+            <div class='title'>推荐歌单</div>
         </div>
         <div slot='list'>
             <discList :discList='discLists' v-if='discLists.length'></discList>
@@ -36,6 +36,7 @@
             getLists() {
                 getRecommendList().then(res => {
                     this.discLists = res
+                    this.cover = res[0].picUrl
                 })
             },
             goback() {

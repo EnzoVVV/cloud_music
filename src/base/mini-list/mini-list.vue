@@ -190,7 +190,7 @@
                 }
             },
             coverMiniPlayer(flag) {
-                window.hub.$bus.emit('coverMiniPlayer', flag)
+                window.$bus.emit('coverMiniPlayer', flag)
             }
         },
         created() {

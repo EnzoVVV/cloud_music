@@ -43,7 +43,7 @@
                             <IconSvg icon-class='clear' size='38px'></IconSvg>
                         </div>
                         <div class='operator-icon favorite' @click='toggleFavorite'>
-                            <IconImg :imgName='favoriteIcon'></IconImg>
+                            <IconImg :imgName='favoriteIcon' ref='likeBtn'></IconImg>
                         </div>
                         <div class='operator-icon play' @click='togglePlay'>
                             <IconImg :imgName='playBtnIcon' size='60px'></IconImg>
@@ -89,6 +89,7 @@
     import { getPersonalFM, trash } from 'api/fm'
     import { mapActions } from 'vuex'
     import { playersMixin } from 'common/js/mixins'
+    import { bubble } from 'common/js/dom'
     export default {
         name: 'fm',
         mixins: [ playersMixin ],
@@ -115,6 +116,9 @@
                 return this.playing ? 'pause-bare' : 'play-bare'
             },
             favoriteIcon() {
+                if(this.FSToggled && this.FS) {
+                    bubble(this.$refs.likeBtn.$el)
+                }
                 return this.FS ? 'liked' : 'like'
             },
             favoriteMiniIcon() {
@@ -218,11 +222,13 @@
                 this.doPlayNext()
             },
             toggleFavorite() {
+                this.FSToggled = true
                 this.FS = !this.FS
                 this.toggleSongFS(this.currentSong)
             },
             ...mapActions([
-                'stopPlaying'
+                'stopPlaying',
+                'toggleSongFS'
             ]),
             toggleFullScreen() {
                 this.fullScreen = !this.fullScreen
@@ -236,6 +242,13 @@
                 const audio = this.$refs.audio
                 if(audio) {
                     audio.pause()
+                }
+            },
+            show() {
+                // FM已开时, 再点击FM入口按钮，则全屏并播放
+                this.toggleFullScreen()
+                if(!this.playing) {
+                    this.togglePlay()
                 }
             }
         },
