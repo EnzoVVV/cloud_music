@@ -69,7 +69,7 @@
                     <IconSvg :icon-class='miniPlayBtnIcon' size='20px'></IconSvg>
                 </div>
             </progresscircle>
-            <div class='favorite' @click='toggleFavorite'>
+            <div class='favorite' @click.stop='toggleFavorite'>
                 <IconImg :imgName='favoriteMiniIcon' size='30px'></IconImg>
             </div>
         </div>

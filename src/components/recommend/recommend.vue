@@ -46,8 +46,10 @@
     import discList from 'components/discList/discList'
     import scroll from 'base/scroll/scroll'
     import { getPersonalFM } from 'api/fm'
+    import { playlistMixin } from 'common/js/mixins'
     export default {
         name: 'recommend',
+        mixins: [ playlistMixin ],
         components: {
             slider,
             discList,
@@ -118,7 +120,9 @@
         bottom: 0
         &-content
             width: 100%
-            height: 100%
+            position: absolute
+            top: 0
+            bottom: 0
             overflow: hidden
             .decorate
                 position: absolute

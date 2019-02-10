@@ -97,11 +97,11 @@
                 this.flags.playlist = true
             },
             showFM(flag = true) {
-                if(this.flags.FM) {
+                if(flag && this.flags.FM) {
                     // FM已开时, 再点击FM入口按钮，则全屏并播放
                     this.$refs.fm.show()
                 } else {
-                    // FM未开，则开启
+                    // 开启FM或关闭
                     this.flags.FM = flag
                     // 记录FM是否开启状态到vuex
                     this.setFMSwitch(flag)

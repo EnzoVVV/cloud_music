@@ -131,8 +131,8 @@ export const playlistMixin = {
             if(!scroll) {
                 throw new Error('scroll组件的ref要设为scroll')
             }
-            const bottom = flag ? '45px' : ''
-            scroll.$el.style.bottom = bottom
+            const bottom = flag ? '45px' : '0'
+            scroll.$el.style.bottom = bottom  
             scroll.refresh()
         }
     }

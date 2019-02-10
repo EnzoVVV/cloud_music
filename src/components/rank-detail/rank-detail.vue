@@ -8,7 +8,6 @@
     import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
     import detailboard from 'components/detail-board/detail-board'
     import { getRankDetail } from 'api/rank'
-    import { getRankIdx } from 'common/js/rank'
     import { mapActions, mapGetters } from 'vuex'
     export default {
         name: 'rankdetail',
@@ -76,7 +75,7 @@
                 this.$emit('back')
             },
             getDetail() {
-                const idx = getRankIdx(this.rankinfo.name)
+                const idx = this.rankinfo.idx
                 getRankDetail(idx).then(res => {
                     this.songs = res.songs
                     this.cover = res.picUrl

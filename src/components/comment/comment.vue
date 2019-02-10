@@ -97,7 +97,7 @@
             selectInfo() {
                 if(this.type === 'song') {
                     // 是song则触发播放
-                    this.$bus.emit('requestPlayFromComment')
+                    this.$bus.emit('togglePlay', true)
                 }
                 this.back()
             },

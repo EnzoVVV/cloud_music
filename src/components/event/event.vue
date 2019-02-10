@@ -1,29 +1,33 @@
 <template>
-    <div class='events'>
-        <div v-for='event in events' :key='event.id' class='event'>
-            <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='event.user.picUrl' :main='eventMain(event)' :sub='event.time' height='40px' :showImg='true'></liner>
-            <div class='msg'>{{event.msg}}</div>
-            <section class="pic-list" v-if='event.pics.length'>
-                <div v-for='(pic, index) in event.pics' :key='index' class='pic-list-item' :style='picStyle(pic)'></div>
-            </section>
-            <div class='song-wrapper' v-if='event.song'>
-                <liner :hasBorder='false' :picUrl='event.song.picUrl' :main='event.song.name' :sub='event.song.singer' height='40px' :showImg='true' :selectable='true' @select='selectSong(event.song)'></liner>
+    <scroll class='events' ref='scroll' :data='events'>
+        <div>
+            <div v-for='event in events' :key='event.id' class='event'>
+                <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='event.user.picUrl' :main='eventMain(event)' :sub='event.time' height='40px' :showImg='true'></liner>
+                <div class='msg'>{{event.msg}}</div>
+                <section class="pic-list" v-if='event.pics.length'>
+                    <div v-for='(pic, index) in event.pics' :key='index' class='pic-list-item' :style='picStyle(pic)'></div>
+                </section>
+                <div class='song-wrapper' v-if='event.song'>
+                    <liner :hasBorder='false' :picUrl='event.song.picUrl' :main='event.song.name' :sub='event.song.singer' height='40px' :showImg='true' :selectable='true' @select='selectSong(event.song)'></liner>
+                </div>
+                <!-- <div class='operation'>
+                    <span class='empty'></span>
+                    <div class='operation-btn' @click='showComment(event)'><IconImg imgName='comment' class='comment-btn' size='20px'></IconImg><span>{{commentText(event)}}</span></div>
+                    <div class='operation-btn' @click='toggleLike(event)'><IconImg :imgName='likeIcon(event)' size='20px' :ref='event.id'></IconImg><span>{{likeText(event)}}</span></div>
+                </div> -->
             </div>
-            <!-- <div class='operation'>
-                <span class='empty'></span>
-                <div class='operation-btn' @click='showComment(event)'><IconImg imgName='comment' class='comment-btn' size='20px'></IconImg><span>{{commentText(event)}}</span></div>
-                <div class='operation-btn' @click='toggleLike(event)'><IconImg :imgName='likeIcon(event)' size='20px' :ref='event.id'></IconImg><span>{{likeText(event)}}</span></div>
-            </div> -->
         </div>
-    </div>
+    </scroll>
 </template>
 <script>
     import { mapActions, mapGetters } from 'vuex'
     // import { bubble } from 'common/js/dom'
+    import scroll from 'base/scroll/scroll'
     import liner from 'base/liner/liner'
     export default {
         name: 'event',
         components: {
+            scroll,
             liner
         },
         props: {
