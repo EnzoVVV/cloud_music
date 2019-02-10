@@ -32,7 +32,6 @@
     const ANCHOR_HEIGHT = 18
     // 标题高度
     const TITLE_HEIGHT = 30
-    // TODO, bug, 最后一个shortcutList点击后不变红，而是倒数第二个变红了
     import scroll from 'base/scroll/scroll'
     import { transform } from 'common/js/dom'
     export default {
@@ -130,7 +129,11 @@
                 let height = 0
                 this.groupHeight = []
                 this.groupHeight.push(height)
-                groups.forEach(group => {
+                groups.forEach((group, index) => {
+                    if(index === groups.length - 1 && group.clientHeight < this.$el.clientHeight) {
+                        // 最后一个group的高度如果比总高度小的话，必须手动将group高度置为总高度, 不然最后一个滚动不到fixedTitle, 会导致最后一个shortCut不会被点亮
+                        group.style.height = this.$el.clientHeight + 'px'
+                    }
                     height += group.clientHeight
                     this.groupHeight.push(height)
                 })

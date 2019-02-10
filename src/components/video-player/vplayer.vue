@@ -1,5 +1,5 @@
 <template>
-    <video-player :options='playerOptions' class='video-player vjs-custom-skin' v-if='prepared'></video-player>
+    <video-player :options='playerOptions' class='video-player vjs-custom-skin' v-if='prepared' @play='onPlay'></video-player>
 </template>
 <script>
     import 'video.js/dist/video-js.css'
@@ -27,6 +27,7 @@
                     // videojs options
                     // height: '232px',
                     // width: window.innerWidth,
+                    notSupportedMessage: '视频暂无法播放，请稍后再试',
                     fluid: true,
                     muted: false,
                     language: 'en',
@@ -46,7 +47,10 @@
         watch: {
         },
         methods: {
-
+            onPlay() {
+                // 视频开始播放, 停止player
+                this.$bus.emit('togglePlay', false)
+            }
         },
         created() {
             getVideoDetail(this.subject.id).then(res => {

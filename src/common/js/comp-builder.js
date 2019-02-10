@@ -92,7 +92,7 @@ const builder = function(name, props, manage = true) {
             }
         },
         mounted() {
-            // 父组件mounted时子组件还没mounted
+            // TODO,why 父组件mounted时子组件还没mounted? 正常应该子组件先mounted
             // wrapper mounted后再将v-if置为true，否则组件的transition动画触发不了
             this.flag = true
         }

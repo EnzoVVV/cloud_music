@@ -1,14 +1,16 @@
 <template>
-    <event v-if='events.length' :events='events'></event>
+    <event :events='events' ref='events' class='events'></event>
 </template>
 <script>
     import { getFeed } from 'api/feed'
     import { loginStatus } from 'api/login'
     import { getUserFollowing, getUserEvent } from 'api/user'
+    import { playlistMixin } from 'common/js/mixins'
     import { mapActions, mapGetters } from 'vuex'
     import event from 'components/event/event'
     export default {
         name: 'feeds',
+        mixins: [ playlistMixin ],
         components: {
             event
         },
@@ -61,6 +63,16 @@
             selectSong(song) {
                 this.insertSong(song)
             },
+            handlePlaylist(flag) {
+                const events = this.$refs.events
+                if(!events) {
+                    return
+                }
+                const scroll = events.$refs.scroll
+                const bottom = flag ? '45px' : '0'
+                scroll.$el.style.bottom = bottom
+                scroll.refresh()
+            },
             ...mapActions([
                 'insertSong'
             ])
@@ -77,37 +89,9 @@
 <style lang='stylus' scoped>
     @import '~common/stylus/variable'
     .events
-        background: $color-background
-        .event
-            border-bottom: 1px solid $color-light
-            .msg
-                font-size: 13px
-                line-height: 20px
-                margin: 5px 5px 5px 50px
-            .pic-list
-                display: flex
-                flex-wrap: wrap
-                margin: 5px 5px 5px 50px
-                .pic-list-item
-                    border-radius: 5px
-                    flex: 0 0 33%
-                    padding-top: 33%
-                    background-repeat: no-repeat
-                    background-size: cover
-                    background-position: center
-                    background-clip: padding-box
-                    box-sizing: border-box
-                    border: 1.5px solid transparent
-                    .pic-list-item:first-child:nth-last-child(4) ~ .pic-list-item:nth-child(2)
-                        margin-right: 33%
-            .song-wrapper
-                background: rgba(144,144,144,0.1)
-                margin: 0 10px 10px 50px
-                border-radius: 5px
-        .event-empty
-            font-size: $font-size-medium-x
-            color: $color-text-ii
-            display: flex
-            justify-content: center
-            padding-top: 50px
+        position: absolute
+        top: 0
+        bottom: 0
+        left: 0
+        right: 0
 </style>

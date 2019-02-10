@@ -3,6 +3,7 @@ import { commonParams, options, HOST } from './config'
 import { ERR_OK } from 'api/config'
 import axios from 'axios'
 import { success } from './shared'
+import { getRankIdx } from 'common/js/rank'
 
 import { getSongs } from 'common/js/song'
 function getRankData(item) {
@@ -32,7 +33,13 @@ export function getTopList() {
 			}
 			if(success(res.status)) {
 				res.data.list.forEach(item => {
+					const idx = getRankIdx(item.name)
+					if(idx === undefined) {
+						// 没有对应的idx的, 不添加(除非及时维护更新idx表)
+						return
+					}
 					const rankData = getRankData(item)
+					rankData.idx = idx
 					if(item.tracks && item.tracks.length) {
 						result.official.push(rankData)
 					} else if(result.recommend.length < 6) {

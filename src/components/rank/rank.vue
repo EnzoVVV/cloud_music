@@ -12,7 +12,7 @@
                         <ul>
                             <li class='item' v-for='item in officialList' :key='item.id' @click='selectRank(item)'>
                                 <div class='icon'>
-                                    <img v-lazy='item.picUrl' width='100' height='100'>
+                                    <img :src='item.picUrl' width='100' height='100'>
                                 </div>
                                 <ul class='songlist'>
                                     <li class='song' v-for='(song, index) in item.tracks' :key='song.id || index'>
@@ -25,14 +25,14 @@
                         <div class='title'>推荐榜</div>
                         <ul class='list'>
                             <li class='list-item' v-for='item in recommendList' :key='item.id' @click='selectRank(item)'>
-                                <img v-lazy='item.picUrl' class='list-item-img'>
+                                <img :src='item.picUrl' class='list-item-img'>
                                 <div class='list-item-title'>{{item.name}}</div>
                             </li>
                         </ul>
                         <div class='title'>更多榜单</div>
                         <ul class='list'>
                             <li class='list-item' v-for='item in moreList' :key='item.id' @click='selectRank(item)'>
-                                <img v-lazy='item.picUrl' class='list-item-img'>
+                                <img :src='item.picUrl' class='list-item-img'>
                                 <div class='list-item-title'>{{item.name}}</div>
                             </li>
                         </ul>
@@ -84,23 +84,20 @@
                     this.officialList = res.official
                     this.recommendList = res.recommend
                     this.moreList = res.more
+                    // mounted时这些list还是空，list对应的dom还没渲染出来，所以需要updated后将scroll refresh
                 })
             },
             goback() {
                 this.$emit('back')
-            },
-            handlePlaylist(playlist) {
-                if(!playlist) return
-                const bottom = playlist.length > 0 ? '45px' : ''
-                this.$refs.rank.style.bottom = bottom
-                this.$refs.scroll.refresh()
             }
+        },
+        updated() {
+            this.$refs.scroll.refresh()
         },
         created() {
             this.getTopLists()
         },
         mounted() {
-
         }
     }
 </script>
