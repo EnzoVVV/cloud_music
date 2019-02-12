@@ -73,6 +73,14 @@
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/collection-album.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/collection-singer.PNG)
 
+# 技术栈
+* 开源引用: vue + vuex + stylus + vue-video-player + better-scroll + lyric-parser + good-storage
+* 自研多级滑动框架组件，实现多级嵌套页面的横滑切换
+* 自研组件动态创建系统，实现无限次创建同一页面，并动态管理层叠顺序覆盖原页面
+* 自研hub系统替代vue-router
+* 性能优秀, 开发态首屏0.4s 
+* api来自[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
+
 # TODO
 * 动态页：转发，视频
 * 一些图标需要替换
