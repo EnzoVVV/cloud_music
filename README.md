@@ -82,10 +82,11 @@
 * api来自[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
 
 # TODO
-* 动态页：转发，视频
 * 一些图标需要替换
 * 精品歌单页
 * 电台
+* 聊天
+* 动态页：转发，分享视频
 
 # 已知问题
 * 无效api: 新建歌单，删除自创歌单的api没有, 只能本地缓存
