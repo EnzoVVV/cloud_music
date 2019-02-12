@@ -4,7 +4,7 @@
             <div class='search' v-show='showSearch'>
                 <div class='header'>
                     <div @click='goback'><IconSvg class='back' icon-class='back'></IconSvg></div>
-                    <inputbox v-model='inputValue' ref='searchbar' :inputStyle='searchbarStyle' @enter='search(inputValue)'></inputbox>
+                    <inputbox v-model='inputValue' ref='searchbar' :inputStyle='searchbarStyle' @enter='search(inputValue)' class='header-input-box'></inputbox>
                 </div>
                 <result v-if='showResult' class='result'></result>
                 <suggest v-if='inputValue' v-show='showSuggest' :query='inputValue' @select='search' class='suggest'></suggest>
@@ -157,6 +157,8 @@
             .back
                 float: left
                 margin: 0 10px
+            &-input-box
+                margin-right: 10px
         .suggest
             position: absolute
             top: 44px

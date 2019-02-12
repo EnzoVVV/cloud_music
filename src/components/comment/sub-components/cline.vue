@@ -31,13 +31,11 @@
             },
             // 资源类型
             type: {
-                type: String,
-                required: true
+                type: String
             },
             // 资源信息
             subject: {
-                type: Object,
-                required: true
+                type: Object
             }
         },
         data() {

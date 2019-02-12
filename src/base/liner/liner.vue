@@ -218,7 +218,9 @@
         mounted() {
             if(this.light) {
                 this.$refs.main.style.color = '#757575'
-                this.$refs.sub.style.color = 'rgb(144,144,144)'
+                if(this.$refs.sub) {
+                    this.$refs.sub.style.color = 'rgb(144,144,144)'
+                }
             }
         }
     }
