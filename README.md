@@ -1,4 +1,16 @@
 # cloud_music
+造轮子复刻网易云音乐, 网易无版权的歌曲自动切换至QQ曲库
+
+# Build
+    # 安装
+    git clone https://github.com/disoul/electron-cloud-music && cd electron-cloud-music
+    npm run init
+    
+    # 运行
+    yarn start
+    
+    # chrome下按 F12, Ctrl + Shift + M 进入移动端模拟模式
+
 # 预览
 #### 播放器<br />
 
