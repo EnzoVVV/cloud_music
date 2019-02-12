@@ -3,7 +3,7 @@
 
 # Build
     # 安装
-    git clone https://github.com/disoul/electron-cloud-music && cd electron-cloud-music
+    git clone https://github.com/EnzoVVV/cloud_music.git
     npm run init
     
     # 运行
