@@ -23,6 +23,10 @@
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/fm.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/video.PNG)
 
+#### 歌手列表，评论<br />
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-list.PNG)
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/comment.PNG)
+
 #### 歌手详情<br />
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail-2.PNG)
@@ -40,6 +44,22 @@
 #### 歌单推荐, 歌单详情<br />
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/play-list.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/disc-detail.PNG)
+
+#### 搜索页, 搜索建议<br />
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/search.PNG)
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/search-suggest.PNG)
+
+#### 搜索结果<br />
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/search-result.PNG)
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/search-result-user.PNG)
+
+#### 每日推荐，歌单详情<br />
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/daily-recommend.PNG)
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/disc-detail.PNG)
+
+#### 我的收藏<br />
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/collection-album.PNG)
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/collection-singer.PNG)
 
 
 
