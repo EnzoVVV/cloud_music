@@ -7,7 +7,7 @@
     npm run init
     
     # 运行
-    yarn start
+    npm start
     
     # chrome下按 F12, Ctrl + Shift + M 进入移动端模拟模式
 
