@@ -73,5 +73,16 @@
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/collection-album.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/collection-singer.PNG)
 
+# TODO
+* 动态页：转发，视频
+* 一些图标需要替换
+* 精品歌单页
+* 电台
+
+# 已知问题
+* 无效api: 新建歌单，删除自创歌单的api没有, 只能本地缓存
+* 有些MV的地址无效，播放不了
+* 关注列表接口无返回数据
+
 
 
