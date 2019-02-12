@@ -94,7 +94,7 @@
         left: 0
         right: 0
         bottom: 0
-        z-index: 5000
+        z-index: 7000
         background: $color-background
         .header
             position: absolute
