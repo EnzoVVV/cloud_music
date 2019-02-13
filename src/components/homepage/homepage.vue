@@ -208,7 +208,7 @@
                         }
                     })
                     this.$nextTick(() => {
-                        this.$refs.scroll.refresh()
+                        this.checkHeight(0)
                     })
                     if(this.isSelf) {
                         this.createdPlaylists[0].name = '我喜欢的音乐'
@@ -314,6 +314,7 @@
             },
             checkHeight(tabIndex) {
                 if(this.heightCheck[tabIndex].checked) {
+                    this.$refs.scroll.refresh()
                     return
                 }
                 // albumlist高度小于minHeight，则无法上移到顶部，改变最小高度，使之可以上移到顶部
@@ -352,7 +353,6 @@
         mounted() {
             this.$emit('mountedCalled')
             this.getHeight()
-            this.checkHeight(0)
         }
     }
 </script>
