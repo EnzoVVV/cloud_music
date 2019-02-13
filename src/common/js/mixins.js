@@ -497,10 +497,17 @@ export const playersMixin = {
             // 每次用builder创建组件时，抬高miniplayer的zIndex
             // 使miniplayer的zIndex始终保持在最上层, 如果组件需要覆盖miniplayer，设置coverMiniPlayer控制miniplayer的v-show
             this.$refs.miniplayer.style.zIndex = PopupManager.nextZIndex()
+        },
+        handleTogglePlay(flag) {
+            // flag 为true则开始播放, flag为false则停止播放
+            if((flag && !this.playing) || (!flag && this.playing)) {
+                this.togglePlay()
+            }
         }
     },
     mounted() {
         this.$bus.on('coverMiniPlayer', this.handleCoverMiniPlayer)
         this.$bus.on('liftMiniPlayer', this.liftMiniPlayer)
+        this.$bus.on('togglePlay', this.handleTogglePlay)
     }
 }

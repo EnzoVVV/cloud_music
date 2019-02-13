@@ -108,7 +108,9 @@
                 showFixedTab: false,
                 headerHeight: 44,
                 imgHeight: 0,
-                bgStyle: 'background-image: "static/images/default-bg.png"',
+                bgStyle: {
+                    backgroundImage: "static/images/default-bg.png"
+                },
                 headerHeight: 0,
                 minHeight: 0,
                 heightCheck: [
@@ -318,6 +320,10 @@
                 let el = this.$refs[this.heightCheck[tabIndex].ref]
                 if(el.clientHeight < this.minHeight) {
                     el.style.height = this.minHeight + 'px'
+                    // 更改height, 浏览器回流后刷新scroll
+                    setTimeout(() => {
+                        this.$refs.scroll.refresh()
+                    }, 200)
                 }
                 this.heightCheck[tabIndex].checked = true
             },
@@ -344,8 +350,9 @@
             this.checkSelf()
         },
         mounted() {
-            this.getHeight()
             this.$emit('mountedCalled')
+            this.getHeight()
+            this.checkHeight(0)
         }
     }
 </script>

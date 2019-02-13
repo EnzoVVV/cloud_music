@@ -60,7 +60,7 @@
                     this.mine = true
                     this.disc = this.discInfo
                     this.songs = this.discInfo.songList
-                    this.title = this.discInfo.name
+                    this.title = '我喜欢的音乐'
                     this.cover = this.discInfo.picUrl
                     this.creator = this.loginUser
                 } else {
