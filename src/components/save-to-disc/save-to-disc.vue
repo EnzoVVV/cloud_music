@@ -6,10 +6,10 @@
                     <IconImg class='img' imgName='add'></IconImg>
                     <div class='text'>新建歌单</div>
                 </li>
-                <li class='list' v-for='disc in discs' :key='disc.name' @click='add(disc)'>
+                <li class='list' v-for='(disc, index) in discs' :key='disc.name' @click='add(disc)'>
                     <img class='img' v-lazy='disc.picUrl'/>
                     <div class='text'>
-                        <p class='name'>{{disc.name}}</p>
+                        <p class='name'>{{discName(disc, index)}}</p>
                         <p class='info'>{{clistInfo(disc)}}</p>
                     </div>
                 </li>
@@ -88,6 +88,9 @@
                         this.hide()
                     })
                 }
+            },
+            discName(disc, index) {
+                return index == 0 ? '我喜欢的音乐' : disc.name
             },
             ...mapActions([
                 'addSongToDisc'

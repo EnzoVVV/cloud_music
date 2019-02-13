@@ -1,11 +1,9 @@
 <template>
     <detailboard headerTitle='每日推荐' :blur='true' :songs='songs' :showImg='true' :cover='cover' :cusInfo='true' :showFunc='false' :showFBtn='false' :showSearch='false' @back='back'>
         <div class='bg' slot='info'>
-            <div class='info'>
-                <IconSvg icon-class='calendar' class='calendar' size='150px'></IconSvg>
-                <span class='date'>{{day}}</span>
-                <span class='tip'>根据你的音乐口味生成, 每天6:00更新</span>
-            </div>
+            <IconSvg icon-class='calendar' class='calendar' size='150px'></IconSvg>
+            <span class='date'>{{day}}</span>
+            <span class='tip'>根据你的音乐口味生成, 每天6:00更新</span>
         </div>
     </detailboard>
 </template>
@@ -76,22 +74,21 @@
         width: 100%
         height: 160px
         overflow: hidden
-        .info
+        .calendar
+            position: absolute
+            left: 0
+            top: 15px
+        .date
             position: absolute 
-            left: -20px
-            bottom: 0
+            left: 52px
+            top: 77px
+            font-size: $font-size-large-e
+            color: $color-text-a
+        .tip
             width: 100%
-            .date
-                position: absolute 
-                left: 63px
-                bottom: 47px
-                font-size: $font-size-large-e
-                color: $color-text-a
-            .tip
-                width: 100%
-                color: $color-text-d
-                font-size: $font-size-small-s
-                position: absolute
-                left: 43px
-                bottom: 0
+            color: $color-text-d
+            font-size: $font-size-small-s
+            position: absolute
+            left: 43px
+            bottom: 0
 </style>

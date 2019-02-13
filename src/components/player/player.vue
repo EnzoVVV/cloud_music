@@ -527,18 +527,11 @@
                     translate(this.$refs.nextCdWrapper, this.clientWidth)
                     translate(this.$refs.preCdWrapper, -this.clientWidth)
                 })
-            },
-            handleTogglePlay(flag) {
-                // flag 为true则开始播放, flag为false则停止播放
-                if((flag && !this.playing) || (!flag && this.playing)) {
-                    this.togglePlay()
-                }
             }
         },
         mounted() {
             this.setStylusPosition()
             this.edgeEqualiser()
-            this.$bus.on('togglePlay', this.handleTogglePlay)
             this.$bus.on('liftPlayer', this.liftPlayer)
             // 当前歌曲临近的歌曲变化, 需要重新计算side song
             this.$bus.on('playlist-change', this.getSideSong)
