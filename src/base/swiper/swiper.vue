@@ -26,6 +26,11 @@
 			},
 			height: {
 				type: Number
+			},
+			// 预加载当前index两侧的component
+			preloadNearComponents: {
+				type: Boolean,
+				default: false
 			}
         },
         data() {
@@ -149,9 +154,11 @@
 				this.curIndex = to
 				if(!this.hasLoaded(this.curIndex)) {
 					this.loadedCompIndex.add(this.curIndex)
-					this.$nextTick(() => {
-						this.enableEventLisenter(this.curIndex)
-					})
+					// 此时to的动态component开始加载，需要在component created后才能执行enableEventLisenter，因为enableEventLisenter需要获取子组件的data
+					// 延后500ms等子组件created, TODO， 如何确保500ms后一定created了? 做成retry呢
+					setTimeout(() => {
+						this.enableEventLisenter(this.curIndex, true)
+					}, 500)
 				}
 				const outerSwiper = this.findOuterSwiper(this)
 				if(outerSwiper) {
@@ -192,10 +199,12 @@
 				return findComponentUpward(component,'swiper')
 			},
 			findInnerSwiper(swipecontainer) {
-				if(swipecontainer.firstChild) {
-					let innerComponent = swipecontainer.firstChild.__vue__
+				// 不能用firstChild, 有可能是#comment，需要用firstElementChild
+				const firstChild = swipecontainer.firstElementChild
+				if(firstChild) {
+					let innerComponent = firstChild.__vue__
 					return findComponentDownward(innerComponent,'swiper')
-				}
+				} 
 				return null
 			},
 			// 内部swiper组件滑动了，外层动态监听事件，为了处理内部swiper处在边界时的情况
@@ -203,9 +212,13 @@
 				this.enableEventLisenter(this.curIndex)
 			},
 			// 动态给swipercontainer添加事件
-			enableEventLisenter(index) {
+			enableEventLisenter(index, calculate = false) {
 				const swipecontainer = this.$refs[index][0]
 				const component = this.compList[index]
+				if(calculate && !component.innerSwiper) {
+					// 如果calculate为true, 且当前组件的innerSwiper未被计算，则计算innerSwiper
+					component.innerSwiper = this.findInnerSwiper(swipecontainer)
+				}
 				if(component.innerSwiper) {
 					// 如果当前swipecontainer里的组件，组件里面还有swiper，就需要特殊处理
 					// 得到组件里面的swiper组件，如果内部swiper在最左，则当前swipercontainer监听滑动事件(this.direction为right，只能右滑)，否则不监听滑动事件
@@ -238,15 +251,15 @@
 				component.removeEventListener('touchend',this.touchend)
 			},
 			// 检测component内部是否包含了swiper，如果包含，引用内部swiper免得重复计算
-			getCompList() {
-				for(let i=0;i<this.compList.length;i++) {
-					const swipecontainer = this.$refs[i][0]
-					const innerSwiper = this.findInnerSwiper(swipecontainer)
-					if(innerSwiper) {
-						this.compList[i].innerSwiper = innerSwiper
-					}
-				}
-			},
+			// getCompList() {
+			// 	for(let i=0;i<this.compList.length;i++) {
+			// 		const swipecontainer = this.$refs[i][0]
+			// 		const innerSwiper = this.findInnerSwiper(swipecontainer)
+			// 		if(innerSwiper) {
+			// 			this.compList[i].innerSwiper = innerSwiper
+			// 		}
+			// 	}
+			// },
 			hasLoaded(index) {
                 return this.loadedCompIndex.has(index)
             },
@@ -255,7 +268,9 @@
 			},
 			// 允许加载已经加载过的组件，或者临近组件
             ifload(index) {
-				// return this.hasLoaded(index) || this.isNear(index)
+				if(this.preloadNearComponents) {
+					return this.hasLoaded(index) || this.isNear(index)
+				}
 				return this.hasLoaded(index)
 			},
 			// container初始位置
@@ -274,8 +289,14 @@
 			if(this.height) {
 				this.$refs.swiper.style.height = this.height + 'px'
 			}
-			this.getCompList()
-			this.enableEventLisenter(this.defaultIndex)
+			// if(this.preloadNearComponents) {
+			// 	this.getCompList()
+			// 	this.enableEventLisenter(this.defaultIndex)
+			// } else {
+			// 	this.enableEventLisenter(this.defaultIndex, true)
+			// }
+			// TODO，如果preloadNearComponents为true，此时调用getCompList，还是在video.vue的created之前了呢 ？？？
+			this.enableEventLisenter(this.defaultIndex, true)
 			this.$on('swipe',this.handleInnerSwipe)
 		},
 		beforeDestroy() {
