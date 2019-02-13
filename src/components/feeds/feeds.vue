@@ -1,5 +1,5 @@
 <template>
-    <event :events='events' ref='events' class='events'></event>
+    <event :events='events' ref='events' class='events' :accessHomepage='true'></event>
 </template>
 <script>
     import { getFeed } from 'api/feed'

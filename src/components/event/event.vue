@@ -2,7 +2,7 @@
     <scroll class='events' ref='scroll' :data='events'>
         <div>
             <div v-for='event in events' :key='event.id' class='event'>
-                <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='event.user.picUrl' :main='eventMain(event)' :sub='event.time' height='40px' :showImg='true'></liner>
+                <liner :hasBorder='false' :circleImg='true' :light='true' :picUrl='event.user.picUrl' :main='eventMain(event)' :sub='event.time' height='40px' :showImg='true' :selectable='true' @select='showHomePage(event.user.id)'></liner>
                 <div class='msg'>{{event.msg}}</div>
                 <section class="pic-list" v-if='event.pics.length'>
                     <div v-for='(pic, index) in event.pics' :key='index' class='pic-list-item' :style='picStyle(pic)'></div>
@@ -34,6 +34,11 @@
             events: {
                 type: Array,
                 default: () => []
+            },
+            // 点击用户头像可进入用户主页
+            accessHomepage: {
+                type: Boolean,
+                default: false
             }
         },
         data() {
@@ -57,6 +62,12 @@
             },
             picStyle(pic) {
                 return `background-image:url(${pic})`
+            },
+            showHomePage(id) {
+                if(!this.accessHomepage) {
+                    return
+                }
+                this.showComponent('homepage', id)
             },
             // commentText(event) {
             //     return event.commentCount > 0 ? event.commentCount : '评论'

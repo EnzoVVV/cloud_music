@@ -30,9 +30,9 @@
                 </div>
                 <songlist :songs='songs' ref='songlist' v-show='activeTab == 0' @click='selectSong' :showIndex='true' :radius='false'></songlist>
                 <albumlist :albums='albums' ref='albumlist' v-show='activeTab == 1'></albumlist>
-                <div v-show='activeTab == 2'>
-                </div>
-                <brief v-show='activeTab == 3' ref='brief' :brief='brief' :singer='singerCopy'>
+                <!-- <div v-show='activeTab == 2'>
+                </div> -->
+                <brief v-show='activeTab == 2' ref='brief' :brief='brief' :singer='singerCopy'>
                 </brief>
             </div>
         </scroll>
@@ -83,7 +83,7 @@
             return {
                 probeType: 3,
                 listenScroll: true,
-                tabs: ['热门演唱','专辑','视频','艺人信息'],
+                tabs: ['热门演唱','专辑','艺人信息'],
                 activeTab: 0,
                 showFixedTab: false,
                 headerHeight: 44,
@@ -100,10 +100,10 @@
                         ref: 'albumlist',
                         checked: false
                     },
-                    {
-                        ref: 'xxx',
-                        checked: false
-                    },
+                    // {
+                    //     ref: 'video',
+                    //     checked: false
+                    // },
                     {
                         ref: 'brief',
                         checked: false
