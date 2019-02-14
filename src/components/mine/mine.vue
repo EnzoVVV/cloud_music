@@ -9,19 +9,19 @@
                 <div class='decorate'></div>
                 <div class='basic'>
                     <ul>
-                        <li class='item'>
+                        <li class='item' @click='$unrevealed'>
                             <IconImg imgName='mine-local' class='icon'></IconImg>
                             <div class='text'>本地音乐</div>
                         </li>
-                        <li class='item'>
+                        <li class='item' @click='$unrevealed'>
                             <IconImg imgName='mine-recent' class='icon'></IconImg>
                             <div class='text'>最近播放</div>
                         </li>
-                        <li class='item'>
+                        <li class='item' @click='$unrevealed'>
                             <IconImg imgName='mine-download' class='icon'></IconImg>
                             <div class='text'>下载管理</div>
                         </li>
-                        <li class='item'>
+                        <li class='item' @click='$unrevealed'>
                             <IconImg imgName='mine-radio' class='icon'></IconImg>
                             <div class='text'>我的电台</div>
                         </li>

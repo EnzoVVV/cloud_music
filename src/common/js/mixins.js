@@ -268,8 +268,14 @@ export const followMixin = {
         ])
     },
     methods: {
+        showHomepage(id) {
+            this.showComponent('homepage', id)
+        },
         handlePlaylist(flag) {
             const scroll = this.$refs.scroll
+            if(!scroll) {
+                return
+            }
             const bottomVal = 45 + 88 + 'px'
             const bottom = flag ? bottomVal : ''
             scroll.$el.style.bottom = bottom

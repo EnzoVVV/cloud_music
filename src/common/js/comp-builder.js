@@ -9,6 +9,7 @@ const albumdetail = () => import('components/album-detail/album-detail')
 const singerdetail = () => import('components/singer-detail/singer-detail')
 const songselect = () => import('components/song-select/song-select')
 const collection = () => import('components/collection/collection')
+const follow = () => import('components/homepage/sub/follow/follow')
 
 const message = () => import('base/message/message')
 
@@ -19,6 +20,7 @@ Vue.component('albumdetail', albumdetail)
 Vue.component('singerdetail', singerdetail)
 Vue.component('songselect', songselect)
 Vue.component('collection', collection)
+Vue.component('follow', follow)
 
 Vue.component('message', message)
 

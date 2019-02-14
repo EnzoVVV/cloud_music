@@ -14,41 +14,13 @@
                         </div>
                     </div>
                     <ul>
-                        <li class='line'>
-                            <IconSvg icon-class='setting'></IconSvg>
+                        <li class='line' @click='$unrevealed'>
+                            <IconImg imgName='mini-message' ></IconImg>
                             <span>我的消息</span>
-                        </li>
-                        <li class='line'>
-                            <IconSvg icon-class='setting'></IconSvg>
-                            <span>我的会员</span>
                         </li>
                         <li class='line' @click='showFollow'>
-                            <IconSvg icon-class='setting'></IconSvg>
+                            <IconImg imgName='mini-person'></IconImg>
                             <span>我的好友</span>
-                        </li>
-                        <li class='line'>
-                            <IconSvg icon-class='setting'></IconSvg>
-                            <span>我的消息</span>
-                        </li>
-                        <li class='line'>
-                            <IconSvg icon-class='setting'></IconSvg>
-                            <span>我的消息</span>
-                        </li>
-                        <li class='line'>
-                            <IconSvg icon-class='setting'></IconSvg>
-                            <span>我的消息</span>
-                        </li>
-                        <li class='line'>
-                            <IconSvg icon-class='setting'></IconSvg>
-                            <span>我的消息</span>
-                        </li>
-                        <li class='line'>
-                            <IconSvg icon-class='setting'></IconSvg>
-                            <span>我的消息</span>
-                        </li>
-                        <li class='line'>
-                            <IconSvg icon-class='setting'></IconSvg>
-                            <span>我的消息</span>
                         </li>
                     </ul>
                 </div>

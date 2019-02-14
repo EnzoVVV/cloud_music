@@ -64,7 +64,7 @@
 
         },
         mounted() {
-
+            this.$emit('mountedCalled')
         }
     }
 </script>

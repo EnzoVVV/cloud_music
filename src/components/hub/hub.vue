@@ -6,7 +6,7 @@
         <discmanage v-if='discManageFlag' :type='discManageType' @hide='discManageFlag = false'></discmanage>
         <playlist v-if='flags.playlist' @back='flags.playlist = false'></playlist>
         <fm v-if='flags.FM' ref='fm'></fm>
-        <follow v-if='flags.follow' :title='follow.title'></follow>
+        <follow v-if='flags.follow' :title='follow.title' @back='flags.follow = false'></follow>
     </div>
 </template>
 <script>
@@ -51,11 +51,7 @@
                     playlist: false,
                     FM: false,
                     follow: false
-                },
-                follow: {
-                    title: 'TA的好友'
                 }
-
             }
         },
         computed: {
@@ -127,9 +123,10 @@
                     self: self
                 })
             },
-            showFollow(title) {
-                this.flags.follow = true
-                this.follow.title = title
+            showFollow(title = 'TA的好友') {
+                builder('follow', {
+                    title: title
+                })
             },
             showComponent() {
                 let eventName = arguments[0]
