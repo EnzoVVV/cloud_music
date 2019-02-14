@@ -8,7 +8,7 @@
 </template>
 <script>
 	import { translate, transform, transitionDuration } from 'common/js/dom.js'
-	import { findComponentDownward, findComponentUpward, deepCopy } from 'common/js/tools.js'
+	import { findComponentDownward, findComponentUpward, deepCopy, query } from 'common/js/tools.js'
     export default {
         name: 'swiper',
         components: {
@@ -152,13 +152,22 @@
 			// 滑动后处理
             swipe(to,from) {
 				this.curIndex = to
+				// TODO, 这里改成ifload呢?
 				if(!this.hasLoaded(this.curIndex)) {
 					this.loadedCompIndex.add(this.curIndex)
-					// 此时to的动态component开始加载，需要在component created后才能执行enableEventLisenter，因为enableEventLisenter需要获取子组件的data
-					// 延后500ms等子组件created, TODO， 如何确保500ms后一定created了? 做成retry呢
-					setTimeout(() => {
-						this.enableEventLisenter(this.curIndex, true)
-					}, 500)
+					// 此时to的动态component开始加载，需要在component mouted后才能执行enableEventLisenter，并计算innerSwiper
+					// query函数返回一个promise, 每100ms查询一次入参function的执行结果, 如果为true, 则resolve，否则retry，直至最大事件2000ms
+					query(() => {
+						const swipecontainer = this.$refs[to][0]
+						if(swipecontainer.firstElementChild) {
+							let innerComponent = swipecontainer.firstElementChild.__vue__
+							// 组件不是loading，并且vm实例有$el了，说明已经mounted了
+							return innerComponent && innerComponent.$options.name != 'loading' && innerComponent.$el
+						}
+						return false
+					}, 100, 2000).then(result => {
+						this.enableEventLisenter(this.curIndex, !!result)
+					})
 				}
 				const outerSwiper = this.findOuterSwiper(this)
 				if(outerSwiper) {

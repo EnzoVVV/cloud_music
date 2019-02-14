@@ -55,11 +55,7 @@
             },
             handleClick(singer) {
                 this.setSinger(singer)
-                // 先把当前的singer-detail注销掉,再弹出新的歌手页
-                this.showComponent('singerDetail',false)
-                this.$nextTick(() => {
-                    this.showComponent('singerDetail',true)
-                })
+                this.showComponent('singerdetail',true)
             },
             ...mapMutations({
                 setSinger: 'SET_SINGER'

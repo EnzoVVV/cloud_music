@@ -97,6 +97,31 @@ export function debounce(func, delay) {
     }
 }
 
+// 轮询函数, 返回一个promise，每frequency毫秒执行一次func，如果结果为true，则resolve，否则retry，直至达到maxTime
+export function query(func, frequency = 200, maxTime = 2000) {
+    return new Promise((resolve) => {
+        const tryTime = maxTime / frequency
+        function clearTimer() {
+            clearInterval(timer)
+            timer = null
+        }
+        let count = 0
+        let timer = setInterval(() => {
+            count++
+            if(count > tryTime) {
+                clearTimer()
+                resolve(null)
+            }
+            let result = func.apply()
+            if(result) {
+                clearTimer()
+                timer = null
+                resolve(result)
+            }
+        }, frequency)
+    })
+}
+
 // 数组去重
 export function uniqueArr(arr) {
     if(!arr) return arr
