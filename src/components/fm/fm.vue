@@ -316,11 +316,12 @@
                 .cd-wrapper
                     position: absolute
                     top: 20px
+                    bottom: 0
                     left: 5%
                     width: 90%
                     text-align: center
                     .img
-                        height: 100%
+                        max-height: 80%
                         width: 100%
                         border-radius: 5px
                     .name

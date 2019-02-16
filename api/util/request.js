@@ -38,7 +38,7 @@ const createRequest = (method, url, data, options) => {
       headers['Content-Type'] = 'application/x-www-form-urlencoded'
     if (url.includes('music.163.com'))
       headers['Referer'] = 'https://music.163.com'
-    // headers['X-Real-IP'] = '118.88.88.88'
+    headers['X-Real-IP'] = '183.11.39.210'
 
     if (typeof options.cookie === 'object')
       headers['Cookie'] = Object.keys(options.cookie)
