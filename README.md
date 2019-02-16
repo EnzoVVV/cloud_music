@@ -5,10 +5,10 @@
     # 下载项目代码
     git clone https://github.com/EnzoVVV/cloud_music.git
     
-    # 安装，前端依赖与后端API依赖
+    # 安装与打包
     npm run init
     
-    # 运行, 同时监前端8080端口与API3000端口
+    # 运行
     npm start
     
     # chrome下按 F12, Ctrl + Shift + M 进入移动端模拟模式
@@ -63,11 +63,11 @@
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-list.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/comment.PNG)
 
-#### 歌手详情<br />
+#### 歌手详情，收藏到歌单<br />
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail-2.PNG)
-![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail-album.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail-brief.PNG)
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/save-to-disc.PNG)
 
 #### 个人主页<br />
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/homepage.PNG)
@@ -102,7 +102,7 @@
 * 自研多级滑动框架组件，实现多级嵌套页面的横滑切换
 * 自研组件动态创建系统，实现无限次创建同一页面，并动态管理层叠顺序覆盖原页面
 * 自研hub系统替代vue-router
-* 性能优秀, 开发态首屏0.4s 
+* 性能优秀, 首屏120ms - 150ms
 * api来自[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
 
 # TODO
