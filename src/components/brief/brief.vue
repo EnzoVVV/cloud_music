@@ -55,7 +55,7 @@
             },
             handleClick(singer) {
                 this.setSinger(singer)
-                this.showComponent('singerdetail',true)
+                this.showComponent('singerdetail')
             },
             ...mapMutations({
                 setSinger: 'SET_SINGER'
@@ -78,6 +78,8 @@
         .content
             color: $color-text-g
             margin: 10px 0
+            line-height: 20px
+            font-size: $font-size-medium
         .similar
             overflow: hidden
             margin-top: 10px

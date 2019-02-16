@@ -72,7 +72,9 @@
 
         },
         mounted() {
-
+            setTimeout(() => {
+                this.showSearchFlag = true
+            }, 1000)
         }
     }
 </script>

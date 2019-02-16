@@ -6,7 +6,6 @@
         <discmanage v-if='discManageFlag' :type='discManageType' @hide='discManageFlag = false'></discmanage>
         <playlist v-if='flags.playlist' @back='flags.playlist = false'></playlist>
         <fm v-if='flags.FM' ref='fm'></fm>
-        <follow v-if='flags.follow' :title='follow.title' @back='flags.follow = false'></follow>
     </div>
 </template>
 <script>
@@ -16,7 +15,6 @@
     const discmanage = () => import('components/disc-manage/disc-manage')
     const playlist = () => import('components/play-list/play-list')
     const fm = () => import('components/fm/fm')
-    const follow = () => import('components/homepage/sub/follow/follow')
     import Vue from 'vue'
     import builder from 'common/js/comp-builder'
     import { mapMutations } from 'vuex'
@@ -29,8 +27,7 @@
             DailyRecommend,
             discmanage,
             playlist,
-            fm,
-            follow
+            fm
         },
         props: {
 
@@ -49,8 +46,7 @@
                 },
                 flags: {
                     playlist: false,
-                    FM: false,
-                    follow: false
+                    FM: false
                 }
             }
         },

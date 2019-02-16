@@ -130,7 +130,6 @@
             this.getHotKeys()
         },
         mounted() {
-
         }
     }
 </script>
