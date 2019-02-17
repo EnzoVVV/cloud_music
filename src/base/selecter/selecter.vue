@@ -35,6 +35,9 @@
                 this.selected = option
                 this.fold = true
             }
+        },
+        created() {
+            this.selected = this.options[0]
         }
     }
 </script>
