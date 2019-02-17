@@ -150,8 +150,6 @@
                 // TODO，watch到props变化时，dom还没更新？
                 setTimeout(self.calculateHeight,20)
             }
-        },
-        created() {
         }
     }
 

@@ -78,10 +78,6 @@
                 default: true
             }
         },
-        data() {
-            return {
-            }
-        },
         computed: {
             count() {
                 return `(共${this.songs.length}首)`
@@ -101,9 +97,6 @@
             settingIcon() {
                 return this.setting ? 'um' : ''
             }
-        },
-        watch: {
-
         },
         methods: {
             getDesc(song) {
@@ -134,11 +127,6 @@
                 const selectedSong = this.songs.find(song => song.id == itemId)
                 this.$emit('iconClick', selectedSong)
             }
-        },
-        created() {
-
-        },
-        mounted() {
         }
     }
 </script>

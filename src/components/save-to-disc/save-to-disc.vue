@@ -47,9 +47,6 @@
                 'discs'
             ])
         },
-        watch: {
-
-        },
         methods: {
             clistInfo(disc) {
                 return `${disc.songList.length}首`
@@ -95,12 +92,6 @@
             ...mapActions([
                 'addSongToDisc'
             ])
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

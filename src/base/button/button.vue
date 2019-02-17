@@ -7,9 +7,6 @@
 <script>
     export default {
         name: 'ibutton',
-        components: {
-
-        },
         props: {
             icon: {
                 type: String,
@@ -69,19 +66,10 @@
                 return size
             }
         },
-        watch: {
-
-        },
         methods: {
             handleClick() {
                 this.$emit('click')
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

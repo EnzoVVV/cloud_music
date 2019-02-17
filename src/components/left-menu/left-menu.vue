@@ -51,11 +51,6 @@
     export default {
         name: 'leftmenu',
         mixins: [scrollMixin],
-        components: {
-
-        },
-        props: {
-        },
         data() {
             return {
                 showLeftMenu: false,
@@ -70,8 +65,6 @@
             ...mapGetters([
                 'loginUser'
             ])
-        },
-        watch: {
         },
         methods: {
             showHomepage() {

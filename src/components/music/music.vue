@@ -27,9 +27,6 @@
         components: {
             tabswiper
         },
-        props: {
-
-        },
         data() {
             return {
                 musicHeader: [

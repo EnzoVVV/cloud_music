@@ -37,12 +37,6 @@
                 title: '精彩评论'
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             showReply(comment) {
                 this.replyFlag = true
@@ -51,8 +45,6 @@
             back() {
                 this.$emit('back')
             }
-        },
-        created() {
         },
         mounted() {
             this.$el.style.zIndex = PopupManager.nextZIndex()

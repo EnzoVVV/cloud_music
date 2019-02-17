@@ -41,11 +41,6 @@
                 prepared: false
             }
         },
-        computed: {
-
-        },
-        watch: {
-        },
         methods: {
             onPlay() {
                 // 视频开始播放, 停止player
@@ -57,9 +52,6 @@
                 this.playerOptions.sources[0].src = res
                 this.prepared = true
             })
-        },
-        mounted() {
-
         }
     }
 </script>

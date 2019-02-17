@@ -5,9 +5,6 @@
     import { changeOpacity } from 'common/js/dom'
     export default {
         name: 'message',
-        components: {
-
-        },
         props: {
             text: {
                 type: String,
@@ -18,17 +15,6 @@
                 type: Number,
                 default: 1200
             }
-        },
-        data() {
-            return {
-
-            }
-        },
-        computed: {
-
-        },
-        watch: {
-
         },
         methods: {
             show() {
@@ -41,9 +27,6 @@
                     }, 500)
                 }, this.period)
             }
-        },
-        created() {
-
         },
         mounted() {
             setTimeout(() => {

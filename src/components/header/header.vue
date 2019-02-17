@@ -45,12 +45,6 @@
                 showLeftMenu: false
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             clickTab(index) {
                 this.$emit('clickTab',index)
@@ -67,9 +61,6 @@
             hideLeftMenu() {
                 this.showLeftMenu = false
             }
-        },
-        created() {
-
         },
         mounted() {
             setTimeout(() => {

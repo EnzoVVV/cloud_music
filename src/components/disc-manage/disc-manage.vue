@@ -14,10 +14,6 @@
                 default: 0
             }
         },
-        data() {
-            return {
-            }
-        },
         render(h) {
             let compName = ''
             switch(this.type) {
@@ -41,22 +37,10 @@
             })
             return h('div', {}, [comp])
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             hide() {
                 this.$emit('hide')
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

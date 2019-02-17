@@ -15,9 +15,6 @@
 <script>
     export default {
         name: 'selecter',
-        components: {
-
-        },
         props: {
             options: {
                 type: Array,
@@ -30,12 +27,6 @@
                 selected: null
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             toggle() {
                 this.fold = !this.fold
@@ -44,12 +35,6 @@
                 this.selected = option
                 this.fold = true
             }
-        },
-        created() {
-            this.selected = this.options[0]
-        },
-        mounted() {
-
         }
     }
 </script>

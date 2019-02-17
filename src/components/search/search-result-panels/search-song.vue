@@ -21,19 +21,10 @@
         components: {
             songlist
         },
-        props: {
-
-        },
         data() {
             return {
                 songs: []
             }
-        },
-        computed: {
-
-        },
-        watch: {
-
         },
         methods: {
             searchSongs() {

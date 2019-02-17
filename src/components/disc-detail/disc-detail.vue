@@ -36,9 +36,6 @@
                 'discs'
             ])
         },
-        watch: {
-
-        },
         methods: {
             checkFavoriteStatus() {
                 this.favoriteStatus = !!this.fdiscs.find(i => i.id === this.discInfo.id)

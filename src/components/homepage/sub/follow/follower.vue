@@ -16,32 +16,12 @@
     export default {
         name: 'follower',
         mixins: [ playlistMixin, homepageMixin, followMixin ],
-        components: {
-
-        },
-        props: {
-
-        },
-        data() {
-            return {
-            }
-        },
-        computed: {
-        },
-        watch: {
-
-        },
         methods: {
             getFollows() {
                 getUserFollower(this.homepage.id, 1).then(res => {
                     this.follows = res
                 })
             }
-        },
-        created() {
-        },
-        mounted() {
-
         }
     }
 </script>

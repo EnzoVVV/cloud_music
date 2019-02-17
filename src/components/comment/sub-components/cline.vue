@@ -50,9 +50,6 @@
                 return this.liked ? 'thumb-liked' : 'thumb-like'
             }
         },
-        watch: {
-
-        },
         methods: {
             showReply(comment) {
                 this.$emit('showReply', comment)
@@ -68,12 +65,6 @@
                     bubble(this.$refs.likeBtn)
                 }
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

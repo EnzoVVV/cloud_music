@@ -38,12 +38,6 @@
             minilist,
             confirm
         },
-        props: {
-        },
-        data() {
-            return {
-            }
-        },
         computed: {
             ...mapGetters([
                 'sequenceList'
@@ -106,8 +100,6 @@
             hide() {
                 this.$emit('hide')
             }
-        },
-        created() {
         },
         mounted() {
             this.scroll = this.$refs.minilist.$refs.scroll

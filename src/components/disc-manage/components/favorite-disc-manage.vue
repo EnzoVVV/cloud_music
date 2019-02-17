@@ -17,22 +17,10 @@
     export default {
         name: 'FavoriteDiscManage',
         mixins: [discMixin],
-        components: {
-        },
-        props: {
-
-        },
-        data() {
-            return {
-            }
-        },
         computed: {
             ...mapGetters([
                 'fdiscs'
             ])
-        },
-        watch: {
-
         },
         methods: {
             handleDelete(list) {
@@ -56,12 +44,6 @@
             ...mapMutations({
                 setFDiscs: 'SET_F_DISCS'
             })
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

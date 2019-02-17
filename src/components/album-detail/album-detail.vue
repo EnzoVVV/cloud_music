@@ -27,9 +27,6 @@
                 'albums'
             ])
         },
-        watch: {
-
-        },
         methods: {
             toggleFS(status) {
                 this.favoriteAlbum({

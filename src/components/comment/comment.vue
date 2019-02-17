@@ -66,12 +66,6 @@
                 info: {}
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             loadMore() {
                 if(!this.hasMore) {

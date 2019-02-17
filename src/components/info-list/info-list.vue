@@ -62,9 +62,6 @@
                 return `歌曲: ${this.song.name}`
             }
         },
-        watch: {
-
-        },
         methods: {
             popUp(variable) {
                 this.callBackVariable = variable
@@ -92,11 +89,6 @@
                 this.$emit('deleteSong')
                 this.$emit('hide')
             }
-        },
-        created() {
-        },
-        mounted() {
-
         }
     }
 </script>

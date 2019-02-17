@@ -43,12 +43,6 @@
                 likedItems: []
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             likeIcon(item) {
                 if(item.liked) {
@@ -72,11 +66,6 @@
             showComment(video) {
                 this.showComponent('comment', 'mv', video)
             }
-        },
-        created() {
-        },
-        mounted() {
-
         }
     }
 </script>

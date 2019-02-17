@@ -7,9 +7,6 @@
 <script>
     export default {
         name: 'inputbox',
-        components: {
-
-        },
         props: {
             value: {
                 type: String,
@@ -27,9 +24,6 @@
             return {
                 inputValue: this.value
             }   
-        },
-        computed: {
-
         },
         watch: {
             value(val) {
@@ -55,12 +49,6 @@
                 this.inputValue = ''
                 this.focus()
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

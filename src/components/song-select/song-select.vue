@@ -57,9 +57,6 @@
                 'playlist'
             ])
         },
-        watch: {
-
-        },
         methods: {
             check(id, status) {
                 if(status) {

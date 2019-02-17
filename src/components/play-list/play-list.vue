@@ -19,18 +19,11 @@
             detailboard,
             discList
         },
-        props: {
-        },
         data() {
             return {
                 discLists: [],
                 cover: '',
             }
-        },
-        computed: {
-        },
-        watch: {
-
         },
         methods: {
             getLists() {
@@ -45,9 +38,6 @@
         },
         created() {
             this.getLists()
-        },
-        mounted() {
-
         }
     }
 </script>

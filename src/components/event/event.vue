@@ -46,12 +46,6 @@
                 // likedEvents: []
             }
         },
-        computed: {
-            
-        },
-        watch: {
-
-        },
         methods: {
             eventMain(event) {
                 let text = ''
@@ -101,10 +95,6 @@
             ...mapActions([
                 'insertSong'
             ])
-        },
-        created() {
-        },
-        mounted() {
         }
     }
 </script>

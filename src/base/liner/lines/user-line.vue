@@ -35,9 +35,6 @@
                 return this.followed ? '已关注' : '关注'
             }
         },
-        watch: {
-
-        },
         methods: {
             toggleFollow() {
                 this.followed = !this.followed
