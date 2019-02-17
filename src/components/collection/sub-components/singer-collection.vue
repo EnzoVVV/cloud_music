@@ -16,12 +16,6 @@
     export default {
         name: 'singerCollection',
         mixins: [collectionMixin],
-        components: {
-
-        },
-        props: {
-
-        },
         data() {
             return {
                 curSingers: [],
@@ -35,9 +29,6 @@
             title() {
                 return `歌手: ${this.selectedSinger.name}`
             }
-        },
-        watch: {
-
         },
         methods: {
             search(query) {

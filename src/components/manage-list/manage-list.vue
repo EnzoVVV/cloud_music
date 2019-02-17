@@ -34,11 +34,6 @@
                 deleteFlag: false
             }
         },
-        computed: {
-        },
-        watch: {
-
-        },
         methods: {
             popUp(variable) {
                 this.callBackVariable = variable
@@ -63,11 +58,6 @@
                 this.$emit('deleteOne')
                 this.$emit('hide')
             }
-        },
-        created() {
-        },
-        mounted() {
-
         }
     }
 </script>

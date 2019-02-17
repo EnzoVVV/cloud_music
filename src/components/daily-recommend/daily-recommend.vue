@@ -17,9 +17,6 @@
         components: {
             detailboard
         },
-        props: {
-
-        },
         data() {
             return {
                 songs: [],
@@ -30,9 +27,6 @@
             day() {
                 return (new Date()).getDate()
             }
-        },
-        watch: {
-
         },
         methods: {
             back() {
@@ -61,9 +55,6 @@
         },
         created() {
             this.getRecommend()
-        },
-        mounted() {
-
         }
     }
 </script>

@@ -29,22 +29,10 @@
                 type: Object
             }
         },
-        data() {
-            return {
-            }
-        },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             back() {
                 this.$emit('back')
             }
-        },
-        created() {
         },
         mounted() {
             this.$el.style.zIndex = PopupManager.nextZIndex()

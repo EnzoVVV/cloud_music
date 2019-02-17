@@ -142,9 +142,6 @@
             infolist,
             roller
         },
-        props: {
-
-        },
         data() {
             return {
                 miniListFlag: false,
@@ -341,7 +338,6 @@
                 }
             },
             doPlayNext() {
-                debugger
                 this.setCurrentIndex((this.currentIndex+1) % this.playlist.length)
                 if (!this.playing) {
                     this.setPlayingState(true)

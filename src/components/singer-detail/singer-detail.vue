@@ -15,8 +15,6 @@
 		components: {
 			musiclist
 		},
-		props: {
-		},
 		data() {
 			return {
 				songs: [],

@@ -20,18 +20,10 @@
         components: {
             liner
         },
-        props: {
-        },
         data() {
             return {
                 discs: []
             }
-        },
-        computed: {
-            
-        },
-        watch: {
-
         },
         methods: {
             searchDiscs() {

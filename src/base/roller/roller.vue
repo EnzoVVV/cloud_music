@@ -10,9 +10,6 @@
     import { getPxValue } from 'common/js/dom'
     export default {
         name: 'roller',
-        components: {
-
-        },
         props: {
             content: {
                 type: String,
@@ -47,10 +44,6 @@
                 default: 0
             },
         },
-        data() {
-            return {
-            }
-        },
         computed: {
             computedStyle() {
                 return {
@@ -58,9 +51,6 @@
                     height: this.height ? `${this.height}px` : '44px'
                 }
             }
-        },
-        watch: {
-
         },
         methods: {
             // mounted调用
@@ -91,9 +81,6 @@
                     el1.style.left = getPxValue(el1.style.left) - this.speed + 'px'
                 }
             }
-        },
-        created() {
-
         },
         mounted() {
             this.init()

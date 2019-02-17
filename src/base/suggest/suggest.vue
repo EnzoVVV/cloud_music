@@ -11,9 +11,6 @@
     import { suggest } from 'api/search'
     export default {
         name: 'suggest',
-        components: {
-
-        },
         props: {
             query: {
                 type: String,
@@ -54,8 +51,6 @@
         },
         created() {
             this.getSuggest()
-        },
-        mounted() {
         }
     }
 </script>

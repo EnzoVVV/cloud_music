@@ -55,9 +55,6 @@
                 return this.allChecked ? '取消全选' : '全选'
             }
         },
-        watch: {
-
-        },
         methods: {
             check(count) {
                 this.checkedItemCount = count
@@ -90,12 +87,6 @@
                 const sortedList = this.$refs.sortlist.getSortedList()
                 this.$emit('back', sortedList)
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

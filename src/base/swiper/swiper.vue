@@ -11,8 +11,6 @@
 	import { findComponentDownward, findComponentUpward, deepCopy, query } from 'common/js/tools.js'
     export default {
         name: 'swiper',
-        components: {
-        },
         props: {
             componentList: {
 				type: Array,
@@ -289,9 +287,6 @@
                     left: direction * 100 + '%'
                 }
 			}
-        },
-        created() {
-
         },
         mounted() {
 			this.maxMoveDistance = window.innerWidth

@@ -169,13 +169,6 @@
             left: 5%
             right: 5%
             z-index: 1200
-        .result
-            // position: absolute
-            // top: 44px
-            // left: 0
-            // right: 0
-            // bottom: 0
-            // z-index: 100
         .recommend
             width: 100%
             margin: 20px 10px

@@ -56,9 +56,6 @@
             scroll,
             rankdetail
         },
-        props: {
-
-        },
         data() {
             return {
                 officialList: [],
@@ -67,12 +64,6 @@
                 showRankDetail: false,
                 rankinfo: null
             }
-        },
-        computed: {
-
-        },
-        watch: {
-
         },
         methods: {
             selectRank(item) {
@@ -96,8 +87,6 @@
         },
         created() {
             this.getTopLists()
-        },
-        mounted() {
         }
     }
 </script>

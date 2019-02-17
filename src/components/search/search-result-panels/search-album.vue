@@ -18,19 +18,10 @@
         components: {
             albumlist
         },
-        props: {
-
-        },
         data() {
             return {
                 albums: []
             }
-        },
-        computed: {
-
-        },
-        watch: {
-
         },
         methods: {
             searchAlbums() {

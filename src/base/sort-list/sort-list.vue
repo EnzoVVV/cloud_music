@@ -44,9 +44,6 @@
                 return this.checkList.length === this.content.length ? '取消全选' : '全选'
             }
         },
-        watch: {
-
-        },
         methods: {
             touchstart(e, itemId) {
                 this.touch.initiated = true

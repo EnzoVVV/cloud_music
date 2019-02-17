@@ -13,9 +13,6 @@
 <script>
     export default {
         name: 'check',
-        components: {
-
-        },
         props: {
             circle: {
                 type: Boolean,
@@ -27,12 +24,6 @@
                 status: false
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             toggle() {
                 this.status = !this.status
@@ -43,12 +34,6 @@
                 this.status = status
                 this.$emit('check', this.status)
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

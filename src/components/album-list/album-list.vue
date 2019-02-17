@@ -29,9 +29,6 @@
                 'singer'
             ])
         },
-        watch: {
-
-        },
         methods: {
             selectAlbum(album) {
                 this.showComponent('albumdetail',album)
@@ -44,9 +41,6 @@
                     this.albumList = res
                 })
             }
-        },
-        mounted() {
-
         }
     }
 </script>

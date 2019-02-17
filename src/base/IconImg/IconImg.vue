@@ -4,9 +4,6 @@
 <script>
     export default {
         name: 'IconImg',
-        components: {
-
-        },
         props: {
             imgName: {
                 type: String,
@@ -39,9 +36,6 @@
             }
 
         },
-        watch: {
-
-        },
         methods: {
             activate() {
                 this.active = true
@@ -49,12 +43,6 @@
             mute() {
                 this.active = false
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

@@ -39,10 +39,12 @@
                 default: false
             }
         },
-        mounted() {
-            setTimeout(() => {
-                this._initScroll()
-            }, 20)
+        watch: {
+            data() {
+                setTimeout(() => {
+                    this.refresh()
+                }, 20)
+            }
         },
         methods: {
             _initScroll() {
@@ -90,12 +92,10 @@
                 this.scroll && this.scroll.stop.apply(this.scroll, arguments)
             }
         },
-        watch: {
-            data() {
-                setTimeout(() => {
-                    this.refresh()
-                }, 20)
-            }
+        mounted() {
+            setTimeout(() => {
+                this._initScroll()
+            }, 20)
         }
     }
 </script>

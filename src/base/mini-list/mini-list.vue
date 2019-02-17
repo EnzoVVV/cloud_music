@@ -57,10 +57,6 @@
                 position: 0
             }
         },
-        computed: {
-        },
-        watch: {
-        },
         methods: {
             hide() {
                 translate(this.$refs.wrapper, 0, 100, {

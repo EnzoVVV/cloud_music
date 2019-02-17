@@ -191,8 +191,6 @@
                 infoSong: null
             }
         },
-        computed: {
-        },
         watch: {
             // 5. 控制固定背景的显示
             scrollY(val) {
@@ -290,9 +288,6 @@
                 // infolist中不删除歌曲时， 无需deepCopy songs
                 this.songsCopy = this.showDelete ? this.songs.map(song => new Song(song)) : this.songs
             }
-        },
-        created() {
-
         },
         mounted() {
             // 等transition结束后计算, 所以用setTimeout

@@ -55,9 +55,6 @@
             discList,
             scroll
         },
-        props: {
-
-        },
         data() {
             return {
                 recommends: [],
@@ -69,9 +66,6 @@
             day() {
                 return (new Date()).getDate()
             }
-        },
-        watch: {
-
         },
         methods: {
             getRecommends() {

@@ -29,9 +29,6 @@
             playlist,
             fm
         },
-        props: {
-
-        },
         data() {
             return {
                 rankFlag: false,
@@ -49,12 +46,6 @@
                     FM: false
                 }
             }
-        },
-        computed: {
-
-        },
-        watch: {
-
         },
         methods: {
             showSingerDetail() {

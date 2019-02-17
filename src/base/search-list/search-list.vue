@@ -13,25 +13,11 @@
 <script>
     export default {
         name: 'searchlist',
-        components: {
-
-        },
         props: {
             content: {
                 type: Array,
                 default: []
             }
-        },
-        data() {
-            return {
-
-            }
-        },
-        computed: {
-
-        },
-        watch: {
-
         },
         methods: {
             handleSelect(item) {
@@ -40,12 +26,6 @@
             handleDelete(item) {
                 this.$emit('delete', item)
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

@@ -49,19 +49,10 @@
                 swiperHeight: window.innerHeight
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             back() {
                 this.$emit('back')
             }
-        },
-        created() {
-
         },
         mounted() {
             this.$emit('mountedCalled')

@@ -14,9 +14,6 @@
         components: {
             event
         },
-        props: {
-
-        },
         data() {
             return {
                 following: [],
@@ -27,9 +24,6 @@
             ...mapGetters([
                 'loginUser'
             ])
-        },
-        watch: {
-
         },
         methods: {
             getFollowing() {
@@ -80,9 +74,6 @@
         created() {
             this.getFeeds()
             // this.getFollowing()
-        },
-        mounted() {
-
         }
     }
 </script>

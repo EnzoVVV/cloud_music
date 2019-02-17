@@ -23,20 +23,10 @@
     export default {
         name: 'searchSinger',
         mixins: [ playlistMixin, resultMixin ],
-        components: {
-        },
-        props: {
-        },
         data() {
             return {
                 singers: []
             }
-        },
-        computed: {
-
-        },
-        watch: {
-
         },
         methods: {
             searchSingers() {

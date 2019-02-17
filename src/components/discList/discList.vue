@@ -25,9 +25,6 @@
     import { formatNumber } from 'common/js/tools'
     export default {
         name: 'discList',
-        components: {
-
-        },
         props: {
             discList: {
                 type: Array
@@ -36,16 +33,6 @@
                 type: Boolean,
                 default: false
             }
-
-        },
-        data() {
-            return {
-            }
-        },
-        computed: {
-
-        },
-        watch: {
 
         },
         methods: {
@@ -63,12 +50,6 @@
                 const img = this.$refs[id][0]
                 img.style.height = getComputedStyle(img).width
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

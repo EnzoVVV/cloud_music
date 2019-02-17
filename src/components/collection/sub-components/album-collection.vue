@@ -16,12 +16,6 @@
     export default {
         name: 'albumCollection',
         mixins: [collectionMixin],
-        components: {
-
-        },
-        props: {
-
-        },
         data() {
             return {
                 curAlbums: []
@@ -31,9 +25,6 @@
             ...mapGetters([
                 'albums'
             ])
-        },
-        watch: {
-
         },
         methods: {
             search(query) {

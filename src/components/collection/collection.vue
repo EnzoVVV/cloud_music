@@ -28,9 +28,6 @@
             FunctionalHeader,
             managelist
         },
-        props: {
-            
-        },
         data() {
             return {
                 tabs: [
@@ -66,9 +63,6 @@
                 return ''
             }
         },
-        watch: {
-
-        },
         methods: {
             search(query) {
                 this.$bus.emit('collection-search', query)
@@ -88,9 +82,6 @@
                     this.$bus.emit('deleteCollectionAlbum')
                 }
             }
-        },
-        created() {
-
         },
         mounted() {
             this.$emit('mountedCalled')

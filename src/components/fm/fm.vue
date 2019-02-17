@@ -93,11 +93,6 @@
     export default {
         name: 'fm',
         mixins: [ playersMixin ],
-        components: {
-        },
-        props: {
-
-        },
         data() {
             return {
                 songs: [],
@@ -124,8 +119,6 @@
             favoriteMiniIcon() {
                 return this.FS ? 'mini-liked' : 'mini-like'
             }
-        },
-        watch: {
         },
         methods: {
             loadSong() {

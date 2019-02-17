@@ -27,12 +27,6 @@
                 modalFlag: true
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             confirm() {
                 this.modalFlag = false
@@ -63,12 +57,6 @@
                 'createDisc',
                 'createDiscAndAddSong'
             ])
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

@@ -33,9 +33,6 @@
             createdisc,
             restoredisc
         },
-        props: {
-
-        },
         data() {
             return {
                 modalFlag: false,
@@ -47,9 +44,6 @@
             ...mapGetters([
                 'discs'
             ])
-        },
-        watch: {
-
         },
         methods: {
             handleDelete(list) {
@@ -87,9 +81,6 @@
         created() {
             // 不包含'我喜欢的音乐'
             this.discList = this.discs.slice(1)
-        },
-        mounted() {
-
         }
     }
 </script>

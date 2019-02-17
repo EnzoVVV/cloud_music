@@ -36,12 +36,6 @@
                 similarSingers: []
             }
         },
-        computed: {
-
-        },
-        watch: {
-
-        },
         methods: {
             getSimiSingers() {
                 getSimilarSingers(this.singer.id).then(res => {
@@ -63,8 +57,6 @@
         },
         created() {
             this.getSimiSingers()
-        },
-        mounted() {
         }
     }
 </script>

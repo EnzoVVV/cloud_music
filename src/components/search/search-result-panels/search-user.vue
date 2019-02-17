@@ -20,18 +20,10 @@
         components: {
             userline
         },
-        props: {
-        },
         data() {
             return {
                 users: []
             }
-        },
-        computed: {
-            
-        },
-        watch: {
-
         },
         methods: {
             searchUsers() {

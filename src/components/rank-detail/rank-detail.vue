@@ -48,9 +48,6 @@
                 'fdiscs'
             ])
         },
-        watch: {
-
-        },
         methods: {
             getMusicLists() {
                 getMusicList(this.rankinfo.id).then((res) => {
@@ -106,9 +103,6 @@
         created() {
             this.getDetail()
             this.checkFS()
-        },
-        mounted() {
-
         }
     }
 </script>

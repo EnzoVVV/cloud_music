@@ -31,9 +31,6 @@
             scroll,
             liner
         },
-        props: {
-
-        },
         data() {
             return {
                 discs: []
@@ -43,9 +40,6 @@
             ...mapGetters([
                 'discardDiscs'
             ])
-        },
-        watch: {
-
         },
         methods: {
             // 记录勾选项
@@ -81,8 +75,6 @@
             this.checkList = []
             this.restoreDiscardDiscs()
             this.discs = deepCopy(this.discardDiscs)
-        },
-        mounted() {
         }
     }
 </script>

@@ -87,9 +87,6 @@
             minilist,
             liner
         },
-        props: {
-
-        },
         data() {
             return {
                 clistFold: false,
@@ -116,8 +113,6 @@
                 'fdiscs',
                 'loginUser'
             ])
-        },
-        watch: {
         },
         methods: {
             clistIcon(index) {
@@ -197,11 +192,6 @@
                 'deleteDisc',
                 'storeDiscardDisc'
             ])
-        },
-        created() {
-        },
-        mounted() {
-
         }
     }
 </script>

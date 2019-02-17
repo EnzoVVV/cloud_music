@@ -18,9 +18,6 @@
 <script>
     export default {
         name: 'modal',
-        components: {
-
-        },
         props: {
             title: {
                 type: String,
@@ -50,10 +47,6 @@
             }
 
         },
-        data() {
-            return {
-            }
-        },
         computed: {
             computedStyle() {
                 if(this.width) {
@@ -63,9 +56,6 @@
                 }
                 return ''
             }
-        },
-        watch: {
-
         },
         methods: {
             hide() {
@@ -82,12 +72,6 @@
                 this.hide()
                 this.$emit('confirm')
             }
-        },
-        created() {
-
-        },
-        mounted() {
-
         }
     }
 </script>

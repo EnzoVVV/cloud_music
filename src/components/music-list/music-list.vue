@@ -122,9 +122,6 @@
                 'fsingers'
             ])
         },
-        watch: {
-
-        },
         methods: {
             checkSingerFS() {
                 this.singerFS = !!this.fsingers.find(i => i.id === this.singer.id)
