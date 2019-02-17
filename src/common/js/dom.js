@@ -138,3 +138,21 @@ export function getPxValue(s) {
 	// parseInt('0.3px') 结果是0，不精确
 	return Number(s.split('px')[0])
 }
+
+// 判断touch过程是否是click
+export function isClick(touch) {
+	if(touch.totalDiff === undefined) {
+		return true
+	}
+	if(touch.startTime == undefined && process.env.NODE_ENV !== 'production') {
+		throw new Error('请在touchstart中记录startTime')
+	}
+	// 移动端可能手指点一下, 有很小的移动，触发了touchmove
+	// 当move距离很小并且用时很短时, 认为也是click事件
+	const curTime = new Date()
+	const durationTime = curTime - touch.startTime
+	if(touch.totalDiff < 3 && durationTime < 300) {
+		return true
+	}
+	return false
+}

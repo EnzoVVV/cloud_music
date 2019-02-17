@@ -7,7 +7,8 @@
         <ul class='items'>
             <li v-for='disc in discList' :key='disc.id' class='item' @click='selectDisc(disc)'>
                 <div class='cover'>
-                    <div class='gradients'></div>
+                    <!-- 顶部渐变阴影 -->
+                    <div class='gradients'></div> 
                     <img v-lazy='disc.picUrl' class='img needsclick' @load='imgLoad(disc.id)' :ref='disc.id'/>
                     <p class='play-count'>
                         <IconSvg icon-class='yinle' class='play-count-icon'></IconSvg>
@@ -120,6 +121,7 @@
                         width: 100%
                         height: 100%
                         display: block
+                        border-radius: 5px
                     .play-count
                         position: absolute 
                         top: 5px

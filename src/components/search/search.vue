@@ -6,7 +6,7 @@
                     <div @click='goback'><IconSvg class='back' icon-class='back'></IconSvg></div>
                     <inputbox v-model='inputValue' ref='searchbar' :inputStyle='searchbarStyle' @enter='search(inputValue)' class='header-input-box'></inputbox>
                 </div>
-                <result v-if='showResult' class='result'></result>
+                <result v-if='showResult' class='result' :style='resultStyle' :totalHeight='totalHeight'></result>
                 <suggest v-if='inputValue' v-show='showSuggest' :query='inputValue' @select='search' class='suggest'></suggest>
                 <div class='recommend'>
                     <div class='title'>热门搜索</div>
@@ -60,13 +60,20 @@
                     color: 'rgb(228, 228, 228)',
                     background: 'rgb(212, 68, 57)'
                 },
-                hotKeys: []
+                hotKeys: [],
+                totalHeight: window.innerHeight
             }
         },
         computed: {
             ...mapGetters([
                 'searchHistory'
-            ])
+            ]),
+            resultStyle() {
+                // 防止安卓端键盘影响window高度, 这里强制设置result高度为无键盘状态window高度 - header高度
+                return {
+                    height: this.totalHeight - 44 + 'px'
+                }
+            }
         },
         watch: {
             showSearch(val) {
@@ -128,8 +135,6 @@
             // 从localstorage里恢复缓存的历史搜搜记录
             this.restoreSearchHistory()
             this.getHotKeys()
-        },
-        mounted() {
         }
     }
 </script>
@@ -164,6 +169,13 @@
             left: 5%
             right: 5%
             z-index: 1200
+        .result
+            // position: absolute
+            // top: 44px
+            // left: 0
+            // right: 0
+            // bottom: 0
+            // z-index: 100
         .recommend
             width: 100%
             margin: 20px 10px

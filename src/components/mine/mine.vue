@@ -241,18 +241,16 @@
                     height: 44px
                     display: flex
                     align-items: center
-                    position: relative
                     .icon
                         margin-left: 10px
                         margin-right: 15px
-                    &:after
-                        content: ''
-                        position: absolute 
-                        left: 12%
-                        bottom: 0
-                        right: 0
-                        height: 1px
-                        background: $color-light
+                    .text
+                        flex: 1
+                        // 减1px border的高度
+                        height: calc(100% - 1px)
+                        border-bottom: 1px solid $color-light
+                        display: flex
+                        align-items: center
             .user-list
                 width: 100%
                 .user-list-header

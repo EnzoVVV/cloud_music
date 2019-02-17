@@ -25,7 +25,7 @@
                                 <p>{{pureMusicLyric}}</p>
                             </div>
                             <div v-if='!currentLyric' class='no-lyric' ref='noLyric'>
-                                <p class='text'>暂无歌词</p>
+                                <p class='text' v-show='showLyric'>暂无歌词</p>
                             </div>
                         </div>
                     </scroll>
@@ -227,10 +227,10 @@
                 this.toggleSongFS(this.currentSong)
             },
             ...mapActions([
-                'stopPlaying',
-                'toggleSongFS'
+                'stopPlaying'
             ]),
             toggleFullScreen() {
+                this.liftPlayer()
                 this.fullScreen = !this.fullScreen
             },
             paused() {

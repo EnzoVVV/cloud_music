@@ -96,6 +96,8 @@
                     status: status
                 })
                 this.favoriteStatus = status
+                const text = status ? '已收藏' : '已取消收藏'
+                this.$message(text)
             },
             ...mapActions([
                 'favoriteDisc'

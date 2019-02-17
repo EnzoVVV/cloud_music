@@ -29,7 +29,7 @@ export const selectPlay = function ({commit, state}, {list, index}) {
 // 播放列表中已有的一首歌
 export const playSongInList = function ({commit, state}, song) {
     const index = state.sequenceList.findIndex(i => i.id == song.id)
-    if(index < 0) {
+    if(index < 0 && process.env.NODE_ENV !== 'production') {
         throw Error('歌单中不存在此歌曲, 不要调用此方法')
     }
     commit(types.SET_CURRENT_INDEX, index)

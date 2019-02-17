@@ -348,20 +348,13 @@
                 box-sizing: border-box
                 height: 60px
                 font-size: $font-size-medium
-                &:after
-                    content: ''
-                    position: absolute 
-                    left: 2%
-                    bottom: 0
-                    right: 0
-                    height: 1px
-                    background: $color-light
                 .content
-                    position: relative
                     margin-left: 10px
                     line-height: 20px
                     align-items: center
                     overflow: hidden
+                    flex: 1
+                    border-bottom: 1px solid $color-light
                     .name
                         margin-top: 4px
                         font-size: $font-size-medium-x

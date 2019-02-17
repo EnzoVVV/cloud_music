@@ -2,8 +2,8 @@
     <div class='header custom-header'>
         <div @click='goback' class='header-back' ref='back'><IconSvg icon-class='back'></IconSvg></div>
         <div v-show='!searchFlag' class='header-wrapper'>
-            <div class='title' v-if='!longTitle'>{{title}}</div>
-            <roller class='title' v-else :content='title'></roller>
+            <div class='title' v-if='!longTitle' ref='title'>{{title}}</div>
+            <roller class='title' v-else :content='title' ref='title'></roller>
             <div @click='search' ref='search' class='search' v-if='showSearch'><IconSvg icon-class='search'></IconSvg></div>
         </div>
         <inputbox v-if='searchFlag' v-model='query' class='header-search-bar' :inputStyle='searchbarStyle' :placeholder='sbph'></inputbox>
@@ -12,6 +12,7 @@
 <script>
     const roller = () => import('base/roller/roller')
     const inputbox = () => import('base/input-box/input-box')
+    import { getPxValue } from 'common/js/dom'
     export default {
         name: 'FunctionalHeader',
         components: {
@@ -55,14 +56,11 @@
                 query: ''
             }
         },
-        computed: {
-
-        },
         watch: {
             title(val) {
                 if(this.rollingTitle) {
                     const width = this.title.length * 14
-                    const maxWidth = this.$el.offsetWidth * 0.65
+                    const maxWidth = this.titleElWidth * 0.9
                     if(width > maxWidth) {
                         this.longTitle = true
                         return
@@ -90,11 +88,9 @@
                 this.searchFlag = true
             }
         },
-        created() {
-
-        },
         mounted() {
-
+            const titleEl = this.$refs.title.$el ? this.$refs.title.$el : this.$refs.title
+            this.titleElWidth = getPxValue(getComputedStyle(titleEl).width)
         }
     }
 </script>

@@ -128,7 +128,7 @@ export const playlistMixin = {
     methods: {
         handlePlaylist(flag) {
             const scroll = this.$refs.scroll
-            if(!scroll) {
+            if(!scroll && process.env.NODE_ENV !== 'production') {
                 throw new Error('scroll组件的ref要设为scroll')
             }
             const bottom = flag ? '45px' : '0'
@@ -495,7 +495,7 @@ export const playersMixin = {
             // 当前显示comment组件时，隐藏miniplayer
             this.coverMiniPlayer = flag
         },
-        // insertSong, selectPlayer时，抬高player的zIndex
+        // insertSong, selectPlayer, setFullScreen时，抬高player的zIndex
         liftPlayer() {
             this.$refs.player.style.zIndex = PopupManager.nextZIndex()
         },

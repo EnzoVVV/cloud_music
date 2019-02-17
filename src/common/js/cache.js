@@ -67,6 +67,7 @@ export function restoreSearch() {
 // ---------------歌单-------------------------------
 export const DISC_KEY = '__disc__'
 export const DISC_F_KEY = '__favorite_disc__'
+import { addSongsToDisc as addSongsToDiscApi } from 'api/disc'
 import { defaultDiscs } from 'common/js/disc'
 import Song from 'common/js/song'
 import Disc from 'common/js/disc'
@@ -125,8 +126,8 @@ export function toggleSongFS(song) {
     let discs = getDiscs()
     let favoriteDisc = discs[0]
     if(copySong.favorite) {
-        // 添加
-        favoriteDisc.songList.push(copySong)
+        // 添加, 插入到首位
+        favoriteDisc.songList.splice(0, 0, copySong)
     } else {
         // 移除
         favoriteDisc = favoriteDisc.songList.filter(i => i.id != copySong.id)
@@ -143,11 +144,13 @@ export function deleteDisc(disc, type = 0) {
 }
 
 // 从歌单中删除一首歌
-export function deleteSongFromDisc(song ,disc) {
+export function deleteSongFromDisc(song, disc) {
     let discs = getDiscs()
     let targetDisc = discs.find(i => i.id === disc.id)
-    targetDisc.songList = targetDisc.songList.filter(i => i.id === song.id)
+    targetDisc.songList = targetDisc.songList.filter(i => i.id != song.id)
     storage.set(DISC_KEY, discs)
+    // 调服务
+    addSongsToDiscApi(disc.id, [song.id], false)
 }
 
 function getDiscKey(type = 0) {

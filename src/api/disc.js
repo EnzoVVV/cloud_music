@@ -39,9 +39,10 @@ export function favoriteDisc(id, status) {
 }
 
 // 歌单中 添加/删除 歌曲
-export function addSongsToDisc(discId, songIds) {
+export function addSongsToDisc(discId, songIds, op = true) {
+	const operation = op ? 'add' : 'del'
 	const songsId = songIds.join(',')
-	const url = HOST + `/playlist/tracks?op=add&pid=${discId}&tracks=${songsId}`
+	const url = HOST + `/playlist/tracks?op=${operation}&pid=${discId}&tracks=${songsId}`
 	return axios.get(url)
 }
 

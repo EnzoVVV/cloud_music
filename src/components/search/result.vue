@@ -54,11 +54,17 @@
         components: {
             tabswiper
         },
+        props: {
+            totalHeight: {
+                type: Number
+            }
+        },
         data() {
             return {
                 componentList: componentList,
                 tabContent: tabContent,
-                swiperHeight: window.innerHeight - 44
+                // 防止安卓端键盘影响window高度, 这里强制设置result高度为无键盘状态window高度 - header高度
+                swiperHeight: this.totalHeight ? this.totalHeight - 44 : window.innerHeight - 44
             }
         }
     }

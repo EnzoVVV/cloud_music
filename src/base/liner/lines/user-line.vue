@@ -42,6 +42,8 @@
             toggleFollow() {
                 this.followed = !this.followed
                 followUser(this.user.id, this.followed)
+                const text = this.followed ? '已关注' : '已取消关注'
+                this.$message(text)
             },
             select() {
                 this.showComponent('homepage', this.user.id)
