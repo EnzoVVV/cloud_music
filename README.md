@@ -1,5 +1,9 @@
 # cloud_music
-造轮子复刻网易云音乐, 网易无版权的歌曲自动切换至QQ曲库
+造轮子复刻网易云音乐
+网易无版权的歌曲自动切换至QQ曲库
+已实现绝大部分功能
+试听地址如下:
+http://132.232.215.104/
 
 # Build
     # 下载项目代码
@@ -59,15 +63,15 @@
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/fm.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/video.PNG)
 
-#### 歌手列表，评论<br />
+#### 歌手列表，动态页<br />
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-list.PNG)
-![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/comment.PNG)
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/feeds.PNG)
 
-#### 歌手详情，收藏到歌单<br />
+#### 歌手详情，评论页<br />
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail-2.PNG)
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/singer-detail-brief.PNG)
-![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/save-to-disc.PNG)
+![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/comment.PNG)
 
 #### 个人主页<br />
 ![image](https://github.com/EnzoVVV/configfiles/blob/master/cloud-music/homepage.PNG)
@@ -106,7 +110,6 @@
 * api来自[Binaryify/NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
 
 # TODO
-* 一些图标需要替换
 * 精品歌单页
 * 电台
 * 聊天
