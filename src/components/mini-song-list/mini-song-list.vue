@@ -10,7 +10,7 @@
                 <div class='clear'><IconSvg icon-class='clear'></IconSvg></div>
             </div>
             <ul slot='list'>
-                <li v-for='item in sequenceList' :key='item.id' ref='item' class='minilist-item' @click='select(item)'>
+                <li v-for='item in sequenceList' :key='item.id' ref='item' class='minilist-item'>
                     <div class='info' :class='{active: currentSong.id == item.id }' @click='select(item)'>
                         <IconImg imgName='speaker' size='20px' v-if='currentSong.id == item.id' class='speaker'></IconImg>
                         <span class='name'>{{item.name}}</span>  
@@ -82,8 +82,9 @@
                 'deleteSongList'
             ]),
             select(item) {
-                if(!this.$refs.minilist.listClicked) {
-                    // 如果是minilist的touchend后的click，则return掉
+                const minilist = this.$refs.minilist
+                if(minilist.position >=0 && !this.$refs.minilist.listClicked) {
+                    // 如果是minilist的touchend后触发的click，则return掉
                     return
                 }
                 this.playSongInList(item)

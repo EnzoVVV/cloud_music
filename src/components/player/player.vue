@@ -10,7 +10,7 @@
                     <div class='header-info'>
                         <div class='header-info-title' v-if='!longTitle'>{{headerTitle}}</div>
                         <roller class='header-info-title' v-else :content='headerTitle' :fontSize='14' :height='16'></roller>
-                        <div class='header-info-singer' @click='showSingerDetail'>{{switchedSong && switchedSong.singer || ''}} ></div>
+                        <div class='header-info-singer' @click='showSingerDetail' v-show='curSinger'>{{curSinger}} ></div>
                     </div>
                     <div class='header-share'><IconSvg icon-class='share' size='23px'></IconSvg></div>
                 </div>
@@ -42,7 +42,7 @@
                                 <p>{{pureMusicLyric}}</p>
                             </div>
                             <div v-if='!currentLyric' class='no-lyric' ref='noLyric'>
-                                <p class='text'>暂无歌词</p>
+                                <p class='text' v-show='showLyric'>暂无歌词</p>
                             </div>
                         </div>
                     </scroll>
@@ -199,6 +199,9 @@
                     bubble(this.$refs.likeBtn)
                 }
                 return this.FS ? 'liked' : 'like'
+            },
+            curSinger() {
+                return this.switchedSong && this.switchedSong.singer || ''
             }
         },
         watch: {
@@ -222,8 +225,10 @@
                                 copySong.url = result
                                 this.loadSong(copySong)
                             } else {
-                                this.$message('oops, 歌曲暂无版权')
+                                this.handleSongError(newSong)
                             }
+                        }).catch(() => {
+                            this.handleSongError(newSong)
                         })
                     }
                 })
@@ -278,6 +283,27 @@
                 this.$refs.cdWrapper.style[transform] = 'translate3d(0,0,0)'
                 this.checkFS()
             },
+            // 没有歌曲版权时的处理
+            handleSongError(song) {
+                setTimeout(() => {
+                    this.$message('oops, 歌曲暂无版权')
+                }, 1200)
+                this.songReady = false
+                this.setPlayingState(false)
+                this.shiftStylus(true)
+                // 停止歌词
+                if(this.currentLyric) {
+                    this.currentLyric.stop()
+                    this.currentLyric = null
+                    this.currentTime = 0
+                    this.currentLineNum = 0
+                    this.currentLyricText = ''
+                }
+                this.$refs.audio.src = ''
+                this.$refs.audio.pause()
+                this.getSideSong()
+                this.switchedSong = song
+            },
             togglePlay() {
                 if (!this.songReady) {
                     return
@@ -293,7 +319,8 @@
                 if (!this.songReady) {
                     return
                 }
-                if(this.playlist.length == 1) {
+                if(this.playlist.length == 1 || this.mode == 2) {
+                    // 列表只有一首歌或单曲循环
                     this.loop()
                     return
                 }
@@ -314,6 +341,7 @@
                 }
             },
             doPlayNext() {
+                debugger
                 this.setCurrentIndex((this.currentIndex+1) % this.playlist.length)
                 if (!this.playing) {
                     this.setPlayingState(true)
@@ -324,7 +352,8 @@
                 if (!this.songReady) {
                     return
                 }
-                if(this.playlist.length == 1) {
+                if(this.playlist.length == 1 || this.mode == 2) {
+                    // 列表只有一首歌或单曲循环
                     this.loop()
                     return
                 }
@@ -371,6 +400,7 @@
                 this.setFullScreen(false)
             },
             toggleFullScreen() {
+                this.liftPlayer()
                 this.setFullScreen(true)
             },
             paused() {
@@ -752,6 +782,7 @@
                 justify-content: center
                 flex: 1
                 padding-left: 5px
+                overflow: hidden
                 .name
                     font-size: $font-size-medium
                     color: $color-text

@@ -26,15 +26,15 @@
                 </div>
             </scroll>
             <div class='bottom'>
-                <div class='item'>
+                <div class='item' @click='$unrevealed'>
                     <IconImg imgName='night'></IconImg>
                     <span>夜间模式</span>
                 </div>
-                <div class='item'>
+                <div class='item' @click='$unrevealed'>
                     <IconImg imgName='setting'></IconImg>
                     <span>设置</span>
                 </div>
-                <div class='item'>
+                <div class='item' @click='$unrevealed'>
                     <IconImg imgName='exit'></IconImg>
                     <span>退出</span>
                 </div>

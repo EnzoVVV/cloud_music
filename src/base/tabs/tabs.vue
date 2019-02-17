@@ -40,7 +40,7 @@
                 // 一个tab的宽度
                 tabWidth: 0,
                 // 是否是长tab
-                long: this.content.length >= totalShowingTabsCount,
+                long: this.content.length > totalShowingTabsCount,
                 // 记录当前tab的transform值
                 curTabTransform: 0,
                 // 记录当前marker的transform值
@@ -120,7 +120,7 @@
             swiping(moveDistance, duration = 0, index) {
                 // 有index时，是touchend, 没有index, 是touchmove
                 if(this.isMiddleTab(this.curIndex)) {
-                     if(this.curIndex == 2) {
+                    if(this.curIndex == 2) {
                         // 当前是第三个tab(中间区的边界)
                         if(moveDistance <= 0) {
                             // 手指往左滑，移动tab

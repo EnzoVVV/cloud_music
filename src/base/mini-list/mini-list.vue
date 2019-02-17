@@ -15,7 +15,7 @@
 </template>
 <script>
     import scroll from 'base/scroll/scroll'
-    import { translate, changeOpacity } from 'common/js/dom'
+    import { translate, changeOpacity, isClick } from 'common/js/dom'
     const duration = 200
     // transition动画时间
     const AnimationDuration = 200
@@ -80,6 +80,7 @@
             handleScroll(pos) {
                 this.position = pos.y
             },
+            // 列表在初始位置时,向下拉动, 则收起list
             touchstart(e) {
                 // 列表不在初始位置时，this.position < 0, 不进行此逻辑处理， return掉
                 if(this.position < 0) return
@@ -88,6 +89,8 @@
                 this.touch.initiated = true
                 const touch = e.touches[0]
                 this.touch.startY = touch.pageY
+                this.touch.startTime = new Date()
+                this.listClicked = false
             },
             touchmove(e) {
                 if(!this.touch.initiated) {
@@ -108,7 +111,7 @@
                     return 
                 }
                 // 是click事件
-                if(this.touch.totalDiff === undefined) {
+                if(isClick(this.touch)) {
                     this.listClicked = true
                     this.touch = {}
                     return   

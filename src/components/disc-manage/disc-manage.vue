@@ -28,8 +28,11 @@
                     compName = 'FavoriteDiscManage'
                     break
                 default: 
-                    throw new Error('invalid type')
+                    compName = null
                     break
+            }
+            if(compName === null && process.env.NODE_ENV !== 'production') {
+                throw new Error('invalid type')
             }
             let comp = h(compName, {
                 on: {

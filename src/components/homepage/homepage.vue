@@ -3,7 +3,7 @@
         <div class='header' ref='header'>
             <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
             <div class='header-title'>{{title}}</div>
-            <ibutton v-if='reachTop' icon='add' text='关注' :red='true' size='small' class='header-favorite'></ibutton>
+            <ibutton v-if='!isSelf && !followed && reachTop' icon='add' text='关注' :red='true' size='small' class='header-favorite'></ibutton>
             <IconSvg icon-class='share' size='23px' class='header-share'></IconSvg>
         </div>
         <div class='bg-img' :style='bgStyle' ref='img'></div>
@@ -144,7 +144,7 @@
                 return this.reachTop ? this.info.name : ''
             },
             genderImg() {
-                return this.info.gender == 'boy' ? 'ax_' : 'axc'
+                return this.info.gender == 'boy' ? 'boy' : 'girl'
             },
             genderInfoStyle() {
                 return {
@@ -247,6 +247,8 @@
             toggleFollow() {
                 this.followed = !this.followed
                 followUser(this.userId, this.followed)
+                const text = this.followed ? '已关注' : '已取消关注'
+                this.$message(text)
             },
             goBack() {
                 this.$emit('back')
@@ -399,7 +401,7 @@
             position: absolute
             left: 15px
             right: 15px
-            top: 70px
+            top: 8%
             .wrapper
                 display: flex
                 align-items: center

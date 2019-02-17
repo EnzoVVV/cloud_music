@@ -76,7 +76,7 @@
 				}
 				return 'both'
 			}
-        },
+		},
         methods: {
             touchstart(e) {
 				this.touch.initiated = true
