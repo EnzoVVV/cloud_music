@@ -28,8 +28,8 @@
                         <p class='tab-text'>{{tab}}</p>
                     </div>
                 </div>
-                <songlist :songs='songs' ref='songlist' v-show='activeTab == 0' @click='selectSong' :showIndex='true' :radius='false'></songlist>
-                <albumlist :albums='albums' ref='albumlist' v-show='activeTab == 1'></albumlist>
+                <songlist v-show='activeTab == 0' :songs='songs' ref='songlist'  @click='selectSong' :showIndex='true' :radius='false'></songlist>
+                <albumlist v-show='activeTab == 1' :albums='albums' ref='albumlist' :singer='singerCopy'></albumlist>
                 <!-- <div v-show='activeTab == 2'>
                 </div> -->
                 <brief v-show='activeTab == 2' ref='brief' :brief='brief' :singer='singerCopy'>

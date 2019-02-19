@@ -11,7 +11,7 @@
     </div>
 </template>
 <script>
-    import { mapGetters, mapActions, mapMutations } from 'vuex'
+    import { mapGetters, mapActions } from 'vuex'
     import { collectionMixin } from 'common/js/mixins'
     export default {
         name: 'singerCollection',
@@ -48,15 +48,11 @@
                 this.$message('已取消收藏')
             },
             showSingerDetail(singer) {
-                this.setSinger(singer)
-                this.showComponent('singerdetail')
+                this.showComponent('singerdetail', singer)
             },
             ...mapActions([
                 'favoriteSinger'
-            ]),
-            ...mapMutations({
-                setSinger: 'SET_SINGER'
-            })
+            ])
         },
         created() {
             this.curSingers = this.fsingers

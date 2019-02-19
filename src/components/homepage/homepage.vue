@@ -1,74 +1,76 @@
 <template>
-    <div class='homepage' ref='homepage'>
-        <div class='header' ref='header'>
-            <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
-            <div class='header-title'>{{title}}</div>
-            <ibutton v-if='!isSelf && !followed && reachTop' icon='add' text='关注' :red='true' size='small' class='header-favorite'></ibutton>
-            <IconSvg icon-class='share' size='23px' class='header-share'></IconSvg>
-        </div>
-        <div class='bg-img' :style='bgStyle' ref='img'></div>
-        <div class='info' ref='info'>
-            <div class='wrapper'>
-                <img :src='info.picUrl' class='avatar'/>
-                <div class='empty'></div>
-                <ibutton v-if='!isSelf && !followed' icon='add' text='关注' :red='true' class='favorite' @click='toggleFollow'></ibutton>
-                <ibutton v-else-if='!isSelf && followed' icon='bingo-light' text='已关注' class='favorite' @click='toggleFollow'></ibutton>
+    <transition name='homepage'>
+        <div class='homepage' ref='homepage'>
+            <div class='header' ref='header'>
+                <div @click='goBack'><IconSvg class='header-back' icon-class='back'></IconSvg></div>
+                <div class='header-title'>{{title}}</div>
+                <ibutton v-if='!isSelf && !followed && reachTop' icon='add' text='关注' :red='true' size='small' class='header-favorite'></ibutton>
+                <IconSvg icon-class='share' size='23px' class='header-share'></IconSvg>
             </div>
-            <div class='name'>{{info.name}}</div>
-            <div class='follow'>
-                <div @click='showFollowing'>关注 {{info.followings}}  |</div>
-                <div @click='showFollower'>  粉丝 {{info.followers}}</div>
-            </div>
-            <div class='info-wrapper'>
-                <div class='info-item' v-if='info.birthday' :style='genderInfoStyle'>
-                    <IconImg v-if='info.gender != undefined' :imgName='genderImg' size='10px'></IconImg>
-                    <p class='age'>{{age}}</p>
+            <div class='bg-img' :style='bgStyle' ref='img'></div>
+            <div class='info' ref='info'>
+                <div class='wrapper'>
+                    <img :src='info.picUrl' class='avatar'/>
+                    <div class='empty'></div>
+                    <ibutton v-if='!isSelf && !followed' icon='add' text='关注' :red='true' class='favorite' @click='toggleFollow'></ibutton>
+                    <ibutton v-else-if='!isSelf && followed' icon='bingo-light' text='已关注' class='favorite' @click='toggleFollow'></ibutton>
                 </div>
-                <div class='info-level info-item' v-if='level'>{{level}}</div>
+                <div class='name'>{{info.name}}</div>
+                <div class='follow'>
+                    <div @click='showFollowing'>关注 {{info.followings}}  |</div>
+                    <div @click='showFollower'>  粉丝 {{info.followers}}</div>
+                </div>
+                <div class='info-wrapper'>
+                    <div class='info-item' v-if='info.birthday' :style='genderInfoStyle'>
+                        <IconImg v-if='info.gender != undefined' :imgName='genderImg' size='10px'></IconImg>
+                        <p class='age'>{{age}}</p>
+                    </div>
+                    <div class='info-level info-item' v-if='level'>{{level}}</div>
+                </div>
             </div>
-        </div>
-        <div class='fixed-tab' v-show='showFixedTab'>
-            <div v-for='(tab,index) in tabs' :key='tab' class='fixed-tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
-                <p class='fixed-tab-text'>{{tab}}</p>
+            <div class='fixed-tab' v-show='showFixedTab'>
+                <div v-for='(tab,index) in tabs' :key='tab' class='fixed-tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
+                    <p class='fixed-tab-text'>{{tab}}</p>
+                </div>
             </div>
-        </div>
-        <scroll :listen-scroll='listenScroll' :probe-type='probeType' :bounce='true' class='list' @scroll='handleScroll' ref='scroll'>
-            <div class='wrapper'>
-                <div class='tab' ref='tab'>
-                    <div v-for='(tab,index) in tabs' :key='tab' class='tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
-                        <p class='tab-text'>{{tab}}</p>
+            <scroll :listen-scroll='listenScroll' :probe-type='probeType' :bounce='true' class='list' @scroll='handleScroll' ref='scroll'>
+                <div class='wrapper'>
+                    <div class='tab' ref='tab'>
+                        <div v-for='(tab,index) in tabs' :key='tab' class='tab-item' @click='selectTab(tab)' :class="{'active': activeTab == index}">
+                            <p class='tab-text'>{{tab}}</p>
+                        </div>
+                    </div>
+                    <div v-show='activeTab == 0' ref='music' class='list-music'>
+                        <div class='music-header'>
+                            <div class='music-header-text'>歌单({{createdPlaylists.length}})</div>
+                            <div class='music-header-info'>共被收藏{{subscribedCount}}次</div>
+                        </div>
+                        <liner v-if='info' picUrl='static\images\play2.png' :main='recordMain' :sub='recordSub' :showImg='true' :selectable='true' @select='showRecord'></liner>
+                        <liner v-for='playlist in createdPlaylists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
+                        <div class='music-header'>
+                            <div class='music-header-text'>收藏的歌单({{favoritePlaylists.length}})</div>
+                        </div>
+                        <liner v-for='playlist in favoritePlaylists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
+                    </div>
+                    <div v-show='activeTab == 1' ref='event' class='list-event'>
+                        <event :events='events' v-if='events.length'></event>
+                        <div v-else class='event-empty'>暂无动态</div>
+                    </div>
+                    <div v-show='activeTab == 2' ref='brief' class='list-brief'>
+                        <div class='brief-title'>信息</div>
+                        <div class='brief-content' v-if='info.level != undefined'>等级: {{info.level}}</div>
+                        <div class='brief-content' v-if='info.birthday != undefined'>年龄: {{age}}</div>
+                        <div class='brief-content' v-if='info.gender != undefined'>性别: {{gender}}</div>
+                        <div class='brief-title'>介绍</div>
+                        <div class='brief-content' v-if='info.signature'>{{info.signature}}</div>
+                        <div class='brief-content' v-else>暂无介绍</div>
                     </div>
                 </div>
-                <div v-show='activeTab == 0' ref='music' class='list-music'>
-                    <div class='music-header'>
-                        <div class='music-header-text'>歌单({{createdPlaylists.length}})</div>
-                        <div class='music-header-info'>共被收藏{{subscribedCount}}次</div>
-                    </div>
-                    <liner v-if='info' picUrl='static\images\play2.png' :main='recordMain' :sub='recordSub' :showImg='true' :selectable='true' @select='showRecord'></liner>
-                    <liner v-for='playlist in createdPlaylists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
-                    <div class='music-header'>
-                        <div class='music-header-text'>收藏的歌单({{favoritePlaylists.length}})</div>
-                    </div>
-                    <liner v-for='playlist in favoritePlaylists' :key='playlist.id' :picUrl='playlist.picUrl' :main='playlist.name' :sub='sub(playlist)' :showImg='true' :selectable='true' @select='selectPlaylist(playlist)'></liner>
-                </div>
-                <div v-show='activeTab == 1' ref='event' class='list-event'>
-                    <event :events='events' v-if='events.length'></event>
-                    <div v-else class='event-empty'>暂无动态</div>
-                </div>
-                <div v-show='activeTab == 2' ref='brief' class='list-brief'>
-                    <div class='brief-title'>信息</div>
-                    <div class='brief-content' v-if='info.level != undefined'>等级: {{info.level}}</div>
-                    <div class='brief-content' v-if='info.birthday != undefined'>年龄: {{age}}</div>
-                    <div class='brief-content' v-if='info.gender != undefined'>性别: {{gender}}</div>
-                    <div class='brief-title'>介绍</div>
-                    <div class='brief-content' v-if='info.signature'>{{info.signature}}</div>
-                    <div class='brief-content' v-else>暂无介绍</div>
-                </div>
-            </div>
-        </scroll>
-        <record v-if='recordFlag' :title='recordMain' @back='recordFlag = false'></record>
-        <follow v-if='followFlag' :defaultIndex='followIndex' @back='followFlag = false'></follow>
-    </div>
+            </scroll>
+            <record v-if='recordFlag' :title='recordMain' @back='recordFlag = false'></record>
+            <follow v-if='followFlag' :defaultIndex='followIndex' @back='followFlag = false'></follow>
+        </div>
+    </transition>
 </template>
 <script>
     import ibutton from 'base/button/button'
@@ -368,6 +370,10 @@
         bottom: 0
         z-index: 7800
         background: $color-background
+        &.homepage-enter-active, &.homepage-leave-active
+            transition: all 0.4s
+        &.homepage-enter, &.homepage-leave-to
+            transform: translate3d(100%, 0, 0)
         .header
             position: fixed
             top: 0

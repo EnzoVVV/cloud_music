@@ -9,7 +9,6 @@
     import Singer from 'common/js/singer'
     import { isCharacter } from 'common/js/tools'
     import listview from 'base/listview/listview'
-    import { mapMutations } from 'vuex'
     import { playlistMixin } from 'common/js/mixins'
     const HOT_SINGER_LEN = 10
     const HOT_NAME = '热门'
@@ -72,12 +71,8 @@
                 return hot.concat(normal).concat(special)
             },
             handleClick(singer) {
-                this.setSinger(singer)
-                this.showComponent('singerdetail', true)
+                this.showComponent('singerdetail', singer)
             },
-            ...mapMutations({
-                setSinger: 'SET_SINGER'
-            }),
             handlePlaylist(flag) {
                 const scroll = this.$refs.listview.$refs.listview
                 const bottom = flag ? '45px' : ''

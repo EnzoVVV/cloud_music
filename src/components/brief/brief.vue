@@ -5,7 +5,8 @@
         <div class='title'>相似歌手</div>
         <scroll class='similar' :scrollX='true' ref='slider'>
             <div class='wrapper' ref='wrapper'>
-                <div v-for='singer of similarSingers' :key='singer.id' class='singer' @click='handleClick(singer)'>
+                <!-- TODO,click 会触发三次，why? -->
+                <div v-for='singer of similarSingers' :key='singer.id' class='singer' @click='showSinger(singer)'>
                     <img v-lazy='singer.picUrl' class='img'/>
                     <span class='text'>{{singer.name}}</span>
                 </div>
@@ -16,7 +17,6 @@
 <script>
     import scroll from 'base/scroll/scroll'
     import { getSimilarSingers } from 'api/singer'
-    import { mapMutations } from 'vuex'
     export default {
         name: 'brief',
         components: {
@@ -47,13 +47,16 @@
                     })
                 })
             },
-            handleClick(singer) {
-                this.setSinger(singer)
-                this.showComponent('singerdetail')
-            },
-            ...mapMutations({
-                setSinger: 'SET_SINGER'
-            })
+            showSinger(singer) {
+                if(this.init) {
+                    return
+                }
+                this.init = true
+                setTimeout(() => {
+                    this.init = false
+                }, 1000)
+                this.showComponent('singerdetail', singer)
+            }
         },
         created() {
             this.getSimiSingers()

@@ -58,10 +58,18 @@
                     this.showFBtn = false
                     this.mine = true
                     this.disc = this.discInfo
-                    this.songs = this.discInfo.songList
-                    this.title = '我喜欢的音乐'
+                    this.title = this.discInfo.name.indexOf('喜欢的音乐') > -1 ? '我喜欢的音乐' : this.discInfo.name
                     this.cover = this.discInfo.picUrl
                     this.creator = this.loginUser
+                    if(this.discInfo.songList) {
+                        // 从mine进入我创建的歌单, discInfo里有songList
+                        this.songs = this.discInfo.songList
+                    } else {
+                        // 从homepage进入我创建的歌单, discInfo里没有songList
+                        getDiscDetail(this.discInfo.id).then(res => {
+                            this.songs = res.songList
+                        })
+                    }
                 } else {
                     getDiscDetail(this.discInfo.id).then(res => {
                         this.disc = res

@@ -257,13 +257,7 @@
             loadSong(song) {
                 this.songReady = false
                 // 停止歌词
-                if(this.currentLyric) {
-                    this.currentLyric.stop()
-                    this.currentLyric = null
-                    this.currentTime = 0
-                    this.currentLineNum = 0
-                    this.currentLyricText = ''
-                }
+                this.stopLyric()
                 this.$refs.audio.src = song.url
                 this.$refs.audio.play()
 
@@ -553,6 +547,21 @@
                     translate(this.$refs.nextCdWrapper, this.clientWidth)
                     translate(this.$refs.preCdWrapper, -this.clientWidth)
                 })
+            },
+            toggleLyric(flag) {
+                // 从歌词页面切回cd时，cd需要继续从之前的位置开始旋转，在cdStatus的代码控制暂停
+                // cdWrapper不能用v-show='!showLyric'控制，因为v-show为false时，display：none，就不能切回时继续上次的位置了
+                // flag true 显示歌词隐藏cd，flag false 隐藏歌词显示cd
+                const cdVisibility = flag ? 'hidden' : 'visible'
+                this.$refs.cdWrapper.style.visibility = cdVisibility
+                if(this.$refs.nextCdWrapper) {
+                    this.$refs.nextCdWrapper.style.visibility = cdVisibility
+                }
+                if(this.$refs.preCdWrapper) {
+                    this.$refs.preCdWrapper.style.visibility = cdVisibility
+                }
+                this.$refs.lyricWrapper.$el.style.visibility = flag ? 'visible' : 'hidden'
+                this.showLyric = flag
             }
         },
         mounted() {

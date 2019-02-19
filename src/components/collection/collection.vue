@@ -1,9 +1,11 @@
 <template>
-    <div class='collection'>
-        <FunctionalHeader title='我的收藏' sbph='专辑 歌手' :showSearch='true' @back='back' @search='search'></FunctionalHeader>
-        <tabswiper :tabContent='tabs' :componentList='componentList' :defaultIndex='0' :swiperHeight='swiperHeight'></tabswiper>
-        <managelist v-if='settingFlag' :title='title' :modalTitle='modalTitle'  @deleteOne='deleteOne' @hide='settingFlag = false'></managelist>
-    </div>
+    <transition name='collection'>
+        <div class='collection'>
+            <FunctionalHeader title='我的收藏' sbph='专辑 歌手' :showSearch='true' @back='back' @search='search'></FunctionalHeader>
+            <tabswiper :tabContent='tabs' :componentList='componentList' :defaultIndex='0' :swiperHeight='swiperHeight'></tabswiper>
+            <managelist v-if='settingFlag' :title='title' :modalTitle='modalTitle'  @deleteOne='deleteOne' @hide='settingFlag = false'></managelist>
+        </div>
+    </transition>
 </template>
 <script>
     import FunctionalHeader from 'base/functional-header/functional-header'
@@ -99,4 +101,8 @@
         bottom: 0
         z-index: 6000
         background: $color-background
+        &.collection-enter-active, &.collection-leave-active
+            transition: all 0.4s
+        &.collection-enter, &.collection-leave-to
+            transform: translate3d(100%, 0, 0)
 </style>

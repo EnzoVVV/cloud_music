@@ -48,8 +48,10 @@
             }
         },
         methods: {
-            showSingerDetail() {
-                builder('singerdetail')
+            showSingerDetail(singer) {
+                builder('singerdetail', {
+                    singer: singer
+                })
             },
             showRank() {
                 this.rankFlag = true
