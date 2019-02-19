@@ -128,9 +128,7 @@
                 }
                 this.songReady = false
                 // 停止歌词
-                if(this.currentLyric) {
-                    this.currentLyric.stop()
-                }
+                this.stopLyric()
                 this.$refs.audio.src = curSong.url
                 this.$refs.audio.play()
                 if(!this.playing) {
@@ -236,6 +234,12 @@
                 if(audio) {
                     audio.pause()
                 }
+            },
+            toggleLyric(flag) {
+                // flag true 显示歌词隐藏cd，flag false 隐藏歌词显示cd
+                this.$refs.cdWrapper.style.visibility = flag ? 'hidden' : 'visible'
+                this.$refs.lyricWrapper.$el.style.visibility = flag ? 'visible' : 'hidden'
+                this.showLyric = flag
             },
             show() {
                 // FM已开时, 再点击FM入口按钮，则全屏并播放

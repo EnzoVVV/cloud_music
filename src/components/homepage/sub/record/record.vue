@@ -1,8 +1,10 @@
 <template>
-    <div class='record'>
-        <FunctionalHeader :title='title' @back='back'></FunctionalHeader>
-        <tabswiper :tabContent='tabs' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight'></tabswiper>
-    </div>
+    <transition name='record'>
+        <div class='record'>
+            <FunctionalHeader :title='title' @back='back'></FunctionalHeader>
+            <tabswiper :tabContent='tabs' :componentList='componentList' :defaultIndex='defaultIndex' :swiperHeight='swiperHeight'></tabswiper>
+        </div>
+    </transition>
 </template>
 <script>
     import FunctionalHeader from 'base/functional-header/functional-header'
@@ -66,4 +68,8 @@
         bottom: 0
         z-index: 7900
         background: $color-background
+        &.record-enter-active, &.record-leave-active
+            transition: all 0.4s
+        &.record-enter, &.record-leave-to
+            transform: translate3d(0, 100%, 0)
 </style>

@@ -365,9 +365,6 @@ export const playersMixin = {
         ])
     },
     methods: {
-        ...mapMutations({
-            setSinger: 'SET_SINGER'
-        }),
         checkFS() {
             this.FS = !!this.favoriteSongs.find(i => i.id === this.currentSong.id)
         },
@@ -445,19 +442,13 @@ export const playersMixin = {
                 this.$refs.lyricWrapper.scrollTo(0,0,1000)
             }
         },
-        toggleLyric(flag) {
-            // 从歌词页面切回cd时，cd需要继续从之前的位置开始旋转，在cdStatus的代码控制暂停
-            // cdWrapper不能用v-show='!showLyric'控制，因为v-show为false时，display：none，就不能切回时继续上次的位置了
-            if(flag) {
-                // 显示歌词
-                this.$refs.cdWrapper.style.visibility = 'hidden'
-                this.$refs.lyricWrapper.$el.style.visibility = 'visible'
-                this.showLyric = true
-            } else {
-                // 显示cd
-                this.$refs.cdWrapper.style.visibility = 'visible'
-                this.$refs.lyricWrapper.$el.style.visibility = 'hidden'
-                this.showLyric = false
+        stopLyric() {
+            if(this.currentLyric) {
+                this.currentLyric.stop()
+                this.currentLyric = null
+                this.currentTime = 0
+                this.currentLineNum = 0
+                this.currentLyricText = ''
             }
         },
         // 选择要查看的歌手
@@ -487,8 +478,7 @@ export const playersMixin = {
             this.selectSingerList = []
         },
         triggerSingerDetailPage(singer) {
-            this.setSinger(singer)
-            this.showComponent('singerdetail')
+            this.showComponent('singerdetail', singer)
         },
         // 切换是否覆盖miniplayer
         handleCoverMiniPlayer(flag) {

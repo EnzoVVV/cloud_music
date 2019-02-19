@@ -17,6 +17,9 @@
         props: {
             albums: {
                 type: Array
+            },
+            singer: {
+                type: Object
             }
         },
         data() {
@@ -25,9 +28,6 @@
             }
         },
         computed: {
-            ...mapGetters([
-                'singer'
-            ])
         },
         methods: {
             selectAlbum(album) {
@@ -36,7 +36,7 @@
         },
         created() {
             // 外部没有传入albums, 则自行调服务取
-            if(!this.albums || this.albums.length == 0) {
+            if(!this.albums) {
                 getSingerAlbums(this.singer.id).then(res => {
                     this.albumList = res
                 })

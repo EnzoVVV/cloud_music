@@ -19,7 +19,6 @@
 <script>
     import { searchSinger } from 'api/search'
     import { playlistMixin, resultMixin } from 'common/js/mixins'
-    import { mapMutations } from 'vuex'
     export default {
         name: 'searchSinger',
         mixins: [ playlistMixin, resultMixin ],
@@ -38,12 +37,8 @@
                 })
             },
             selectSinger(singer) {
-                this.setSinger(singer)
-                this.showComponent('singerdetail')
-            },
-            ...mapMutations({
-                setSinger: 'SET_SINGER'
-            })
+                this.showComponent('singerdetail', singer)
+            }
         },
         created() {
             this.searchSingers()

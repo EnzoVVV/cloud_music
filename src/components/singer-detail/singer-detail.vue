@@ -15,6 +15,11 @@
 		components: {
 			musiclist
 		},
+		props: {
+			singer: {
+				type: Object
+			}
+		},
 		data() {
 			return {
 				songs: [],
@@ -22,9 +27,6 @@
 				brief: '',
 				userId: null
 			};
-		},
-		computed: {
-			...mapGetters(['singer'])
 		},
 		methods: {
 			check() {
