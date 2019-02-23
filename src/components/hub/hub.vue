@@ -134,7 +134,7 @@
             },
             ...mapMutations({
                 'setFMSwitch': 'SET_FM_SWITCH'
-            }),
+            })
         },
         created() {
             this.map = {

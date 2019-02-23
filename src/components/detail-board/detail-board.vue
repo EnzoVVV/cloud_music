@@ -383,7 +383,7 @@
                     height: 100%
                     &.blur
                         opacity: 0.6
-                        filter: blur(80px) brightness(50%)
+                        filter: blur(35px) brightness(50%)
             .info
                 width: 100%
                 height: 180px
@@ -468,7 +468,7 @@
                 height: 100%
                 &.blur
                     opacity: 0.6
-                    filter: blur(80px) brightness(50%)
+                    filter: blur(35px) brightness(50%)
     
 
 </style>

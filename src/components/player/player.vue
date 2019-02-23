@@ -118,6 +118,7 @@
     import { qsearch } from 'api/search'
     import { playerMixin, playersMixin } from 'common/js/mixins'
     import { deepCopy } from 'common/js/tools'
+    import { sin, cos, arcsin, arccos, arctan, Pythagorean, getDegreeInTriangle } from 'common/js/math'
     import { playMode } from 'common/js/config'
     const minisonglist = () => import('components/mini-song-list/mini-song-list')
     const infolist = () => import('components/info-list/info-list')
@@ -134,6 +135,16 @@
     const stylus_radius_width_ratio = 50 / 305
     const stylus_radius_height_ratio = 50 / 555
     const stylus_width_height_ratio = 305 / 555
+    // 黑胶针针尖到图片边缘距离为30
+    const stylus_pin_width_ratio = 35 / 305
+    const stylus_pin_height_ratio = 35 / 555
+    // 黑胶针偏移角度修正量
+    const angleModifier_0 = 0.7
+    const angleModifier_1 = 2
+    // 页面header，bottom的高度
+    const header_height = 44
+    const bottom_height = 138
+    
     export default {
         name: 'player',
         mixins: [ playerMixin, playersMixin ],
@@ -508,20 +519,21 @@
             // 移动黑胶针
             shiftStylus(flag) {
                 // flag: true 移开；flag：false 复位
-                const angle = flag ? -20 : 0
+                const angleModifier = flag ? angleModifier_1 : angleModifier_0
+                const angle = this.baseAngle - this.angle_cd_stylus * angleModifier
                 rotate(this.$refs.stylus.$el, angle)
                 this.stylusShifted = flag
             },
             // 设置黑胶针高度与位置
             setStylusPosition() {
                 // header高度44，bottom高度100
-                const middle_height = window.innerHeight - 44 - 100
+                const middle_height = window.innerHeight - header_height - bottom_height
                 const middle_width = window.innerWidth
                 // cd区占总宽度70%, 黑胶是border的45px宽度
-                const cd_radius = (middle_width * 0.7 - 45 * 2) / 2
+                let cd_radius = (middle_width * 0.7 - 45 * 2) / 2
                 // 0.8是让黑胶针往下一点
                 // 黑胶针高度
-                const stylus_height = middle_height / 2 - cd_radius * 0.8
+                const stylus_height = middle_height / 2 - cd_radius * 0.7
                 // 黑胶针宽度
                 const stylus_width = stylus_height * stylus_width_height_ratio
                 // 设置黑胶针转子的中心到屏幕正中
@@ -538,6 +550,28 @@
                     left: stylus_left + 'px',
                     'transform-origin': `${transformOriginX}px ${transformOriginY}px`
                 })
+
+                // 设置针尖位置
+                // 针尖pin到旋转中心radius的x轴距离
+                const pin_radius_x = stylus_width * (1 - stylus_pin_width_ratio - stylus_radius_width_ratio)
+                // 针尖pin到旋转中心radius的y轴距离
+                const pin_radius_y = stylus_height * (1 - stylus_pin_height_ratio - stylus_radius_height_ratio)
+                // 黑胶针默认状态， 旋转中心到针尖的连线与y轴的夹角
+                const originAngle = arctan(pin_radius_x / pin_radius_y)
+                // 黑胶针旋转中心到针尖的距离
+                const stylus_radius = Pythagorean(pin_radius_x, pin_radius_y)
+                // 黑胶针旋转中心到cd中心的距离
+                const h = middle_height / 2
+                // 当针尖pin刚好处在cd边缘时，旋转中心到针尖连线与y轴的夹角
+                const angle_pin_cd = getDegreeInTriangle(stylus_radius, h, cd_radius)
+                const R = cd_radius + 45
+                // 当针尖pin刚好处在黑胶边缘时，旋转中心到针尖连线与y轴的夹角
+                const angle_pin_stylus = getDegreeInTriangle(stylus_radius, h, R)
+                // 将stylus rotate这个角度，会使pin刚好处在cd边缘
+                this.baseAngle = originAngle - angle_pin_cd
+                // pin在cd和pin在黑胶边缘之间，走过的夹角
+                this.angle_cd_stylus = angle_pin_stylus - angle_pin_cd
+                this.shiftStylus(false)
             },
             // 加载前后歌曲信息，并设置位置
             getSideSong() {
@@ -594,7 +628,7 @@
                 height: 100%
                 z-index: -1
                 opacity: 0.6
-                filter: blur(80px) brightness(5%)
+                filter: blur(35px) brightness(30%)
                 &-img
                     width: 100%
                     height: 100%
