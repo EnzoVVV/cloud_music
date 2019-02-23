@@ -47,12 +47,14 @@ export function getRecommendList() {
 		return axios.get(url).then(res => {
 			let result = []
 			if(success(res.status)) {
-				result = res.data.result.map(item => {
-					return  {
-						id: item.id,
-						name: item.name,
-						picUrl: item.picUrl,
-						playCount: item.playCount
+				res.data.result.forEach(item => {
+					if(item.name.indexOf('VIP专享') === -1) {
+						result.push({
+							id: item.id,
+							name: item.name,
+							picUrl: item.picUrl,
+							playCount: item.playCount
+						})
 					}
 				})
 			}
