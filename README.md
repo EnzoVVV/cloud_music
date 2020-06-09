@@ -10,8 +10,11 @@
     # 安装与打包
     npm run init
     
-    # 运行
-    npm start
+    # 启动API
+    npm run api
+    
+    # 启动前端项目
+    npm run dev
     
     # chrome下按 F12, Ctrl + Shift + M 进入移动端模拟模式
 
